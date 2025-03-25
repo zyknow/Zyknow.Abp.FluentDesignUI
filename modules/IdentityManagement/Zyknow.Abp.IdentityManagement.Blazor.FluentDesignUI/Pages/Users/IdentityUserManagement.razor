@@ -9,9 +9,10 @@
 @inherits Zyknow.Abp.FluentDesignUI.AbpCrudPageBase<IIdentityUserAppService, IdentityUserDto, Guid, GetIdentityUsersInput, IdentityUserCreateDto, IdentityUserUpdateDto>
 
 <FluentStack Orientation="Orientation.Vertical" VerticalGap="20" HorizontalAlignment="HorizontalAlignment.Stretch">
-    <AbpPageHeader Title="@L["Users"]" BreadcrumbItems="@BreadcrumbItems" Toolbar="@Toolbar" />
+    <AbpPageHeader Title="@L["Users"]" BreadcrumbItems="@BreadcrumbItems" Toolbar="@Toolbar"/>
 
-    <AbpSearch Loading="@Loading" @bind-PrimarySearchValue="GetListInput.Filter" OnSearch="SearchEntitiesAsync"></AbpSearch>
+    <AbpSearch Loading="@Loading" @bind-PrimarySearchValue="GetListInput.Filter"
+               OnSearch="SearchEntitiesAsync"></AbpSearch>
 
     <AbpExtensibleDataGrid Loading="@Loading"
                            Entities="Entities"
@@ -24,7 +25,7 @@
 @if (HasCreatePermission)
 {
     <FluentDialog @bind-Hidden="@CreateDialogHidden">
-        <IdentityUserCreateDialog Content="@NewEntity" SubmitClick="@CreateEntityAsync"
+        <IdentityUserCreateDialog AssignRoles="@NewUserRoles" Content="@NewEntity" SubmitClick="@CreateEntityAsync"
                                   CancelClick="() => CreateDialogHidden = true"></IdentityUserCreateDialog>
     </FluentDialog>
 }
@@ -32,7 +33,7 @@
 @if (HasUpdatePermission)
 {
     <FluentDialog @bind-Hidden="@EditDialogHidden">
-        <IdentityUserEditDialog Content="@EditingEntity" SubmitClick="@UpdateEntityAsync"
+        <IdentityUserEditDialog AssignRoles="@EditUserRoles" Content="@EditingEntity" SubmitClick="@UpdateEntityAsync"
                                 CancelClick="()=> EditDialogHidden = true"></IdentityUserEditDialog>
     </FluentDialog>
 }
@@ -47,11 +48,17 @@
 
 @code
 {
-    protected const string FeatureProviderName = "R";
+    protected const string PermissionProviderName = "U";
 
     protected PageToolbar Toolbar { get; } = new();
 
     protected bool HasManagePermissionsPermission { get; set; }
+
+    protected AssignedRoleViewModel[] NewUserRoles;
+
+    protected AssignedRoleViewModel[] EditUserRoles;
+
+    protected IReadOnlyList<IdentityRoleDto> Roles;
 
 
     protected bool PermissionDialogHidden = true;
@@ -68,6 +75,64 @@
         CreatePolicyName = IdentityPermissions.Users.Create;
         UpdatePolicyName = IdentityPermissions.Users.Update;
         DeletePolicyName = IdentityPermissions.Users.Delete;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        try
+        {
+            Roles = (await AppService.GetAssignableRolesAsync()).Items;
+        }
+        catch (Exception ex)
+        {
+            await HandleErrorAsync(ex);
+        }
+    }
+
+    protected override Task OpenCreateDialogAsync()
+    {
+        NewUserRoles = Roles.Select(x => new AssignedRoleViewModel
+        {
+            Name = x.Name,
+            IsAssigned = x.IsDefault
+        }).ToArray();
+        return base.OpenCreateDialogAsync();
+    }
+
+    protected override Task OnCreatingEntityAsync(FluentEditForm form)
+    {
+        // apply roles before saving
+        NewEntity.RoleNames = NewUserRoles.Where(x => x.IsAssigned).Select(x => x.Name).ToArray();
+        return base.OnCreatingEntityAsync(form);
+    }
+
+    protected override async Task OpenEditDialogAsync(IdentityUserDto entity)
+    {
+        try
+        {
+            var userRoleNames = (await AppService.GetRolesAsync(entity.Id)).Items.Select(r => r.Name).ToList();
+
+            EditUserRoles = Roles.Select(x => new AssignedRoleViewModel
+            {
+                Name = x.Name,
+                IsAssigned = userRoleNames.Contains(x.Name)
+            }).ToArray();
+
+            await base.OpenEditDialogAsync(entity);
+        }
+        catch (Exception ex)
+        {
+            await HandleErrorAsync(ex);
+        }
+    }
+
+    protected override Task OnUpdatingEntityAsync()
+    {
+        // apply roles before saving
+        EditingEntity.RoleNames = EditUserRoles.Where(x => x.IsAssigned).Select(x => x.Name).ToArray();
+        return base.OnUpdatingEntityAsync();
     }
 
     protected override ValueTask SetBreadcrumbItemsAsync()
@@ -117,9 +182,9 @@
                     Visible = (data) => HasManagePermissionsPermission,
                     Clicked = async (data) =>
                     {
-                        var role = data.As<IdentityUserDto>();
-                        await PermissionDialogRef.ShowAsync(FeatureProviderName, role.Name);
-                        InvokeAsync(StateHasChanged);
+                        var user = data.As<IdentityUserDto>();
+                        await PermissionDialogRef.ShowAsync(PermissionProviderName, user.Id.ToString(), user.UserName);
+                        await InvokeAsync(StateHasChanged);
                     }
                 },
                 new()
@@ -140,10 +205,38 @@
             .AddRange([
                 new FluentTableColumn
                 {
-                    Title = L["UserName"],
+                    Title = L["DisplayName:UserName"],
                     Sortable = true,
                     Data = nameof(IdentityUserDto.Name),
                     PropertyName = nameof(IdentityUserDto.Name)
+                },
+                new FluentTableColumn
+                {
+                    Title = L["DisplayName:Email"],
+                    Sortable = true,
+                    Data = nameof(IdentityUserDto.Email),
+                    PropertyName = nameof(IdentityUserDto.Email)
+                },
+                new FluentTableColumn
+                {
+                    Title = L["DisplayName:PhoneNumber"],
+                    Sortable = true,
+                    Data = nameof(IdentityUserDto.PhoneNumber),
+                    PropertyName = nameof(IdentityUserDto.PhoneNumber)
+                },
+                new FluentTableColumn
+                {
+                    Title = L["DisplayName:IsActive"],
+                    Sortable = true,
+                    Data = nameof(IdentityUserDto.IsActive),
+                    PropertyName = nameof(IdentityUserDto.IsActive)
+                },
+                new FluentTableColumn
+                {
+                    Title = L["DisplayName:LockoutEnabled"],
+                    Sortable = true,
+                    Data = nameof(IdentityUserDto.LockoutEnabled),
+                    PropertyName = nameof(IdentityUserDto.LockoutEnabled)
                 }
             ]);
 
@@ -151,10 +244,10 @@
             IdentityModuleExtensionConsts.EntityNames.User));
 
         UserManagementTableColumns.Add(new FluentTableColumn
-            {
-                Title = L["Actions"],
-                Actions = EntityActions.Get<IdentityUserManagement>()
-            });
+        {
+            Title = L["Actions"],
+            Actions = EntityActions.Get<IdentityUserManagement>()
+        });
 
         return base.SetTableColumnsAsync();
     }

@@ -40,9 +40,12 @@
 
         <FluentTab Label="@L["Roles"]">
             <FluentStack Orientation="Orientation.Vertical">
-                @foreach (var role in EditUserRoles)
+                @if (!AssignRoles.IsNullOrEmpty())
                 {
-                    <FluentCheckbox @bind-Value="role.IsAssigned">@role.Name</FluentCheckbox>
+                    @foreach (var role in AssignRoles)
+                    {
+                        <FluentCheckbox @bind-Value="role.IsAssigned">@role.Name</FluentCheckbox>
+                    }
                 }
             </FluentStack>
 
@@ -52,6 +55,6 @@
 
 @code
 {
-    [Parameter] public AssignedRoleViewModel[] EditUserRoles { get; set; } = [];
+    [Parameter] public AssignedRoleViewModel[] AssignRoles { get; set; }
 }
 

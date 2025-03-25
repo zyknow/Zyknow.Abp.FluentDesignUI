@@ -47,7 +47,7 @@
 
 @code
 {
-    protected const string FeatureProviderName = "R";
+    protected const string PermissionProviderName = "R";
 
     protected PageToolbar Toolbar { get; } = new();
 
@@ -118,7 +118,7 @@
                     Clicked = async (data) =>
                     {
                         var role = data.As<IdentityRoleDto>();
-                        await PermissionDialogRef.ShowAsync(FeatureProviderName, role.Name);
+                        await PermissionDialogRef.ShowAsync(PermissionProviderName, role.Name);
                         InvokeAsync(StateHasChanged);
                     }
                 },
