@@ -14,8 +14,4 @@
     <ItemGroup>
         <ProjectReference Include="..\..\PermissionManagement\Zyknow.Abp.PermissionManagement.Blazor.FluentDesignUI\Zyknow.Abp.PermissionManagement.Blazor.FluentDesignUI.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Pages\Users\" />
-    </ItemGroup>
 </Project>

@@ -1,0 +1,161 @@
+﻿@page "/identity/users"
+@attribute [Authorize(IdentityPermissions.Users.Default)]
+@using Microsoft.FluentUI.AspNetCore.Components.Icons.Filled
+@using Volo.Abp.Identity
+@using Volo.Abp.Identity.Localization
+@using Volo.Abp.ObjectExtending
+@using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.PageToolbars
+@using Zyknow.Abp.PermissionManagement.Blazor.FluentDesignUI.Components
+@inherits Zyknow.Abp.FluentDesignUI.AbpCrudPageBase<IIdentityUserAppService, IdentityUserDto, Guid, GetIdentityUsersInput, IdentityUserCreateDto, IdentityUserUpdateDto>
+
+<FluentStack Orientation="Orientation.Vertical" VerticalGap="20" HorizontalAlignment="HorizontalAlignment.Stretch">
+    <AbpPageHeader Title="@L["Users"]" BreadcrumbItems="@BreadcrumbItems" Toolbar="@Toolbar" />
+
+    <AbpSearch Loading="@Loading" @bind-PrimarySearchValue="GetListInput.Filter" OnSearch="SearchEntitiesAsync"></AbpSearch>
+
+    <AbpExtensibleDataGrid Loading="@Loading"
+                           Entities="Entities"
+                           OnChange="@OnDataGridReadAsync"
+                           Pagination="@Pagination"
+                           Columns="@UserManagementTableColumns">
+    </AbpExtensibleDataGrid>
+</FluentStack>
+
+@if (HasCreatePermission)
+{
+    <FluentDialog @bind-Hidden="@CreateDialogHidden">
+        <IdentityUserCreateDialog Content="@NewEntity" SubmitClick="@CreateEntityAsync"
+                                  CancelClick="() => CreateDialogHidden = true"></IdentityUserCreateDialog>
+    </FluentDialog>
+}
+
+@if (HasUpdatePermission)
+{
+    <FluentDialog @bind-Hidden="@EditDialogHidden">
+        <IdentityUserEditDialog Content="@EditingEntity" SubmitClick="@UpdateEntityAsync"
+                                CancelClick="()=> EditDialogHidden = true"></IdentityUserEditDialog>
+    </FluentDialog>
+}
+
+@if (HasManagePermissionsPermission)
+{
+    <FluentDialog @bind-Hidden="PermissionDialogHidden">
+        <PermissionManagementDialog @ref="PermissionDialogRef"></PermissionManagementDialog>
+    </FluentDialog>
+}
+
+
+@code
+{
+    protected const string FeatureProviderName = "R";
+
+    protected PageToolbar Toolbar { get; } = new();
+
+    protected bool HasManagePermissionsPermission { get; set; }
+
+
+    protected bool PermissionDialogHidden = true;
+
+    protected PermissionManagementDialog PermissionDialogRef;
+
+    protected List<FluentTableColumn> UserManagementTableColumns => TableColumns.Get<IdentityUserManagement>();
+
+    public IdentityUserManagement()
+    {
+        ObjectMapperContext = typeof(AbpIdentityBlazorFluentDesignModule);
+        LocalizationResource = typeof(IdentityResource);
+
+        CreatePolicyName = IdentityPermissions.Users.Create;
+        UpdatePolicyName = IdentityPermissions.Users.Update;
+        DeletePolicyName = IdentityPermissions.Users.Delete;
+    }
+
+    protected override ValueTask SetBreadcrumbItemsAsync()
+    {
+        BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Menu:IdentityManagement"]));
+        BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Users"]));
+
+        return base.SetBreadcrumbItemsAsync();
+    }
+
+    protected override async Task SetPermissionsAsync()
+    {
+        await base.SetPermissionsAsync();
+
+        HasManagePermissionsPermission = await AuthorizationService.IsGrantedAsync(IdentityPermissions.Users.ManagePermissions);
+    }
+
+    protected override string GetDeleteConfirmationMessage(IdentityUserDto entity)
+    {
+        return string.Format(L["UserDeletionConfirmationMessage"], entity.Name);
+    }
+
+    protected override ValueTask SetToolbarItemsAsync()
+    {
+        Toolbar.AddButton(L["NewUser"],
+            OpenCreateDialogAsync,
+            new Size20.Add(),
+            requiredPolicyName: CreatePolicyName);
+
+        return base.SetToolbarItemsAsync();
+    }
+
+    protected override ValueTask SetEntityActionsAsync()
+    {
+        EntityActions
+            .Get<IdentityUserManagement>()
+            .AddRange([
+                new()
+                {
+                    Text = L["Edit"],
+                    Visible = (data) => HasUpdatePermission,
+                    Clicked = async (data) => { await OpenEditDialogAsync(data.As<IdentityUserDto>()); }
+                },
+                new()
+                {
+                    Text = L["Permissions"],
+                    Visible = (data) => HasManagePermissionsPermission,
+                    Clicked = async (data) =>
+                    {
+                        var role = data.As<IdentityUserDto>();
+                        await PermissionDialogRef.ShowAsync(FeatureProviderName, role.Name);
+                        InvokeAsync(StateHasChanged);
+                    }
+                },
+                new()
+                {
+                    Text = L["Delete"],
+                    Visible = (data) => HasDeletePermission,
+                    Clicked = async (data) => await DeleteEntityAsync(data.As<IdentityUserDto>()),
+                    ConfirmationMessage = (data) => GetDeleteConfirmationMessage(data.As<IdentityUserDto>())
+                }
+            ]);
+
+        return base.SetEntityActionsAsync();
+    }
+
+    protected override ValueTask SetTableColumnsAsync()
+    {
+        UserManagementTableColumns
+            .AddRange([
+                new FluentTableColumn
+                {
+                    Title = L["UserName"],
+                    Sortable = true,
+                    Data = nameof(IdentityUserDto.Name),
+                    PropertyName = nameof(IdentityUserDto.Name)
+                }
+            ]);
+
+        UserManagementTableColumns.AddRange(GetExtensionTableColumns(IdentityModuleExtensionConsts.ModuleName,
+            IdentityModuleExtensionConsts.EntityNames.User));
+
+        UserManagementTableColumns.Add(new FluentTableColumn
+            {
+                Title = L["Actions"],
+                Actions = EntityActions.Get<IdentityUserManagement>()
+            });
+
+        return base.SetTableColumnsAsync();
+    }
+}

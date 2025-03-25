@@ -1,0 +1,22 @@
+﻿@inject IStringLocalizer<IdentityResource> L
+
+@(Data.As<IdentityRoleDto>().Name)
+@if (Data.As<IdentityRoleDto>().IsDefault)
+{
+    <FluentBadge Appearance="Appearance.Accent"
+                 Style="margin-left: 0.25rem">
+        @L["DisplayName:IsDefault"]
+    </FluentBadge>
+}
+@if (Data.As<IdentityRoleDto>().IsPublic)
+{
+    <FluentBadge Appearance="Appearance.Hypertext"
+                 Style="margin-left: 0.25rem">
+        @L["DisplayName:IsDefault"]
+    </FluentBadge>
+}
+
+@code
+{
+    [Parameter] public object Data { get; set; }
+}

@@ -1,0 +1,57 @@
+﻿@inherits AbpCreateOrUpdateDialogBase<IdentityUserUpdateDto, IdentityResource>
+
+<AbpCreateOrUpdateDialog HeaderText="@($@"{L["Edit"]} - {Content.UserName}")"
+                         Content="@Content"
+                         CancelClick="@CancelClick"
+                         Localize="@LH.Localize"
+                         SubmitClick="@SubmitClick">
+    <FluentTabs>
+        <FluentTab Label="@L["UserInformations"]">
+            <FluentTextField Style="width: 100%" Label="@L["DisplayName:UserName"]" @bind-Value="@Content.UserName"/>
+            <FluentValidationMessage For="@(() => Content.UserName)"/>
+
+            <FluentTextField Style="width: 100%" Label="@L["DisplayName:Name"]" @bind-Value="@Content.Name"/>
+            <FluentValidationMessage For="@(() => Content.Name)"/>
+
+            <FluentTextField Style="width: 100%" Label="@L["DisplayName:Surname"]" @bind-Value="@Content.Surname"/>
+            <FluentValidationMessage For="@(() => Content.Surname)"/>
+
+            <FluentTextField Style="width: 100%" Label="@L["DisplayName:Password"]" @bind-Value="@Content.Password"
+                             TextFieldType="TextFieldType.Password"/>
+            <FluentValidationMessage For="@(() => Content.Password)"/>
+
+            <FluentTextField TextFieldType="TextFieldType.Email" Style="width: 100%" Label="@L["DisplayName:Email"]"
+                             @bind-Value="@Content.Email"/>
+            <FluentValidationMessage For="@(() => Content.Email)"/>
+
+            <FluentTextField TextFieldType="TextFieldType.Number" Style="width: 100%"
+                             Label="@L["DisplayName:PhoneNumber"]"
+                             @bind-Value="@Content.PhoneNumber"/>
+            <FluentValidationMessage For="@(() => Content.PhoneNumber)"/>
+
+            <ExtensionProperties Entity="@Content" LH="@LH"/>
+
+            <FluentStack Orientation="Orientation.Vertical" VerticalGap="10" Style="margin-top:10px">
+                <FluentCheckbox @bind-Value="Content.IsActive" Label="@L["DisplayName:IsActive"]"></FluentCheckbox>
+                <FluentCheckbox @bind-Value="Content.LockoutEnabled"
+                                Label="@L["DisplayName:LockoutEnabled"]"></FluentCheckbox>
+            </FluentStack>
+        </FluentTab>
+
+        <FluentTab Label="@L["Roles"]">
+            <FluentStack Orientation="Orientation.Vertical">
+                @foreach (var role in EditUserRoles)
+                {
+                    <FluentCheckbox @bind-Value="role.IsAssigned">@role.Name</FluentCheckbox>
+                }
+            </FluentStack>
+
+        </FluentTab>
+    </FluentTabs>
+</AbpCreateOrUpdateDialog>
+
+@code
+{
+    [Parameter] public AssignedRoleViewModel[] EditUserRoles { get; set; } = [];
+}
+
