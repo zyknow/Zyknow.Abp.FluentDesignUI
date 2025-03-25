@@ -1,0 +1,74 @@
+﻿@using Microsoft.Extensions.Localization
+@using Volo.Abp.Validation.StringValues
+@inherits AbpFeatureManagementComponentBase
+@implements IDialogContentComponent<FeatureManagementDialogInput>
+@* Header *@
+<FluentDialogHeader ShowDismiss="true">
+    <FluentLabel Typo="Typography.Header">@L["Features"]</FluentLabel>
+</FluentDialogHeader>
+
+@* Footer *@
+<FluentDialogFooter>
+    <FluentStack HorizontalAlignment="HorizontalAlignment.End">
+        <FluentButton Appearance="Appearance.Accent" OnClick="@SaveAsync">@L["Save"]</FluentButton>
+        <FluentButton Appearance="Appearance.Neutral" OnClick="@CancelAsync">@L["Cancel"]</FluentButton>
+    </FluentStack>
+
+</FluentDialogFooter>
+
+@* Body *@
+<FluentDialogBody>
+    @if (!Groups.IsNullOrEmpty())
+    {
+        <FluentTabs Orientation="Orientation.Vertical">
+            @foreach (var group in Groups)
+            {
+                <FluentTab Id="@GetNormalizedGroupName(group.Name)" Label="@group.DisplayName">
+                    <FluentLabel Typo="Typography.H4"></FluentLabel>
+                    @foreach (var feature in group.Features)
+                    {
+                        var disabled = IsDisabled(feature.Provider.Name);
+
+                        <div style="@GetFeatureStyles(feature)">
+
+
+                            @if (feature.ValueType is FreeTextStringValueType)
+                            {
+                                <FluentLabel>@feature.DisplayName</FluentLabel>
+                                <FluentTextField Disabled="@disabled"
+                                                 Value="@feature.Value"
+                                                 ValueChanged="(v)=> OnFeatureValueChangedAsync(v, feature)" />
+                                @if (feature.Description != null)
+                                {
+                                    <span>@feature.Description</span>
+                                }
+                            }
+
+                            @if (feature.ValueType is SelectionStringValueType type)
+                            {
+                                var items = type.ItemSource.Items;
+                                <FluentSelect TOption="ISelectionStringValueItem" Items="@items"
+                                              Label="@nameof(ISelectionStringValueItem.DisplayText)"
+                                              @bind-Value="@SelectionStringValues[feature.Name]">
+                                    <OptionTemplate>
+                                        <span>@CreateStringLocalizer(context.DisplayText.ResourceName).GetString(context.DisplayText.Name)</span>
+                                    </OptionTemplate>
+
+                                </FluentSelect>
+                            }
+
+                            @if (feature.ValueType is ToggleStringValueType)
+                            {
+                                <FluentCheckbox Disabled="@disabled"
+                                                Value="@ToggleValues[feature.Name]"
+                                                ValueChanged="(v)=> OnSelectedValueChangedAsync(v, feature)"
+                                                Label="@feature.DisplayName">
+                                </FluentCheckbox>
+                            }
+                        </div>
+                    }
+                </FluentTab>
+            }
+        </FluentTabs>
+    }
+</FluentDialogBody>

@@ -1,0 +1,21 @@
+﻿@inherits AbpCreateOrUpdateDialogBase<TenantCreateDto, AbpTenantManagementResource>
+
+<AbpCreateOrUpdateDialog Content="@Content" TInput="TenantCreateDto" TResource="AbpTenantManagementResource"
+                         HeaderText="@L["NewTenant"]" CancelClick="@CancelClick"
+                          SubmitClick="@SubmitClick">
+    <FluentTextField Style="width: 100%" Label="@L["TenantName"]" @bind-Value="@Content.Name"/>
+    <FluentValidationMessage For="@(() => Content.Name)"/>
+
+    <FluentTextField Style="width: 100%" TextFieldType="TextFieldType.Email"
+                     Label="@L["DisplayName:AdminEmailAddress"]"
+                     @bind-Value="@Content.AdminEmailAddress"/>
+    <FluentValidationMessage For="@(() => Content.AdminEmailAddress)"/>
+
+    <FluentTextField Style="width: 100%" TextFieldType="TextFieldType.Password"
+                     Label="@L["DisplayName:AdminPassword"]"
+                     @bind-Value="@Content.AdminPassword"/>
+    <FluentValidationMessage For="@(() => Content.AdminPassword)"/>
+
+    <ExtensionProperties TEntityType="TenantCreateDto" TResourceType="AbpTenantManagementResource"
+                         Entity="@Content" LH="@LH"/>
+</AbpCreateOrUpdateDialog>

@@ -1,0 +1,37 @@
+﻿@page "/"
+@inject IAlertManager AlertManager
+@using Volo.Abp.AspNetCore.Components.Alerts
+@using Volo.Abp.AspNetCore.Components.Messages
+@using Volo.Abp.AspNetCore.Components.Notifications
+@using Volo.Abp.AspNetCore.Components.Progression
+@inject IUiMessageService UiMessageService
+@inject IUiNotificationService UiNotificationService
+@inject IUiPageProgressService UiPageProgressService
+@inherits SimpleComponentBase
+
+<FluentButton OnClick="Callback">alert</FluentButton>
+<div>@RendererInfo.Name</div>
+<div>@RendererInfo.IsInteractive</div>
+<div style="background-color: gray">
+    @for (int i = 0; i < 100; i++)
+    {
+        <FluentLabel>123</FluentLabel>
+    }
+</div>
+
+<div>666</div>
+
+
+@code {
+
+    private void Callback()
+    {
+        // AlertManager.Alerts.Add(AlertType.Danger, "1234567890");
+        // UiMessageService.Info("66");
+        UiNotificationService.Success("66");
+    }
+
+}
+
+
+

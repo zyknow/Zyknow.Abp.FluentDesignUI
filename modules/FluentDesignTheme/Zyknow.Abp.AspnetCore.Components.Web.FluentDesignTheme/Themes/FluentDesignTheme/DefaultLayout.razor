@@ -1,0 +1,56 @@
+﻿@inherits LayoutComponentBase
+@using Microsoft.Extensions.Options
+@using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Settings
+@using Zyknow.Abp.FluentDesignUI.Components
+@inject IOptions<AbpFluentDesignThemeOptions> Options
+
+
+@if (Options.Value.Placement == MenuPlacement.Top)
+{
+    // TODO: Add Top Theme Design
+}
+else
+{
+    <FluentLayout Class="fluent-design-layout">
+        <FluentHeader>
+            <FluentStack HorizontalGap="20" Orientation="Orientation.Horizontal"
+                         HorizontalAlignment="HorizontalAlignment.Left"
+                         VerticalAlignment="VerticalAlignment.Center">
+                <Branding CollapsedMenuClick="OnCollapse"/>
+            </FluentStack>
+            <FluentSpacer/>
+            <NavToolbar/>
+        </FluentHeader>
+
+        <div style="display: flex; flex-direction: row; height: 100%;width: 100%">
+            <MainMenu Collapsed="@Collapsed"/>
+            <FluentBodyContent Class="fluent-design-body-content">
+                <PageAlert/>
+                @Body
+                @* TODO: EnableMultipleTabs ? *@
+                @* @if (!Options.Value.EnableMultipleTabs) *@
+                @* { *@
+                @*     @Body *@
+                @* } *@
+                @* else *@
+                @* { *@
+                @*     <ReuseTabs Class="fluent-design-body-reusetabs" TabPaneClass="fluent-design-body-reusetabs-tabpane" *@
+                @*                Draggable></ReuseTabs> *@
+                @* } *@
+                <FluentToastProvider/>
+                <FluentDialogProvider/>
+                <FluentTooltipProvider/>
+                <FluentMessageBarProvider/>
+                <FluentMenuProvider/>
+                @* <UiPageProgress/> *@
+            </FluentBodyContent>
+        </div>
+
+        <FluentFooter>
+
+        </FluentFooter>
+
+    </FluentLayout>
+}
+
+

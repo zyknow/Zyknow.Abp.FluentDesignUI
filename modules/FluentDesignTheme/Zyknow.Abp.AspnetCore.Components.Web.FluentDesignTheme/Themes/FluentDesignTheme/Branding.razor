@@ -1,0 +1,28 @@
+﻿@using Volo.Abp.Ui.Branding
+@using Size24 = Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size24
+@inject IBrandingProvider BrandingProvider
+
+<div class="fluent-design-brand">
+    <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center" HorizontalGap="15">
+        <FluentIcon Value="@(new Size24.Navigation())" OnClick="()=> CollapsedMenuClick.InvokeAsync()"></FluentIcon>
+
+        <a href="" style="text-decoration: none;user-select: none;">
+            <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+                @if (!BrandingProvider.LogoUrl.IsNullOrWhiteSpace())
+                {
+                    <img style="height: 30px" src="@BrandingProvider.LogoUrl.TrimStart('/', '~')"
+                         alt="@BrandingProvider.AppName"/>
+                }
+                <FluentLabel Color="Color.Neutral" Typo="Typography.Header"
+                             Style="font-weight: bold">@BrandingProvider.AppName</FluentLabel>
+            </FluentStack>
+
+        </a>
+    </FluentStack>
+
+</div>
+
+@code
+{
+    [Parameter] public EventCallback CollapsedMenuClick { get; set; }
+}

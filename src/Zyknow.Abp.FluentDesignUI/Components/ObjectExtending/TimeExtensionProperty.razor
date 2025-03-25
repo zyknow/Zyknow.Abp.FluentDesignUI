@@ -1,0 +1,12 @@
+﻿@typeparam TEntity
+@typeparam TResourceType
+@using Microsoft.FluentUI.AspNetCore.Components.Extensions
+@inherits ExtensionPropertyComponentBase<TEntity, TResourceType>
+
+@if (PropertyInfo != null && Entity != null)
+{
+    <div>
+        <FluentTimePicker Value="@Value.ToDateTime()" ValueChanged="@(e => Value = e.ToTimeOnly())"/>
+        <FluentValidationMessage For="@(() => Value)"/>
+    </div>
+}

@@ -1,0 +1,11 @@
+{
+  "culture": "hi",
+  "texts": {
+    "Settings": "सेटिंग्स",
+    "Color": "रंग",
+    "Info": "जानकारी",
+    "Warning": "चेतावनी",
+    "Error": "त्रुटि",
+    "Success": "सफलता"
+  }
+}

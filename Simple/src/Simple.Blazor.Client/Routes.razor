@@ -1,0 +1,13 @@
+@using Microsoft.Extensions.Options
+@using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Routing
+@using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Themes.FluentDesignTheme
+@inject IOptions<AbpRouterOptions> RouterOptions
+<Router AppAssembly="typeof(Program).Assembly" AdditionalAssemblies="RouterOptions.Value.AdditionalAssemblies">
+    <Found Context="routeData">
+        <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(DefaultLayout)">
+            <NotAuthorized>
+                <RedirectToLogin />
+            </NotAuthorized>
+        </AuthorizeRouteView>
+    </Found>
+</Router>

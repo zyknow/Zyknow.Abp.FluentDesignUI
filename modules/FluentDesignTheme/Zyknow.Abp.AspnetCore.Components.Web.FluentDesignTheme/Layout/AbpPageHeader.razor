@@ -1,0 +1,55 @@
+﻿@using Microsoft.Extensions.Options
+@using Size16 = Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16
+@inject IOptions<PageHeaderOptions> Options
+<FluentStack Orientation="Orientation.Vertical" VerticalGap="20">
+    <FluentStack Class="fluent-design-row-breadcrumb" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+        <FluentStack Orientation="Orientation.Vertical">
+            <FluentStack Class="fluent-design-breadcrumb" VerticalAlignment="VerticalAlignment.Center">
+                @if (Options.Value.RenderBreadcrumbs && BreadcrumbItems.Any())
+                {
+                    if (BreadcrumbShowHome)
+                    {
+                        <FluentBreadcrumbItem Href="/" Appearance="Appearance.Accent">
+                            <FluentIcon Value="@(new Size16.Home())" Slot="start" />
+                        </FluentBreadcrumbItem>
+                    }
+
+                    foreach (var item in BreadcrumbItems)
+                    {
+                        <FluentBreadcrumbItem Href="@item.Url" Appearance="Appearance.Accent">
+                            @if (item.Icon != null)
+                            {
+                                <FluentIcon Value="@item.Icon" Slot="start" />
+                            }
+                            @item.Text
+                        </FluentBreadcrumbItem>
+                    }
+                }
+            </FluentStack>
+        </FluentStack>
+
+        <FluentStack Orientation="Orientation.Vertical">
+            @if (Options.Value.RenderToolbar)
+            {
+                <FluentStack Orientation="Orientation.Horizontal">
+                    @if (Toolbar == null)
+                    {
+                        @ChildContent
+                    }
+                    <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="10" HorizontalAlignment="HorizontalAlignment.End">
+                        @foreach (var toolbarItemRender in ToolbarItemRenders)
+                        {
+                            <div>
+                                @toolbarItemRender
+                            </div>
+                        }
+                    </FluentStack>
+                </FluentStack>
+            }
+        </FluentStack>
+    </FluentStack>
+    @if (Options.Value.RenderPageTitle)
+    {
+        <FluentLabel Typo="Typography.H1" Weight="FontWeight.Bolder" >@Title</FluentLabel>
+    }
+</FluentStack>

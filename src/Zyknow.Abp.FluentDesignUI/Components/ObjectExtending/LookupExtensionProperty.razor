@@ -1,0 +1,12 @@
+﻿@typeparam TEntity
+@typeparam TResourceType
+@using Volo.Abp.Localization
+@inherits ExtensionPropertyComponentBase<TEntity, TResourceType>
+
+
+<div>
+    <FluentAutocomplete TOption="SelectItem<object>" Items="@lookupItems" @bind-Value="@SelectedValue" SelectedOptionChanged="@SelectedValueChanged"
+                  Label="@PropertyInfo.GetLocalizedDisplayName(StringLocalizerFactory)">
+    </FluentAutocomplete>
+    <FluentValidationMessage For="@(() => SelectedValue)"/>
+</div>

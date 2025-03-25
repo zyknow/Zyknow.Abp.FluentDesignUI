@@ -1,0 +1,78 @@
+﻿@using Volo.Abp.Users
+@using Volo.Abp.MultiTenancy
+@using Microsoft.Extensions.Localization
+@using global::Localization.Resources.AbpUi
+@using Volo.Abp.Ui.Branding
+@inject ICurrentUser CurrentUser
+@inject ICurrentTenant CurrentTenant
+@inject IJSRuntime JsRuntime
+@inject NavigationManager Navigation
+@inject IStringLocalizer<AbpUiResource> L
+@inject IBrandingProvider BrandingProvider
+@inject NavigationManager NavigationManager
+<AuthorizeView>
+    <Authorized>
+        <FluentProfileMenu
+            Status="@PresenceStatus.Available"
+            HeaderLabel="@GetProfileFullName()"
+            Initials="@CurrentUser.UserName?.FirstOrDefault().ToString()"
+            FullName="@CurrentUser.UserName"
+            HeaderButton="@(L["Logout"])"
+            EMail="@CurrentUser.Email"
+            OnHeaderButtonClick="Logout"
+            PopoverStyle="min-width: 330px;">
+            <FooterTemplate>
+                @if (Menu != null)
+                {
+                    <FluentStack Wrap="true">
+                        @foreach (var menuItem in Menu.Items.Where(x => x.DisplayName != L["Logout"]))
+                        {
+                            <a target="@menuItem.Target"
+                               href="@menuItem.Url?.TrimStart('/', '~')">@menuItem.DisplayName</a>
+                        }
+                    </FluentStack>
+                }
+            </FooterTemplate>
+            <EndTemplate>
+                <FluentLabel Color="Color.Neutral">
+                    @if (CurrentTenant.Name != null)
+                    {
+                        <span><i>@CurrentTenant.Name</i>\@CurrentUser.UserName</span>
+                    }
+                    else
+                    {
+                        <span>@CurrentUser.UserName</span>
+                    }
+                </FluentLabel>
+            </EndTemplate>
+        </FluentProfileMenu>
+    </Authorized>
+    <NotAuthorized>
+        <a class="nav-link" href="Account/Login" style="text-decoration: none">
+            <FluentLabel Color="Color.Neutral" Typo="Typography.Body">@L["Login"]</FluentLabel>
+        </a>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code
+{
+    string GetProfileFullName()
+    {
+        @if (CurrentTenant.Name != null)
+        {
+            return $"{CurrentTenant.Name}{CurrentUser.UserName}";
+        }
+        else
+        {
+            return $"{CurrentUser.UserName}";
+        }
+    }
+
+    void Logout()
+    {
+        NavigationManager.NavigateTo(
+            $"/Account/logout",
+            forceLoad: true
+        );
+    }
+}

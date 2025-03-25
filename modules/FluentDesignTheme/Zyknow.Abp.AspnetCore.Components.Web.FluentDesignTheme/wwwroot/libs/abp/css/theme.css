@@ -1,0 +1,60 @@
+
+body {
+    height: calc(100vh - 50px);
+    margin: 0;
+    padding: 0;
+    font-family: var(--body-font);
+    font-size: var(--type-ramp-base-font-size);
+    line-height: var(--type-ramp-base-line-height);
+    font-weight: var(--font-weight);
+    color: var(--neutral-foreground-rest);
+    background: var(--neutral-fill-layer-rest);
+}
+
+.fluent-design-layout {
+    header {
+        background-color: var(--neutral-layer-4) !important;
+        border-bottom: calc(var(--stroke-width) * 2px) solid var(--accent-fill-rest);
+        margin-bottom: 0 !important;
+    }
+}
+
+.body-content {
+    max-height: 100%;
+    overflow-y: auto;
+    padding: 1.3rem 1rem 1rem 1rem;
+    border-right: 1px solid var(--neutral-stroke-divider-rest);
+}
+.fluent-design-navmenu {
+    display: flex; 
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 1rem 0.5rem 1rem 1rem;
+
+    .fluent-nav-item {
+        min-width: 40px;
+    }
+
+    .fluent-nav-item.expander {
+        div {
+            height: 40px;
+        }
+    }
+
+    .fluent-nav-item {
+        margin: 0;
+    }
+
+    .fluent-nav-group {
+        margin: 10px 0 10px 0;
+    }
+
+    [tabindex="0"] .positioning-region {
+        height: 40px;
+    }
+
+    .fluent-nav-menu .fluent-nav-item a > div {
+        height: 40px;
+    }
+}

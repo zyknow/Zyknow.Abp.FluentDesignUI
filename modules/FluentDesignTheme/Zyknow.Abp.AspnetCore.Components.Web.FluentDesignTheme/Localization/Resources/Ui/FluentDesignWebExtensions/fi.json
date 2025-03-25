@@ -1,0 +1,11 @@
+{
+  "culture": "fi",
+  "texts": {
+    "Settings": "Asetukset",
+    "Color": "Väri",
+    "Info": "Tiedot",
+    "Warning": "Varoitus",
+    "Error": "Virhe",
+    "Success": "Onnistuminen"
+  }
+}

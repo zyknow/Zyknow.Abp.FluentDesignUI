@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\FeatureManagement\Zyknow.Abp.FeatureManagement.Blazor.WebAssembly.FluentDesignUI\Zyknow.Abp.FeatureManagement.Blazor.WebAssembly.FluentDesignUI.csproj" />
+      <ProjectReference Include="..\Zyknow.Abp.TenantManagement.Blazor.FluentDesignUI\Zyknow.Abp.TenantManagement.Blazor.FluentDesignUI.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Volo.Abp.TenantManagement.HttpApi.Client" Version="9.1.0" />
+    </ItemGroup>
+</Project>

@@ -1,0 +1,11 @@
+{
+  "culture": "de-DE",
+  "texts": {
+    "Settings": "Einstellungen",
+    "Color": "Farbe",
+    "Info": "Info",
+    "Warning": "Warnung",
+    "Error": "Fehler",
+    "Success": "Erfolg"
+  }
+}

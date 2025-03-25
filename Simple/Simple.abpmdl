@@ -1,0 +1,84 @@
+{
+  "template": "app",
+  "imports": {
+    "Volo.Abp.BasicTheme": {
+      "version": "9.1.0",
+      "isInstalled": true
+    },
+    "Volo.Abp.Account": {
+      "version": "9.1.0",
+      "isInstalled": true
+    },
+    "Volo.Abp.OpenIddict": {
+      "version": "9.1.0",
+      "isInstalled": true
+    },
+    "Volo.Abp.Identity": {
+      "version": "9.1.0",
+      "isInstalled": true
+    },
+    "Volo.Abp.TenantManagement": {
+      "version": "9.1.0",
+      "isInstalled": true
+    },
+    "Volo.Abp.SettingManagement": {
+      "version": "9.1.0",
+      "isInstalled": true
+    },
+    "Volo.Abp.PermissionManagement": {
+      "version": "9.1.0",
+      "isInstalled": true
+    },
+    "Volo.Abp.FeatureManagement": {
+      "version": "9.1.0",
+      "isInstalled": true
+    }
+  },
+  "folders": {
+    "items": {
+      "src": {}
+    }
+  },
+  "packages": {
+    "Simple.Application": {
+      "path": "src/Simple.Application/Simple.Application.abppkg",
+      "folder": "src"
+    },
+    "Simple.Domain.Shared": {
+      "path": "src/Simple.Domain.Shared/Simple.Domain.Shared.abppkg",
+      "folder": "src"
+    },
+    "Simple.Application.Contracts": {
+      "path": "src/Simple.Application.Contracts/Simple.Application.Contracts.abppkg",
+      "folder": "src"
+    },
+    "Simple.HttpApi": {
+      "path": "src/Simple.HttpApi/Simple.HttpApi.abppkg",
+      "folder": "src"
+    },
+    "Simple.HttpApi.Client": {
+      "path": "src/Simple.HttpApi.Client/Simple.HttpApi.Client.abppkg",
+      "folder": "src"
+    },
+    "Simple.EntityFrameworkCore": {
+      "path": "src/Simple.EntityFrameworkCore/Simple.EntityFrameworkCore.abppkg",
+      "folder": "src"
+    },
+    "Simple.DbMigrator": {
+      "path": "src/Simple.DbMigrator/Simple.DbMigrator.abppkg",
+      "folder": "src"
+    },
+    "Simple.Blazor": {
+      "path": "src/Simple.Blazor/Simple.Blazor.abppkg",
+      "folder": "src"
+    },
+    "Simple.Blazor.Client": {
+      "path": "src/Simple.Blazor.Client/Simple.Blazor.Client.abppkg",
+      "folder": "src"
+    },
+    "Simple.Domain": {
+      "path": "src/Simple.Domain/Simple.Domain.abppkg",
+      "folder": "src"
+    }
+  }
+}

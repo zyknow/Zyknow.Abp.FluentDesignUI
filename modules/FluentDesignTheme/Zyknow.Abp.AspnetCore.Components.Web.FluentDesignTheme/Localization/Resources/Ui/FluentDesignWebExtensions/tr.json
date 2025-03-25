@@ -1,0 +1,11 @@
+{
+  "culture": "tr",
+  "texts": {
+    "Settings": "Ayarlar",
+    "Color": "Renk",
+    "Info": "Bilgi",
+    "Warning": "Uyarı",
+    "Error": "Hata",
+    "Success": "Başarı"
+  }
+}

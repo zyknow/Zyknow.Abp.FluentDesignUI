@@ -1,0 +1,29 @@
+﻿@using Localization.Resources.AbpUi
+@using Microsoft.Extensions.Localization
+@using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
+@using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Settings
+@inject IDialogService DialogService
+@inject IStringLocalizer<AbpUiResource> L
+@inject IFluentDesignSettingsProvider SettingsProvider
+<FluentDesignTheme @bind-Mode="@SettingsProvider.Theme.ThemeMode"
+                   OfficeColor="@SettingsProvider.Theme.Color"
+                   StorageName="theme"/>
+<FluentIcon Value="@(new Size20.Settings())" OnClick="ShowPanelAsync"/>
+
+
+@code {
+
+    async Task ShowPanelAsync()
+    {
+        await DialogService.ShowPanelAsync<SettingPanel>(null, new DialogParameters<object>()
+        {
+            Content = null,
+            Alignment = HorizontalAlignment.Right,
+            Title = L["Settings"],
+            PrimaryAction = null,
+            SecondaryAction = null,
+        });
+
+        InvokeAsync(StateHasChanged);
+    }
+}

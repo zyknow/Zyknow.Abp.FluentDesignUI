@@ -1,0 +1,43 @@
+﻿@page "/tenant-management/tenants"
+@attribute [Authorize(TenantManagementPermissions.Tenants.Default)]
+@inject AbpBlazorMessageLocalizerHelper<AbpTenantManagementResource> LH
+@using Zyknow.Abp.FeatureManagement.Blazor.FluentDesignUI.Components
+@using Zyknow.Abp.FluentDesignUI.Components
+@inherits Zyknow.Abp.FluentDesignUI.AbpCrudPageBase<ITenantAppService, TenantDto, Guid, GetTenantsInput, TenantCreateDto, TenantUpdateDto>
+
+<FluentStack Orientation="Orientation.Vertical" VerticalGap="20" HorizontalAlignment="HorizontalAlignment.Stretch">
+    <AbpPageHeader Title="@L["Tenants"]" BreadcrumbItems="@BreadcrumbItems" Toolbar="@Toolbar" />
+
+    <AbpSearch Loading="@Loading" @bind-PrimarySearchValue="GetListInput.Filter" OnSearch="SearchEntitiesAsync"></AbpSearch>
+
+    <AbpExtensibleDataGrid Loading="@Loading"
+                           TItem="TenantDto"
+                           Entities="Entities"
+                           OnChange="@OnDataGridReadAsync"
+                           Pagination="@Pagination"
+                           Columns="@TenantManagementTableColumns">
+    </AbpExtensibleDataGrid>
+</FluentStack>
+
+@if (HasCreatePermission)
+{
+    <FluentDialog @bind-Hidden="@CreateDialogHidden">
+        <TenantCreateDialog Content="@NewEntity" SubmitClick="@CreateEntityAsync"
+                            CancelClick="() => CreateDialogHidden = true"></TenantCreateDialog>
+    </FluentDialog>
+}
+
+@if (HasUpdatePermission)
+{
+    <FluentDialog @bind-Hidden="@EditDialogHidden">
+        <TenantEditDialog Content="@EditingEntity" SubmitClick="@UpdateEntityAsync"
+                          CancelClick="()=> EditDialogHidden = true"></TenantEditDialog>
+    </FluentDialog>
+}
+
+@if (HasManageFeaturesPermission)
+{
+    <FluentDialog @bind-Hidden="FeatHidden">
+        <FeatureManagementDialog @ref="FeatureDialogRef"></FeatureManagementDialog>
+    </FluentDialog>
+}

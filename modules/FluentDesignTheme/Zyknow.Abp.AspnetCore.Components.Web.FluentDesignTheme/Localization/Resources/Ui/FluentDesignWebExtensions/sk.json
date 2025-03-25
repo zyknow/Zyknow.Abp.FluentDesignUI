@@ -1,0 +1,11 @@
+{
+  "culture": "sk",
+  "texts": {
+    "Settings": "Nastavenia",
+    "Color": "Farba",
+    "Info": "Informácia",
+    "Warning": "Upozornenie",
+    "Error": "Chyba",
+    "Success": "Úspech"
+  }
+}

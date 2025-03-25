@@ -1,0 +1,106 @@
+﻿@typeparam TInput
+@typeparam TResource
+@using Microsoft.Extensions.Localization
+@using Volo.Abp.AspNetCore.Components.Web
+@using Zyknow.Abp.FluentDesignUI.Validation
+@implements IDialogContentComponent<TInput>
+@inherits Volo.Abp.AspNetCore.Components.AbpComponentBase
+<FluentDialogHeader ShowDismiss="true">
+    @if (HeaderTemplate != null)
+    {
+        @HeaderTemplate
+    }
+    else
+    {
+        <FluentLabel Typo="Typography.H4">@HeaderText</FluentLabel>
+    }
+</FluentDialogHeader>
+
+<FluentDialogBody>
+    <FluentEditForm @ref="FormRef" Model="@Content">
+        <AbpDataAnnotationsValidator Localize="LH.Localize" />
+        @* <FluentValidationSummary/> *@
+        @ChildContent
+        @* <ExtensionProperties TEntityType="TInput" TResourceType="TResource" *@
+        @*                      Entity="@Content" LH="@LH" /> *@
+    </FluentEditForm>
+</FluentDialogBody>
+
+<FluentDialogFooter>
+    @if (FooterTemplate != null)
+    {
+        @FooterTemplate
+    }
+    else
+    {
+
+        <FluentStack HorizontalAlignment="HorizontalAlignment.End">
+            <FluentButton Loading="@SubmitBtnLoading" Appearance="Appearance.Accent"
+                          OnClick="@SubmitAsync">@L["Save"]</FluentButton>
+            <FluentButton Appearance="Appearance.Neutral"
+                          OnClick="@CloseDialogAsync">@L["Cancel"]</FluentButton>
+        </FluentStack>
+    }
+
+</FluentDialogFooter>
+
+@code {
+
+    [Parameter] public virtual string HeaderText { get; set; }
+    [Parameter] public virtual RenderFragment? HeaderTemplate { get; set; }
+
+    [Parameter] public virtual RenderFragment ChildContent { get; set; }
+    [Parameter] public virtual RenderFragment? FooterTemplate { get; set; }
+
+    [Parameter] public TInput Content { get; set; }
+
+
+    [CascadingParameter] public FluentDialog? Dialog { get; set; }
+
+    private FluentEditForm FormRef;
+
+    protected bool SubmitBtnLoading;
+
+
+    [Parameter] public EventCallback SubmitClick { get; set; }
+
+    [Parameter] public EventCallback CancelClick { get; set; }
+
+    [Inject] protected AbpBlazorMessageLocalizerHelper<TResource> LH { get; set; }
+
+    [Inject] protected IStringLocalizer<TResource> L { get; set; }
+
+    async Task SubmitAsync()
+    {
+        SubmitBtnLoading = true;
+
+        try
+        {
+            var validate = true;
+            if (FormRef != null)
+            {
+                validate = FormRef.EditContext.Validate();
+            }
+
+            if (validate)
+            {
+                await SubmitClick.InvokeAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            await HandleErrorAsync(ex);
+        }
+        finally
+        {
+            SubmitBtnLoading = false;
+        }
+    }
+
+    async Task CloseDialogAsync()
+    {
+        await Dialog?.CloseAsync();
+        await CancelClick.InvokeAsync();
+    }
+
+}

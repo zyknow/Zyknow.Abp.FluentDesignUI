@@ -1,0 +1,22 @@
+﻿@typeparam TEntity
+@typeparam TResourceType
+@using Volo.Abp.Localization
+@inherits ExtensionPropertyComponentBase<TEntity, TResourceType>
+
+@if (PropertyInfo != null && Entity != null)
+{
+    <div>
+        @* TODO: use @PropertyInfo.GetDateEditInputFormatOrNull().RemovePreFix("{0:").RemovePostFix("}") to Format? *@
+        <FluentStack VerticalAlignment="VerticalAlignment.Center" Orientation="Orientation.Horizontal">
+            <FluentDatePicker @bind-Value="@Value"
+                              Label="@PropertyInfo.GetLocalizedDisplayName(StringLocalizerFactory)">
+            </FluentDatePicker>
+            @if (PropertyInfo.IsDateTime())
+            {
+                <FluentDatePicker @bind-Value="@Value"/>
+            }
+        </FluentStack>
+
+        <FluentValidationMessage For="@(() => Value)"/>
+    </div>
+}

@@ -1,0 +1,11 @@
+{
+  "culture": "sl",
+  "texts": {
+    "Settings": "Nastavitve",
+    "Color": "Barva",
+    "Info": "Informacija",
+    "Warning": "Opozorilo",
+    "Error": "Napaka",
+    "Success": "Uspeh"
+  }
+}

@@ -1,0 +1,45 @@
+﻿@using Localization.Resources.AbpUi
+@using Microsoft.Extensions.Localization
+@using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
+@inject IStringLocalizer<AbpUiResource> L
+
+@if (ChildContent == null)
+{
+    <FluentStack VerticalAlignment="VerticalAlignment.Center">
+        <FluentTextField Value="@PrimarySearchValue" ValueChanged="@PrimarySearchValueChanged" Placeholder="@L["Search"]"></FluentTextField>
+        <FluentButton Loading="@Loading" IconStart="@(new Size16.Search())" Appearance="Appearance.Accent" OnClick="@(async ()=> await OnSearch.InvokeAsync())">@L["Search"]</FluentButton>
+    </FluentStack>
+}
+else
+{
+    <FluentAccordion>
+        <FluentAccordionItem>
+            <HeadingTemplate>
+                <FluentStack VerticalAlignment="VerticalAlignment.Center">
+                    <FluentTextField Value="@PrimarySearchValue" ValueChanged="@PrimarySearchValueChanged" Placeholder="@L["Search"]"></FluentTextField>
+                    <FluentButton Loading="@Loading" IconStart="@(new Size16.Search())" OnClick="@(async ()=> await OnSearch.InvokeAsync())">@L["Search"]</FluentButton>
+                    <FluentButton IconStart="@(new Size16.Broom())">@L["Clear"]</FluentButton>
+                </FluentStack>
+            </HeadingTemplate>
+            <ChildContent>
+                @ChildContent
+            </ChildContent>
+        </FluentAccordionItem>
+    </FluentAccordion>
+}
+
+
+@code {
+
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    [Parameter] public string PrimarySearchValue { get; set; }
+
+    [Parameter] public EventCallback<string> PrimarySearchValueChanged { get; set; }
+
+    [Parameter] public EventCallback OnSearch { get; set; }
+
+    [Parameter] public EventCallback OnClear { get; set; }
+
+    [Parameter] public bool Loading { get; set; }
+}

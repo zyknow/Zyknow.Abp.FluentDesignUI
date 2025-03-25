@@ -1,0 +1,53 @@
+﻿@using Volo.Abp.UI.Navigation
+@using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Extensions
+
+@if (Menu != null)
+{
+    var url = Menu.Url == null ? "#" : Menu.Url.TrimStart('/', '~');
+
+    if (Menu.IsLeaf && Menu.Url != null)
+    {
+        <FluentNavLink Icon="GetIcon()" Match="NavLinkMatch.All" Href="@url" Disabled="@Menu.IsDisabled">
+            <FluentLabel>@Menu.DisplayName</FluentLabel>
+        </FluentNavLink>
+    }
+    else
+    {
+        // TODO: Set Icon
+        <FluentNavGroup Icon="@GetIcon()">
+            <TitleTemplate>
+                <FluentLabel>@Menu.DisplayName</FluentLabel>
+            </TitleTemplate>
+            <ChildContent>
+                @foreach (var menuItem in Menu.Items)
+                {
+                    <MainMenuItem Menu="@menuItem"></MainMenuItem>
+                }
+            </ChildContent>
+        </FluentNavGroup>
+    }
+}
+
+@code{
+
+    [Parameter] public ApplicationMenuItem Menu { get; set; }
+    [Parameter] public bool FirstLevel { get; set; }
+
+    RenderFragment GetSubMenuTemplate(ApplicationMenuItem menu)
+    {
+        return @<span>
+                   @if (!Menu.Icon.IsNullOrWhiteSpace())
+            {
+                // TODO: Set Icon
+                @* <FluentIcon Value="@Theme.Icon"></FluentIcon> *@
+            }
+            <span>@menu.DisplayName</span>
+               </span>;
+    }
+
+    Icon? GetIcon()
+    {
+        return Menu.GetFluentIcon();
+    }
+
+}

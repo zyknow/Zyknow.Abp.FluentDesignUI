@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <Import Project="..\..\common.props" />
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
+  </PropertyGroup>
+
+  <ItemGroup>
+<!--    <PackageReference Include="Blazorise.Bootstrap5" Version="1.6.2" />-->
+<!--    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.6.2" />-->
+<!--    <PackageReference Include="Blazorise.Components" Version="1.6.2" />-->
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.3" />
+    <PackageReference Include="Volo.Abp.AutoMapper" Version="9.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.Autofac.WebAssembly" Version="9.1.0" />
+<!--    <PackageReference Include="Volo.Abp.SettingManagement.Blazor.WebAssembly" Version="9.1.0" />-->
+<!--    <PackageReference Include="Volo.Abp.FeatureManagement.Blazor.WebAssembly" Version="9.1.0" />-->
+  </ItemGroup>
+
+<!--  <ItemGroup>-->
+<!--    <PackageReference Include="Volo.Abp.AspNetCore.Components.WebAssembly.BasicTheme" Version="9.1.0" />-->
+<!--  </ItemGroup>-->
+
+<!--  <ItemGroup>-->
+<!--    <PackageReference Include="Volo.Abp.Identity.Blazor.WebAssembly" Version="9.1.0" />-->
+<!--    <PackageReference Include="Volo.Abp.TenantManagement.Blazor.WebAssembly" Version="9.1.0" />-->
+<!--  </ItemGroup>-->
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\modules\FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.WebAssembly.FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.WebAssembly.FluentDesignTheme.csproj" />
+    <ProjectReference Include="..\..\..\modules\TenantManagement\Zyknow.Abp.TenantManagement.Blazor.Webassembly.FluentDesignUI\Zyknow.Abp.TenantManagement.Blazor.Webassembly.FluentDesignUI.csproj" />
+    <ProjectReference Include="..\..\src\Simple.HttpApi.Client\Simple.HttpApi.Client.csproj" />
+  </ItemGroup>
+
+</Project>

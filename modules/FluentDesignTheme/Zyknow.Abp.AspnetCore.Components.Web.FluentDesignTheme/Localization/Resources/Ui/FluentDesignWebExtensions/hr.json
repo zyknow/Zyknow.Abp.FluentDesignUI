@@ -1,0 +1,11 @@
+{
+  "culture": "hr",
+  "texts": {
+    "Settings": "Postavke",
+    "Color": "Boja",
+    "Info": "Informacija",
+    "Warning": "Upozorenje",
+    "Error": "Greška",
+    "Success": "Uspjeh"
+  }
+}

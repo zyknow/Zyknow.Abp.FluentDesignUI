@@ -1,0 +1,24 @@
+﻿@typeparam TItem
+
+<CascadingValue Value="this" IsFixed="true">
+    @if (Type == ActionType.Dropdown)
+    {
+        if (HasPrimaryAction)
+        {
+            <FluentMenuButton Text="@PrimaryAction.Text" OnMenuChanged="async () => await PrimaryAction.ActionClickedAsync()" ButtonAppearance="@PrimaryAction.Appearance">
+                @ChildContent
+            </FluentMenuButton>
+        }
+        else
+        {
+            <FluentMenuButton Text="@ToggleText">
+                @ChildContent
+            </FluentMenuButton>
+        }
+    }
+    else
+    {
+        @ChildContent
+    }
+
+</CascadingValue>

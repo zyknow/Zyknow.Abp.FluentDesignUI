@@ -1,0 +1,11 @@
+{
+  "culture": "hu",
+  "texts": {
+    "Settings": "Beállítások",
+    "Color": "Szín",
+    "Info": "Információ",
+    "Warning": "Figyelmeztetés",
+    "Error": "Hiba",
+    "Success": "Siker"
+  }
+}

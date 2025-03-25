@@ -1,0 +1,11 @@
+{
+  "culture": "ar",
+  "texts": {
+    "Settings": "الإعدادات",
+    "Color": "اللون",
+    "Info": "معلومات",
+    "Warning": "تحذير",
+    "Error": "خطأ",
+    "Success": "نجاح"
+  }
+}

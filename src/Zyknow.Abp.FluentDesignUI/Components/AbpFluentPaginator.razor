@@ -1,0 +1,18 @@
+﻿@using Localization.Resources.AbpUi
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<AbpUiResource> L
+@if (State != null)
+{
+    <FluentPaginator State="@State">
+        <SummaryTemplate>
+            <FluentLabel Typo="Typography.Body" Weight="FontWeight.Bolder">@L["Total"]: @State.TotalItemCount</FluentLabel>
+        </SummaryTemplate>
+    </FluentPaginator>
+
+}
+
+@code {
+
+    [Parameter]
+    public PaginationState State { get; set; } = new();
+}

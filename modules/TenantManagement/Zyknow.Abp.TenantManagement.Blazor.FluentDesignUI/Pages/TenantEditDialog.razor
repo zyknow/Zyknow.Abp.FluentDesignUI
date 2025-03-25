@@ -1,0 +1,11 @@
+﻿@inherits AbpCreateOrUpdateDialogBase<TenantUpdateDto, AbpTenantManagementResource>
+
+<AbpCreateOrUpdateDialog Content="@Content" TInput="TenantUpdateDto" TResource="AbpTenantManagementResource"
+                         HeaderText="@(@$"{L["Edit"]} - {Content.Name}")" CancelClick="@CancelClick"
+                         SubmitClick="@SubmitClick">
+    <FluentTextField Style="width: 100%" Label="@L["TenantName"]" @bind-Value="@Content.Name" />
+    <FluentValidationMessage For="@(() => Content.Name)" />
+
+    <ExtensionProperties TEntityType="TenantUpdateDto" TResourceType="AbpTenantManagementResource"
+                         Entity="@Content" LH="@LH" />
+</AbpCreateOrUpdateDialog>

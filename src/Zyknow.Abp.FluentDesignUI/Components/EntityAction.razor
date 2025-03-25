@@ -1,0 +1,31 @@
+﻿@typeparam TItem
+
+@if (Visible && HasPermission)
+{
+    if (ParentActions != null)
+    {
+        if (ParentActions.Type == ActionType.Dropdown)
+        {
+            if (!Primary)
+            {
+                <FluentMenuItem Disabled="@Disabled" OnClick="ActionClickedAsync">@Text</FluentMenuItem>
+            }
+            else
+            {
+                <FluentButton IconStart="@Icon" disabled="@Disabled"
+                              Appearance="@Appearance"
+                              OnClick="@ActionClickedAsync">
+                    @Text
+                </FluentButton>
+            }
+        }
+        else
+        {
+            <FluentButton  IconStart="@Icon" disabled="@Disabled"
+                          Appearance="@Appearance"
+                          OnClick="@ActionClickedAsync">
+                @Text
+            </FluentButton>
+        }
+    }
+}
