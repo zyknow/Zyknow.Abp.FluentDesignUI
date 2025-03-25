@@ -7,11 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <_ContentIncludedByDefault Remove="wwwroot\background.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\exampleJsInterop.js" />
-    </ItemGroup>
-
-    <ItemGroup>
         <PackageReference Include="Volo.Abp.FeatureManagement.HttpApi.Client" Version="9.1.0" />
     </ItemGroup>
     

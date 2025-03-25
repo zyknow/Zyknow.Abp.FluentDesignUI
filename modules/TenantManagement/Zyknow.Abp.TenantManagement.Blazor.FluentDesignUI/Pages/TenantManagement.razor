@@ -1,8 +1,6 @@
 ﻿@page "/tenant-management/tenants"
 @attribute [Authorize(TenantManagementPermissions.Tenants.Default)]
-@inject AbpBlazorMessageLocalizerHelper<AbpTenantManagementResource> LH
 @using Zyknow.Abp.FeatureManagement.Blazor.FluentDesignUI.Components
-@using Zyknow.Abp.FluentDesignUI.Components
 @inherits Zyknow.Abp.FluentDesignUI.AbpCrudPageBase<ITenantAppService, TenantDto, Guid, GetTenantsInput, TenantCreateDto, TenantUpdateDto>
 
 <FluentStack Orientation="Orientation.Vertical" VerticalGap="20" HorizontalAlignment="HorizontalAlignment.Stretch">
@@ -37,7 +35,7 @@
 
 @if (HasManageFeaturesPermission)
 {
-    <FluentDialog @bind-Hidden="FeatHidden">
+    <FluentDialog @bind-Hidden="FeatureDialogHidden">
         <FeatureManagementDialog @ref="FeatureDialogRef"></FeatureManagementDialog>
     </FluentDialog>
 }

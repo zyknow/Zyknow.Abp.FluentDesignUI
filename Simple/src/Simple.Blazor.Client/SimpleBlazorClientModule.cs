@@ -8,6 +8,7 @@ using Volo.Abp.UI.Navigation;
 using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Routing;
 using Zyknow.Abp.AspnetCore.Components.WebAssembly.FluentDesignTheme;
 using Zyknow.Abp.FeatureManagement.Blazor.WebAssembly.FluentDesignUI;
+using Zyknow.Abp.IdentityManagement.Blazor.WebAssembly.FluentDesignUI;
 
 
 namespace Simple.Blazor.Client;
@@ -16,7 +17,8 @@ namespace Simple.Blazor.Client;
     typeof(AbpAutofacWebAssemblyModule),
     typeof(SimpleHttpApiClientModule),
     typeof(AbpAspNetCoreComponentsWebAssemblyFluentDesignThemeModule),
-    typeof(AbpFeatureManagementBlazorWebAssemblyFluentDesignModule)
+    typeof(AbpFeatureManagementBlazorWebAssemblyFluentDesignModule),
+    typeof(AbpIdentityBlazorWebAssemblyFluentDesignModule)
 )]
 public class SimpleBlazorClientModule : AbpModule
 {
@@ -27,7 +29,7 @@ public class SimpleBlazorClientModule : AbpModule
             options.IsBlazorWebApp = true;
         });
     }
-    
+
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         var environment = context.Services.GetSingletonInstance<IWebAssemblyHostEnvironment>();
@@ -64,7 +66,7 @@ public class SimpleBlazorClientModule : AbpModule
     {
         builder.Services.AddBlazorWebAppServices();
     }
-    
+
     private static void ConfigureHttpClient(ServiceConfigurationContext context, IWebAssemblyHostEnvironment environment)
     {
         context.Services.AddTransient(sp => new HttpClient

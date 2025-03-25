@@ -25,8 +25,4 @@
         <Content Remove="Localization\Resources\Ui\FluentDesignWebExtensions\*.json" />
     </ItemGroup>
 
-    <ItemGroup>
-      <UpToDateCheckInput Remove="Easy\AbpEasyFormItem.razor" />
-    </ItemGroup>
-
 </Project>

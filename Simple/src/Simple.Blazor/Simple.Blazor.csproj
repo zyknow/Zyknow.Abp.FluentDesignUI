@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\modules\FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.Server.FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.Server.FluentDesignTheme.csproj" />
+    <ProjectReference Include="..\..\..\modules\IdentityManagement\Zyknow.Abp.IdentityManagement.Blazor.Server.FluentDesignUI\Zyknow.Abp.IdentityManagement.Blazor.Server.FluentDesignUI.csproj" />
     <ProjectReference Include="..\..\..\modules\TenantManagement\Zyknow.Abp.TenantManagement.Blazor.Server.FluentDesignUI\Zyknow.Abp.TenantManagement.Blazor.Server.FluentDesignUI.csproj" />
     <ProjectReference Include="..\Simple.Application\Simple.Application.csproj" />
     <ProjectReference Include="..\Simple.Blazor.Client\Simple.Blazor.Client.csproj" />

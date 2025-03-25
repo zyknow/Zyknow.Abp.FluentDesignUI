@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Volo.Abp.AutoMapper" Version="9.1.0" />
+        <PackageReference Include="Volo.Abp.Identity.Application.Contracts" Version="9.1.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\PermissionManagement\Zyknow.Abp.PermissionManagement.Blazor.FluentDesignUI\Zyknow.Abp.PermissionManagement.Blazor.FluentDesignUI.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Pages\Users\" />
+    </ItemGroup>
+</Project>

@@ -21,7 +21,7 @@ public partial class TenantManagement
     protected PageToolbar Toolbar { get; } = new();
 
 
-    protected bool FeatHidden = true;
+    protected bool FeatureDialogHidden = true;
 
     protected FeatureManagementDialog FeatureDialogRef;
 

@@ -1,14 +1,15 @@
 ﻿@typeparam TInput
-@typeparam TResource
+@using Localization.Resources.AbpUi
 @using Microsoft.Extensions.Localization
 @using Volo.Abp.AspNetCore.Components.Web
 @using Zyknow.Abp.FluentDesignUI.Validation
 @implements IDialogContentComponent<TInput>
 @inherits Volo.Abp.AspNetCore.Components.AbpComponentBase
+@inject IStringLocalizer<AbpUiResource> UL
 <FluentDialogHeader ShowDismiss="true">
-    @if (HeaderTemplate != null)
+    @if (Header != null)
     {
-        @HeaderTemplate
+        @Header
     }
     else
     {
@@ -18,27 +19,25 @@
 
 <FluentDialogBody>
     <FluentEditForm @ref="FormRef" Model="@Content">
-        <AbpDataAnnotationsValidator Localize="LH.Localize" />
+        <AbpDataAnnotationsValidator Localize="@Localize" />
         @* <FluentValidationSummary/> *@
         @ChildContent
-        @* <ExtensionProperties TEntityType="TInput" TResourceType="TResource" *@
-        @*                      Entity="@Content" LH="@LH" /> *@
     </FluentEditForm>
 </FluentDialogBody>
 
 <FluentDialogFooter>
-    @if (FooterTemplate != null)
+    @if (Footer != null)
     {
-        @FooterTemplate
+        @Footer
     }
     else
     {
 
         <FluentStack HorizontalAlignment="HorizontalAlignment.End">
             <FluentButton Loading="@SubmitBtnLoading" Appearance="Appearance.Accent"
-                          OnClick="@SubmitAsync">@L["Save"]</FluentButton>
+                          OnClick="@SubmitAsync">@UL["Save"]</FluentButton>
             <FluentButton Appearance="Appearance.Neutral"
-                          OnClick="@CloseDialogAsync">@L["Cancel"]</FluentButton>
+                          OnClick="@CloseDialogAsync">@UL["Cancel"]</FluentButton>
         </FluentStack>
     }
 
@@ -47,10 +46,10 @@
 @code {
 
     [Parameter] public virtual string HeaderText { get; set; }
-    [Parameter] public virtual RenderFragment? HeaderTemplate { get; set; }
+    [Parameter] public virtual RenderFragment? Header { get; set; }
 
     [Parameter] public virtual RenderFragment ChildContent { get; set; }
-    [Parameter] public virtual RenderFragment? FooterTemplate { get; set; }
+    [Parameter] public virtual RenderFragment? Footer { get; set; }
 
     [Parameter] public TInput Content { get; set; }
 
@@ -65,10 +64,8 @@
     [Parameter] public EventCallback SubmitClick { get; set; }
 
     [Parameter] public EventCallback CancelClick { get; set; }
-
-    [Inject] protected AbpBlazorMessageLocalizerHelper<TResource> LH { get; set; }
-
-    [Inject] protected IStringLocalizer<TResource> L { get; set; }
+    
+    [Parameter] public Func<string, IEnumerable<string>, string>? Localize { get; set; }
 
     async Task SubmitAsync()
     {

@@ -1,0 +1,18 @@
+﻿@inherits AbpCreateOrUpdateDialogBase<IdentityRoleCreateDto, IdentityResource>
+<AbpCreateOrUpdateDialog HeaderText="@L["NewRole"]"
+                         Content="@Content"
+                         CancelClick="@CancelClick"
+                         Localize="@LH.Localize"
+                         SubmitClick="@SubmitClick">
+
+<FluentTextField Style="width: 100%" Label="@L["RoleName"]" @bind-Value="@Content.Name" />
+    <FluentValidationMessage For="@(() => Content.Name)" />
+
+    <ExtensionProperties Entity="@Content" LH="@LH" />
+
+    <FluentStack Orientation="Orientation.Vertical" VerticalGap="10" Style="margin-top:10px">
+        <FluentCheckbox @bind-Value="Content.IsDefault" Label="@L["DisplayName:IsDefault"]"></FluentCheckbox>
+        <FluentCheckbox @bind-Value="Content.IsPublic" Label="@L["DisplayName:IsPublic"]"></FluentCheckbox>
+    </FluentStack>
+
+</AbpCreateOrUpdateDialog>

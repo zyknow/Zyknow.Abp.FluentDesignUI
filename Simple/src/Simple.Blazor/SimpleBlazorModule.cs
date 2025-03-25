@@ -30,6 +30,7 @@ using Volo.Abp.Account.Web;
 using Zyknow.Abp.AspnetCore.Components.Server.FluentDesignTheme;
 using Zyknow.Abp.AspnetCore.Components.Server.FluentDesignTheme.Bundling;
 using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Routing;
+using Zyknow.Abp.IdentityManagement.Blazor.Server.FluentDesignUI;
 using Zyknow.Abp.TenantManagement.Blazor.FluentDesignUI;
 using App = Simple.Blazor.Components.App;
 
@@ -45,7 +46,8 @@ namespace Simple.Blazor;
     typeof(AbpAccountWebOpenIddictModule),
     typeof(AbpAspNetCoreSerilogModule),
     typeof(AbpAspNetCoreComponentsServerFluentDesignThemeModule),
-    typeof(AbpTenantManagementBlazorFluentDesignModule)
+    typeof(AbpTenantManagementBlazorFluentDesignModule),
+    typeof(AbpIdentityBlazorServerFluentDesignModule)
 )]
 public class SimpleBlazorModule : AbpModule
 {

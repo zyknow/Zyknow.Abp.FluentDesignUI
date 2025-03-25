@@ -1,0 +1,161 @@
+﻿@page "/identity/roles"
+@attribute [Authorize(IdentityPermissions.Roles.Default)]
+@using Microsoft.FluentUI.AspNetCore.Components.Icons.Filled
+@using Volo.Abp.Identity
+@using Volo.Abp.Identity.Localization
+@using Volo.Abp.ObjectExtending
+@using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.PageToolbars
+@using Zyknow.Abp.PermissionManagement.Blazor.FluentDesignUI.Components
+@inherits Zyknow.Abp.FluentDesignUI.AbpCrudPageBase<IIdentityRoleAppService, IdentityRoleDto, Guid, GetIdentityRolesInput, IdentityRoleCreateDto, IdentityRoleUpdateDto>
+
+<FluentStack Orientation="Orientation.Vertical" VerticalGap="20" HorizontalAlignment="HorizontalAlignment.Stretch">
+    <AbpPageHeader Title="@L["Roles"]" BreadcrumbItems="@BreadcrumbItems" Toolbar="@Toolbar" />
+
+    <AbpSearch Loading="@Loading" @bind-PrimarySearchValue="GetListInput.Filter" OnSearch="SearchEntitiesAsync"></AbpSearch>
+
+    <AbpExtensibleDataGrid Loading="@Loading"
+                           Entities="Entities"
+                           OnChange="@OnDataGridReadAsync"
+                           Pagination="@Pagination"
+                           Columns="@RoleManagementTableColumns">
+    </AbpExtensibleDataGrid>
+</FluentStack>
+
+@if (HasCreatePermission)
+{
+    <FluentDialog @bind-Hidden="@CreateDialogHidden">
+        <IdentityRoleCreateDialog Content="@NewEntity" SubmitClick="@CreateEntityAsync"
+                                  CancelClick="() => CreateDialogHidden = true"></IdentityRoleCreateDialog>
+    </FluentDialog>
+}
+
+@if (HasUpdatePermission)
+{
+    <FluentDialog @bind-Hidden="@EditDialogHidden">
+        <IdentityRoleEditDialog Content="@EditingEntity" SubmitClick="@UpdateEntityAsync"
+                                CancelClick="()=> EditDialogHidden = true"></IdentityRoleEditDialog>
+    </FluentDialog>
+}
+
+@if (HasManagePermissionsPermission)
+{
+    <FluentDialog @bind-Hidden="PermissionDialogHidden">
+        <PermissionManagementDialog @ref="PermissionDialogRef"></PermissionManagementDialog>
+    </FluentDialog>
+}
+
+
+@code
+{
+    protected const string FeatureProviderName = "R";
+
+    protected PageToolbar Toolbar { get; } = new();
+
+    protected bool HasManagePermissionsPermission { get; set; }
+
+
+    protected bool PermissionDialogHidden = true;
+
+    protected PermissionManagementDialog PermissionDialogRef;
+
+    protected List<FluentTableColumn> RoleManagementTableColumns => TableColumns.Get<IdentityRoleManagement>();
+
+    public IdentityRoleManagement()
+    {
+        ObjectMapperContext = typeof(AbpIdentityBlazorFluentDesignModule);
+        LocalizationResource = typeof(IdentityResource);
+
+        CreatePolicyName = IdentityPermissions.Roles.Create;
+        UpdatePolicyName = IdentityPermissions.Roles.Update;
+        DeletePolicyName = IdentityPermissions.Roles.Delete;
+    }
+
+    protected override ValueTask SetBreadcrumbItemsAsync()
+    {
+        BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Menu:IdentityManagement"]));
+        BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Roles"]));
+
+        return base.SetBreadcrumbItemsAsync();
+    }
+
+    protected override async Task SetPermissionsAsync()
+    {
+        await base.SetPermissionsAsync();
+
+        HasManagePermissionsPermission = await AuthorizationService.IsGrantedAsync(IdentityPermissions.Roles.ManagePermissions);
+    }
+
+    protected override string GetDeleteConfirmationMessage(IdentityRoleDto entity)
+    {
+        return string.Format(L["RoleDeletionConfirmationMessage"], entity.Name);
+    }
+
+    protected override ValueTask SetToolbarItemsAsync()
+    {
+        Toolbar.AddButton(L["NewRole"],
+            OpenCreateDialogAsync,
+            new Size20.Add(),
+            requiredPolicyName: CreatePolicyName);
+
+        return base.SetToolbarItemsAsync();
+    }
+
+    protected override ValueTask SetEntityActionsAsync()
+    {
+        EntityActions
+            .Get<IdentityRoleManagement>()
+            .AddRange([
+                new()
+                {
+                    Text = L["Edit"],
+                    Visible = (data) => HasUpdatePermission,
+                    Clicked = async (data) => { await OpenEditDialogAsync(data.As<IdentityRoleDto>()); }
+                },
+                new()
+                {
+                    Text = L["Permissions"],
+                    Visible = (data) => HasManagePermissionsPermission,
+                    Clicked = async (data) =>
+                    {
+                        var role = data.As<IdentityRoleDto>();
+                        await PermissionDialogRef.ShowAsync(FeatureProviderName, role.Name);
+                        InvokeAsync(StateHasChanged);
+                    }
+                },
+                new()
+                {
+                    Text = L["Delete"],
+                    Visible = (data) => HasDeletePermission,
+                    Clicked = async (data) => await DeleteEntityAsync(data.As<IdentityRoleDto>()),
+                    ConfirmationMessage = (data) => GetDeleteConfirmationMessage(data.As<IdentityRoleDto>())
+                }
+            ]);
+
+        return base.SetEntityActionsAsync();
+    }
+
+    protected override ValueTask SetTableColumnsAsync()
+    {
+        RoleManagementTableColumns
+            .AddRange([
+                new FluentTableColumn
+                {
+                    Title = L["RoleName"],
+                    Sortable = true,
+                    Data = nameof(IdentityRoleDto.Name),
+                    PropertyName = nameof(IdentityRoleDto.Name)
+                }
+            ]);
+
+        RoleManagementTableColumns.AddRange(GetExtensionTableColumns(IdentityModuleExtensionConsts.ModuleName,
+            IdentityModuleExtensionConsts.EntityNames.Role));
+
+        RoleManagementTableColumns.Add(new FluentTableColumn
+            {
+                Title = L["Actions"],
+                Actions = EntityActions.Get<IdentityRoleManagement>()
+            });
+
+        return base.SetTableColumnsAsync();
+    }
+}

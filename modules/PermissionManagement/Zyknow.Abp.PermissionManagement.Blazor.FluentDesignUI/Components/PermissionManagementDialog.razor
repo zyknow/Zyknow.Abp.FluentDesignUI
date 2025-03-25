@@ -1,0 +1,85 @@
+﻿@using Microsoft.Extensions.Localization
+@using Volo.Abp.Validation.StringValues
+@inherits Volo.Abp.AspNetCore.Components.AbpComponentBase
+@implements Microsoft.FluentUI.AspNetCore.Components.IDialogContentComponent<PermissionManagementDialogInput>
+@* Header *@
+<FluentDialogHeader ShowDismiss="true" ShowDismissTooltip="false">
+    <FluentLabel Typo="Typography.Header">@($"{L["Permissions"]} - {_entityDisplayName}")</FluentLabel>
+</FluentDialogHeader>
+
+@* Footer *@
+<FluentDialogFooter>
+    <FluentStack HorizontalAlignment="HorizontalAlignment.End">
+        <FluentButton Appearance="Appearance.Accent" OnClick="@SaveAsync">@L["Save"]</FluentButton>
+        <FluentButton Appearance="Appearance.Neutral" OnClick="@CancelAsync">@L["Cancel"]</FluentButton>
+    </FluentStack>
+
+</FluentDialogFooter>
+
+@* Body *@
+<FluentDialogBody>
+    @if (!_groups.IsNullOrEmpty())
+    {
+        var grantAll = _groups.All(x => x.Permissions.All(p => p.IsGranted));
+        <FluentStack Orientation="Orientation.Vertical">
+            <FluentStack HorizontalAlignment="HorizontalAlignment.End" Orientation="Orientation.Vertical">
+                <FluentCheckbox Value="grantAll" ValueChanged="@((v) => GrantAllChanged(v ))">@L["SelectAllInAllTabs"]</FluentCheckbox>
+            </FluentStack>
+            @if (!_groups.IsNullOrEmpty())
+            {
+                <FluentTabs Style="min-height:550px;width:100%" Orientation="Orientation.Vertical" @bind-ActiveTabId="_selectedTabName">
+                    @foreach (var group in _groups)
+                    {
+                        var selectAllInThisTab = group.Permissions.All(x => x.IsGranted);
+                        <FluentTab Style="width:100%" Id="@GetNormalizedGroupName(group.Name)">
+
+                            <Header>
+                                <FluentLabel>@(@$"{group.DisplayName} ({group.Permissions.Count(x => x.IsGranted)})")</FluentLabel>
+                            </Header>
+
+                            <Content>
+                                <FluentStack Orientation="Orientation.Vertical">
+
+                                    <FluentStack HorizontalAlignment="HorizontalAlignment.SpaceBetween" VerticalAlignment="VerticalAlignment.Center">
+                                        <FluentLabel Typo="Typography.H4">@group.DisplayName</FluentLabel>
+                                        <FluentCheckbox Value="@selectAllInThisTab"
+                                                        ValueChanged="b => GroupGrantAllChanged(b , group)">
+                                            @L["SelectAllInThisTab"]
+                                        </FluentCheckbox>
+                                    </FluentStack>
+
+
+                                    <div>
+                                        @foreach (var permission in group.Permissions)
+                                        {
+                                            var margin = permission.ParentName != null ? "1rem" : "0";
+                                            <div style="margin: @margin">
+                                                <FluentCheckbox Disabled="@(IsDisabledPermission(permission))"
+                                                                Value="@permission.IsGranted"
+                                                                ValueChanged="b => PermissionChanged(b, group, permission)">
+                                                    @GetShownName(permission)
+                                                </FluentCheckbox>
+                                            </div>
+                                        }
+                                    </div>
+                                </FluentStack>
+                            </Content>
+
+                        </FluentTab>
+                    }
+                </FluentTabs>
+            }
+
+        </FluentStack>
+
+    }
+
+</FluentDialogBody>
+
+
+<style scoped>
+    ::deep > fluent-dialog::part(control) {
+        --dialog-width: 1000px;
+        --dialog-height: 1000px;
+    }
+</style>
