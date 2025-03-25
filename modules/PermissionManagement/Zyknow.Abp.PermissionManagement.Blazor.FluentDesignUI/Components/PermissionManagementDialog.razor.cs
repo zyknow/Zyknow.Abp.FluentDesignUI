@@ -31,6 +31,8 @@ public partial class PermissionManagementDialog
 
     [Parameter] public PermissionManagementDialogInput Content { get; set; } = new();
 
+    private bool _loading = false;
+
     public PermissionManagementDialog()
     {
         LocalizationResource = typeof(AbpPermissionManagementResource);
@@ -50,7 +52,7 @@ public partial class PermissionManagementDialog
         }
     }
 
-    private async Task SaveAsync(MouseEventArgs e)
+    private async Task SaveAsync()
     {
         try
         {
@@ -84,12 +86,13 @@ public partial class PermissionManagementDialog
 
     public async Task ShowAsync(string providerName, string providerKey, string entityDisplayName = null)
     {
-
-        Content.ProviderName = providerName;
-        Content.ProviderKey = providerKey;
-
+        _loading = true;
+        await InvokeAsync(StateHasChanged);
         try
         {
+            Dialog?.Show();
+            Content.ProviderName = providerName;
+            Content.ProviderKey = providerKey;
 
             var result = await PermissionAppService.GetAsync(Content.ProviderName, Content.ProviderKey);
 
@@ -98,20 +101,23 @@ public partial class PermissionManagementDialog
 
             foreach (var permission in _groups.SelectMany(x => x.Permissions))
             {
-                if (permission.IsGranted && permission.GrantedProviders.All(x => x.ProviderName != Content.ProviderName))
+                if (permission.IsGranted &&
+                    permission.GrantedProviders.All(x => x.ProviderName != Content.ProviderName))
                 {
                     _disabledPermissions.Add(permission);
                 }
             }
 
             _selectedTabName = GetNormalizedGroupName(_groups.First().Name);
-
-            Dialog?.Show();
-            await InvokeAsync(StateHasChanged);
         }
         catch (Exception ex)
         {
             await HandleErrorAsync(ex);
+        }
+        finally
+        {
+            _loading = false;
+            await InvokeAsync(StateHasChanged);
         }
     }
 

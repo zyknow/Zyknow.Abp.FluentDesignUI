@@ -92,7 +92,6 @@ public partial class TenantManagement
                     {
                         var tenant = data.As<TenantDto>();
                         await FeatureDialogRef.ShowAsync(FeatureProviderName, tenant.Id.ToString());
-                        InvokeAsync(StateHasChanged);
                     }
                 },
                 new()

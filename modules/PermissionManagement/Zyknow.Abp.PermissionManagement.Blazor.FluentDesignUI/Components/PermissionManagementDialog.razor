@@ -2,6 +2,7 @@
 @using Volo.Abp.Validation.StringValues
 @inherits Volo.Abp.AspNetCore.Components.AbpComponentBase
 @implements Microsoft.FluentUI.AspNetCore.Components.IDialogContentComponent<PermissionManagementDialogInput>
+
 @* Header *@
 <FluentDialogHeader ShowDismiss="true" ShowDismissTooltip="false">
     <FluentLabel Typo="Typography.Header">@($"{L["Permissions"]} - {_entityDisplayName}")</FluentLabel>
@@ -23,11 +24,13 @@
         var grantAll = _groups.All(x => x.Permissions.All(p => p.IsGranted));
         <FluentStack Orientation="Orientation.Vertical">
             <FluentStack HorizontalAlignment="HorizontalAlignment.End" Orientation="Orientation.Vertical">
-                <FluentCheckbox Value="grantAll" ValueChanged="@((v) => GrantAllChanged(v ))">@L["SelectAllInAllTabs"]</FluentCheckbox>
+                <FluentCheckbox Value="grantAll"
+                                ValueChanged="@((v) => GrantAllChanged(v))">@L["SelectAllInAllTabs"]</FluentCheckbox>
             </FluentStack>
             @if (!_groups.IsNullOrEmpty())
             {
-                <FluentTabs Style="min-height:550px;width:100%" Orientation="Orientation.Vertical" @bind-ActiveTabId="_selectedTabName">
+                <FluentTabs Style="min-height:550px;width:100%" Orientation="Orientation.Vertical"
+                            @bind-ActiveTabId="_selectedTabName">
                     @foreach (var group in _groups)
                     {
                         var selectAllInThisTab = group.Permissions.All(x => x.IsGranted);
@@ -40,7 +43,8 @@
                             <Content>
                                 <FluentStack Orientation="Orientation.Vertical">
 
-                                    <FluentStack HorizontalAlignment="HorizontalAlignment.SpaceBetween" VerticalAlignment="VerticalAlignment.Center">
+                                    <FluentStack HorizontalAlignment="HorizontalAlignment.SpaceBetween"
+                                                 VerticalAlignment="VerticalAlignment.Center">
                                         <FluentLabel Typo="Typography.H4">@group.DisplayName</FluentLabel>
                                         <FluentCheckbox Value="@selectAllInThisTab"
                                                         ValueChanged="b => GroupGrantAllChanged(b , group)">
@@ -71,15 +75,10 @@
             }
 
         </FluentStack>
-
     }
 
 </FluentDialogBody>
 
-
-<style scoped>
-    ::deep > fluent-dialog::part(control) {
-        --dialog-width: 1000px;
-        --dialog-height: 1000px;
-    }
-</style>
+<FluentOverlay @bind-Visible="@_loading" Transparent="false" Dismissable="false">
+    <FluentProgressRing />
+</FluentOverlay>

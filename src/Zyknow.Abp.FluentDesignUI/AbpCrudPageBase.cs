@@ -300,12 +300,8 @@ public abstract class AbpCrudPageBase<
             await CheckCreatePolicyAsync();
 
             NewEntity = new TCreateViewModel();
-
-            await InvokeAsync(async () =>
-            {
-                CreateDialogHidden = false;
-                StateHasChanged();
-            });
+            CreateDialogHidden = false;
+            await InvokeAsync(StateHasChanged);
         }
         catch (Exception ex)
         {
@@ -322,12 +318,9 @@ public abstract class AbpCrudPageBase<
 
             EditingEntityId = entity.Id;
             EditingEntity = MapToEditingEntity(entityDto);
+            EditDialogHidden = false;
 
-            await InvokeAsync(async () =>
-            {
-                EditDialogHidden = false;
-                StateHasChanged();
-            });
+            await InvokeAsync(StateHasChanged);
         }
         catch (Exception ex)
         {

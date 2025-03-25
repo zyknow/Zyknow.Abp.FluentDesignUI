@@ -45,6 +45,8 @@ public partial class FeatureManagementDialog
 
     protected Dictionary<string, string> SelectionStringValues;
 
+    protected bool _loading;
+
     protected override void OnInitialized()
     {
         Dialog?.Hide();
@@ -67,8 +69,12 @@ public partial class FeatureManagementDialog
         if (Content.ProviderName.IsNullOrWhiteSpace() && Content.ProviderKey.IsNullOrWhiteSpace())
             return;
 
+
         try
         {
+            _loading = true;
+            await InvokeAsync(StateHasChanged);
+
             ToggleValues = new Dictionary<string, bool>();
             SelectionStringValues = new Dictionary<string, string>();
 
@@ -92,11 +98,15 @@ public partial class FeatureManagementDialog
                 }
             }
             Dialog?.Show();
-            await InvokeAsync(StateHasChanged);
         }
         catch (Exception ex)
         {
             await HandleErrorAsync(ex);
+        }
+        finally
+        {
+            _loading = false;
+            await InvokeAsync(StateHasChanged);
         }
     }
 
