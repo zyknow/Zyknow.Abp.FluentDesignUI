@@ -39,8 +39,8 @@ public class AbpSettingManagementBlazorFluentDesignModule : AbpModule
 
         Configure<GroupComponentOptions>(options =>
         {
-            options.Contributors.Add(new FluentDesignSettingDefaultPageContributor());
-            options.Contributors.Add(new FluentDesignTimeZonePageContributor());
+            options.Contributors.Add(new FluentDesignSettingGroupContributor());
+            options.Contributors.Add(new FluentDesignTimeZoneGroupContributor());
         });
     }
 }

@@ -4,8 +4,10 @@ using Volo.Abp.Account;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.Modularity;
 using Volo.Abp.UI.Navigation;
+using Zyknow.Abp.Account.Blazor.FluentDesignUI.Profiles;
 using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme;
 using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Routing;
+using Zyknow.Abp.GroupComponent.Abstract.FluentDesignUI;
 
 namespace Zyknow.Abp.Account.Blazor.FluentDesignUI;
 
@@ -28,6 +30,12 @@ public class AbpAccountBlazorFluentDesignModule : AbpModule
         Configure<AbpRouterOptions>(options =>
         {
             options.AdditionalAssemblies.Add(typeof(AbpAccountBlazorFluentDesignModule).Assembly);
+        });
+
+        Configure<GroupComponentOptions>(options =>
+        {
+            options.Contributors.Add(new FluentDesignPasswordManagementGroupContributor());
+            options.Contributors.Add(new FluentDesignProfileManagementGroupContributor());
         });
     }
 }

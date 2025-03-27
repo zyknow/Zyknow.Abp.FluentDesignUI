@@ -1,31 +1,25 @@
-﻿@page "/setting-management"
+﻿@page "/Account/Manage"
+@layout AccountLayout
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.Extensions.Localization
 @using Microsoft.Extensions.Options
-@using Volo.Abp.Features
-@using Volo.Abp.SettingManagement
-@using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Layout
-@using Microsoft.FluentUI.AspNetCore.Components
-@using Volo.Abp.SettingManagement.Localization
-@using Zyknow.Abp.FluentDesignUI
 @using Zyknow.Abp.GroupComponent.Abstract.FluentDesignUI
+@inherits AccountBlazorFluentDesignComponentBase
 @attribute [Authorize]
-@attribute [RequiresFeature(SettingManagementFeatures.Enable)]
-<CascadingValue Value="this" IsFixed="true">
-    <FluentStack Orientation="Orientation.Vertical" VerticalGap="20" HorizontalAlignment="HorizontalAlignment.Stretch">
-        <AbpPageHeader Title="@L["Settings"]" BreadcrumbItems="@BreadcrumbItems"/>
-        <FluentDivider></FluentDivider>
-        <div class="page-content">
-            <FluentStack HorizontalGap="20">
-                <FluentListbox TOption="ComponentGroup" Width="300px" OptionText="s => s.DisplayName"
-                               @bind-SelectedOption="SelectedComponentGroup"
-                               Items="@ComponentCreationContext.Groups">
-                </FluentListbox>
-                @foreach (var group in ComponentCreationContext.Groups)
+<FluentStack Orientation="Orientation.Vertical">
+    <CascadingValue Value="this" IsFixed="true">
+        <FluentStack Orientation="Orientation.Horizontal" VerticalGap="20"
+                     HorizontalAlignment="HorizontalAlignment.Stretch">
+            <FluentListbox TOption="ComponentGroup" Width="300px" OptionText="s => s.DisplayName"
+                           @bind-SelectedOption="SelectedComponentGroup"
+                           Items="@ComponentCreationContext.Groups">
+            </FluentListbox>
+            @foreach (var group in ComponentCreationContext.Groups)
+            {
+                @if (SelectedComponentGroup == group)
                 {
-                    @if (SelectedComponentGroup == group)
-                    {
-                        <FluentStack Orientation="Orientation.Vertical">
+                    <FluentCard>
+                        <FluentStack Orientation="Orientation.Vertical" VerticalGap="20">
                             <FluentLabel Weight="FontWeight.Bold" Typo="Typography.H4">@group.DisplayName</FluentLabel>
                             <FluentDivider/>
                             @{
@@ -37,12 +31,12 @@
                             }
                             @GroupItemRenders.Last()
                         </FluentStack>
-                    }
+                    </FluentCard>
                 }
-            </FluentStack>
-        </div>
-    </FluentStack>
-</CascadingValue>
+            }
+        </FluentStack>
+    </CascadingValue>
+</FluentStack>
 
 @code
 {
@@ -52,20 +46,18 @@
 
     [Inject] protected IOptions<GroupComponentOptions> _options { get; set; }
 
-    [Inject] protected IStringLocalizer<AbpSettingManagementResource> L { get; set; }
+    [Inject] protected IStringLocalizer<AccountResource> L { get; set; }
 
     protected List<IGroupComponentContributor> Contributors { get; set; }
 
     protected List<RenderFragment> GroupItemRenders { get; set; } = new();
 
     protected ComponentGroup SelectedComponentGroup { get; set; }
-    protected List<AbpBreadcrumbItem> BreadcrumbItems = new();
 
-    protected virtual string GroupKey => SettingGroupComponentContributorBase.SettingGroupKey;
+    protected virtual string GroupKey => AccountManageGroupComponentContributorBase.SettingGroupKey;
 
     protected override async Task OnInitializedAsync()
     {
-        BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Settings"]));
         ComponentCreationContext = new GroupComponentCreationContext(ServiceProvider);
 
         Contributors = _options.Value.GetContributors(GroupKey);

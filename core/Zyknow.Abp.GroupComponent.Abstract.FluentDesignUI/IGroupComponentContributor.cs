@@ -3,7 +3,7 @@
 public interface IGroupComponentContributor
 {
     /// <summary>
-    /// Account Or Setting , or you can add your own
+    /// AccountManage Or Setting , or you can add your own
     /// </summary>
     public string GroupKey { get; }
 

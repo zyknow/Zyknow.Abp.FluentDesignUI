@@ -12,6 +12,16 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\..\core\Zyknow.Abp.GroupComponent.Abstract.FluentDesignUI\Zyknow.Abp.GroupComponent.Abstract.FluentDesignUI.csproj" />
       <ProjectReference Include="..\..\FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Pages\ProfileManagement\Groups\AccountPasswordManagementComponent.razor" />
+      <AdditionalFiles Include="Pages\ProfileManagement\Groups\AccountProfileManagementComponent.razor" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Pages\ProfileManagement\" />
     </ItemGroup>
 </Project>

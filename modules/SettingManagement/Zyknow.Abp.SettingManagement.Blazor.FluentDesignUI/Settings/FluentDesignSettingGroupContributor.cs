@@ -6,11 +6,11 @@ using Volo.Abp.MultiTenancy;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.SettingManagement.Localization;
 using Zyknow.Abp.GroupComponent.Abstract.FluentDesignUI;
-using Zyknow.Abp.SettingManagement.Blazor.FluentDesignUI.Pages.SettingManagement.EmailSettingGroup;
+using Zyknow.Abp.SettingManagement.Blazor.FluentDesignUI.Pages.SettingManagement.Groups;
 
 namespace Zyknow.Abp.SettingManagement.Blazor.FluentDesignUI.Settings;
 
-public class FluentDesignSettingDefaultPageContributor : SettingGroupComponentContributorBase
+public class FluentDesignSettingGroupContributor : SettingGroupComponentContributorBase
 {
     public override async Task ConfigureAsync(GroupComponentCreationContext context)
     {
@@ -24,7 +24,7 @@ public class FluentDesignSettingDefaultPageContributor : SettingGroupComponentCo
             new ComponentGroup(
                 "Volo.Abp.SettingManagement",
                 l["Menu:Emailing"],
-                typeof(EmailSettingGroupViewComponent)
+                typeof(EmailSettingGroupComponent)
             )
         );
     }

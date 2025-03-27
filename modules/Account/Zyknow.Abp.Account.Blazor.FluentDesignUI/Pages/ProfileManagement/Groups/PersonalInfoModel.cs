@@ -1,7 +1,6 @@
-﻿using JetBrains.Annotations;
-using Volo.Abp.ObjectExtending;
+﻿using Volo.Abp.ObjectExtending;
 
-namespace Zyknow.Abp.Account.Blazor.FluentDesignUI.Pages.Account.Components.ProfileManagementGroup;
+namespace Zyknow.Abp.Account.Blazor.FluentDesignUI.Pages.ProfileManagement.Groups;
 
 public class PersonalInfoModel : ExtensibleObject
 {

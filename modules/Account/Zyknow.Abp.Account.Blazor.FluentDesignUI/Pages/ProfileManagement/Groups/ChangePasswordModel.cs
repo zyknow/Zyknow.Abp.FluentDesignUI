@@ -1,4 +1,4 @@
-﻿namespace Zyknow.Abp.Account.Blazor.FluentDesignUI.Pages.Account.Components.ProfileManagementGroup;
+﻿namespace Zyknow.Abp.Account.Blazor.FluentDesignUI.Pages.ProfileManagement.Groups;
 
 public class ChangePasswordModel
 {

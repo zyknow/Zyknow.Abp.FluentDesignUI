@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Volo.Abp.Account;
 using Volo.Abp.AutoMapper;
-using Zyknow.Abp.Account.Blazor.FluentDesignUI.Pages.Account.Components.ProfileManagementGroup;
+using Zyknow.Abp.Account.Blazor.FluentDesignUI.Pages.ProfileManagement.Groups;
 
 namespace Zyknow.Abp.Account.Blazor.FluentDesignUI;
 
