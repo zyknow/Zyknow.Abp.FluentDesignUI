@@ -6,6 +6,7 @@ using Volo.Abp.AutoMapper;
 using Volo.Abp.Modularity;
 using Volo.Abp.Timing;
 using Volo.Abp.UI.Navigation;
+using Zyknow.Abp.Account.Blazor.WebAssembly.FluentDesignUI;
 using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Routing;
 using Zyknow.Abp.AspnetCore.Components.WebAssembly.FluentDesignTheme;
 using Zyknow.Abp.FeatureManagement.Blazor.WebAssembly.FluentDesignUI;
@@ -21,7 +22,8 @@ namespace Simple.Blazor.Client;
     typeof(AbpAspNetCoreComponentsWebAssemblyFluentDesignThemeModule),
     typeof(AbpFeatureManagementBlazorWebAssemblyFluentDesignModule),
     typeof(AbpIdentityBlazorWebAssemblyFluentDesignModule),
-    typeof(AbpSettingManagementBlazorWebAssemblyFluentDesignModule)
+    typeof(AbpSettingManagementBlazorWebAssemblyFluentDesignModule),
+    typeof(AbpAccountBlazorWebAssemblyFluentDesignModule)
 )]
 public class SimpleBlazorClientModule : AbpModule
 {

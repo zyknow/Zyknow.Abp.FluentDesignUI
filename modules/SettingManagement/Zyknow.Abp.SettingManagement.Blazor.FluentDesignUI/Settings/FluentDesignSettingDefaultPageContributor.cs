@@ -4,15 +4,15 @@ using Microsoft.Extensions.Localization;
 using Volo.Abp.Features;
 using Volo.Abp.MultiTenancy;
 using Volo.Abp.SettingManagement;
-using Volo.Abp.SettingManagement.Blazor;
 using Volo.Abp.SettingManagement.Localization;
+using Zyknow.Abp.GroupComponent.Abstract.FluentDesignUI;
 using Zyknow.Abp.SettingManagement.Blazor.FluentDesignUI.Pages.SettingManagement.EmailSettingGroup;
 
 namespace Zyknow.Abp.SettingManagement.Blazor.FluentDesignUI.Settings;
 
-public class FluentDesignSettingDefultPageContributor : ISettingComponentContributor
+public class FluentDesignSettingDefaultPageContributor : SettingGroupComponentContributorBase
 {
-    public async Task ConfigureAsync(SettingComponentCreationContext context)
+    public override async Task ConfigureAsync(GroupComponentCreationContext context)
     {
         if (!await CheckPermissionsInternalAsync(context))
         {
@@ -21,7 +21,7 @@ public class FluentDesignSettingDefultPageContributor : ISettingComponentContrib
 
         var l = context.ServiceProvider.GetRequiredService<IStringLocalizer<AbpSettingManagementResource>>();
         context.Groups.Add(
-            new SettingComponentGroup(
+            new ComponentGroup(
                 "Volo.Abp.SettingManagement",
                 l["Menu:Emailing"],
                 typeof(EmailSettingGroupViewComponent)
@@ -29,12 +29,12 @@ public class FluentDesignSettingDefultPageContributor : ISettingComponentContrib
         );
     }
 
-    public async Task<bool> CheckPermissionsAsync(SettingComponentCreationContext context)
+    public override async Task<bool> CheckPermissionsAsync(GroupComponentCreationContext context)
     {
         return await CheckPermissionsInternalAsync(context);
     }
 
-    private async Task<bool> CheckPermissionsInternalAsync(SettingComponentCreationContext context)
+    private async Task<bool> CheckPermissionsInternalAsync(GroupComponentCreationContext context)
     {
         if (!await CheckFeatureAsync(context))
         {
@@ -46,7 +46,7 @@ public class FluentDesignSettingDefultPageContributor : ISettingComponentContrib
         return await authorizationService.IsGrantedAsync(SettingManagementPermissions.Emailing);
     }
 
-    private async Task<bool> CheckFeatureAsync(SettingComponentCreationContext context)
+    private async Task<bool> CheckFeatureAsync(GroupComponentCreationContext context)
     {
         var currentTenant = context.ServiceProvider.GetRequiredService<ICurrentTenant>();
 
@@ -58,6 +58,5 @@ public class FluentDesignSettingDefultPageContributor : ISettingComponentContrib
         var featureCheck = context.ServiceProvider.GetRequiredService<IFeatureChecker>();
 
         return await featureCheck.IsEnabledAsync(SettingManagementFeatures.AllowChangingEmailSettings);
-
     }
 }

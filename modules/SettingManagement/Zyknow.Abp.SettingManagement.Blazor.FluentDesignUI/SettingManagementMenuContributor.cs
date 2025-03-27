@@ -3,10 +3,10 @@ using Microsoft.Extensions.Options;
 using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular;
 using Volo.Abp.Features;
 using Volo.Abp.SettingManagement;
-using Volo.Abp.SettingManagement.Blazor;
 using Volo.Abp.SettingManagement.Localization;
 using Volo.Abp.UI.Navigation;
 using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Extensions;
+using Zyknow.Abp.GroupComponent.Abstract.FluentDesignUI;
 
 namespace Zyknow.Abp.SettingManagement.Blazor.FluentDesignUI;
 
@@ -22,10 +22,12 @@ public class SettingManagementMenuContributor : IMenuContributor
 
     private async Task ConfigureMainMenuAsync(MenuConfigurationContext context)
     {
-        var settingManagementPageOptions = context.ServiceProvider.GetRequiredService<IOptions<SettingManagementComponentOptions>>().Value;
-        var settingPageCreationContext = new SettingComponentCreationContext(context.ServiceProvider);
-        if (!settingManagementPageOptions.Contributors.Any() ||
-            !(await CheckAnyOfPagePermissionsGranted(settingManagementPageOptions, settingPageCreationContext))
+        var groupOptions = context.ServiceProvider.GetRequiredService<IOptions<GroupComponentOptions>>().Value;
+        var settingManagementContributors = groupOptions.Contributors
+            .Where(x => x.GroupKey == SettingGroupComponentContributorBase.SettingGroupKey).ToList();
+        var settingPageCreationContext = new GroupComponentCreationContext(context.ServiceProvider);
+        if (!settingManagementContributors.Any() ||
+            !(await CheckAnyOfPagePermissionsGranted(groupOptions, settingPageCreationContext))
            )
         {
             return;
@@ -39,18 +41,18 @@ public class SettingManagementMenuContributor : IMenuContributor
             .GetAdministration()
             .AddItem(
                 new ApplicationMenuItem(
-                    SettingManagementMenus.GroupName,
-                    l["Settings"],
-                    "~/setting-management"
-                )
-                .SetFluentIcon(new Size24.WrenchSettings())
-                .RequireFeatures(SettingManagementFeatures.Enable)
+                        SettingManagementMenus.GroupName,
+                        l["Settings"],
+                        "~/setting-management"
+                    )
+                    .SetFluentIcon(new Size24.WrenchSettings())
+                    .RequireFeatures(SettingManagementFeatures.Enable)
             );
     }
 
     protected virtual async Task<bool> CheckAnyOfPagePermissionsGranted(
-        SettingManagementComponentOptions settingManagementComponentOptions,
-        SettingComponentCreationContext settingComponentCreationContext)
+        GroupComponentOptions settingManagementComponentOptions,
+        GroupComponentCreationContext settingComponentCreationContext)
     {
         foreach (var contributor in settingManagementComponentOptions.Contributors)
         {
@@ -59,6 +61,7 @@ public class SettingManagementMenuContributor : IMenuContributor
                 return true;
             }
         }
+
         return false;
     }
 }

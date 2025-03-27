@@ -12,6 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\..\core\Zyknow.Abp.GroupComponent.Abstract.FluentDesignUI\Zyknow.Abp.GroupComponent.Abstract.FluentDesignUI.csproj" />
       <ProjectReference Include="..\..\FeatureManagement\Zyknow.Abp.FeatureManagement.Blazor.FluentDesignUI\Zyknow.Abp.FeatureManagement.Blazor.FluentDesignUI.csproj" />
     </ItemGroup>
 </Project>

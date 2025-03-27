@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
-using Volo.Abp.SettingManagement.Blazor;
 using Volo.Abp.SettingManagement.Localization;
 using Zyknow.Abp.FluentDesignUI;
-
+using Zyknow.Abp.GroupComponent.Abstract.FluentDesignUI;
 namespace Zyknow.Abp.SettingManagement.Blazor.FluentDesignUI.Pages.SettingManagement;
 
 public partial class SettingManagement
@@ -12,26 +11,26 @@ public partial class SettingManagement
     [Inject]
     protected IServiceProvider ServiceProvider { get; set; }
 
-    protected SettingComponentCreationContext SettingComponentCreationContext { get; set; }
+    protected GroupComponentCreationContext SettingComponentCreationContext { get; set; }
 
     [Inject]
-    protected IOptions<SettingManagementComponentOptions> _options { get; set; }
+    protected IOptions<GroupComponentOptions> _options { get; set; }
     
     [Inject]
     protected IStringLocalizer<AbpSettingManagementResource> L { get; set; }
 
-    protected SettingManagementComponentOptions Options => _options.Value;
+    protected GroupComponentOptions Options => _options.Value;
 
     protected List<RenderFragment> SettingItemRenders { get; set; } = new();
 
-    protected SettingComponentGroup SelectedGroup { get; set; }
+    protected ComponentGroup SelectedComponentGroup { get; set; }
     protected List<AbpBreadcrumbItem> BreadcrumbItems = new();
 
 
     protected override async Task OnInitializedAsync()
     {
         BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Settings"]));
-        SettingComponentCreationContext = new SettingComponentCreationContext(ServiceProvider);
+        SettingComponentCreationContext = new GroupComponentCreationContext(ServiceProvider);
 
         foreach (var contributor in Options.Contributors)
         {
@@ -39,7 +38,7 @@ public partial class SettingManagement
         }
 
         SettingItemRenders.Clear();
-        SelectedGroup = SettingComponentCreationContext.Groups.FirstOrDefault();
+        SelectedComponentGroup = SettingComponentCreationContext.Groups.FirstOrDefault();
     }
 
     protected virtual string GetNormalizedString(string value)

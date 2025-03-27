@@ -1,13 +1,9 @@
-﻿// ReSharper disable once CheckNamespace
+﻿using Volo.Abp;
 
-using System;
-using JetBrains.Annotations;
-
-// ReSharper disable once CheckNamespace
-namespace Volo.Abp.SettingManagement.Blazor;
+namespace Zyknow.Abp.GroupComponent.Abstract.FluentDesignUI;
 
 
-public class SettingComponentGroup
+public class ComponentGroup
 {
     public string Id {
         get => _id;
@@ -29,7 +25,7 @@ public class SettingComponentGroup
 
     public object Parameter { get; set; }
 
-    public SettingComponentGroup([NotNull] string id, [NotNull] string displayName, [NotNull] Type componentType, object parameter = null)
+    public ComponentGroup(string id, string displayName,Type componentType, object parameter = null)
     {
         Id = id;
         DisplayName = displayName;

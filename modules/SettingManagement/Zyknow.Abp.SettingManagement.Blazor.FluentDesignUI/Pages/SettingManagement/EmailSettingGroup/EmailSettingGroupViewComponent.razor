@@ -6,16 +6,17 @@
 @inject AbpBlazorMessageLocalizerHelper<AbpSettingManagementResource> LH
 
 <AbpDialogForm Content="EmailSettings" SubmitClick="UpdateSettingsAsync">
-    <FluentTextField @bind-Value="EmailSettings.DefaultFromDisplayName"></FluentTextField>
+    <FluentTextField @bind-Value="EmailSettings.DefaultFromDisplayName"
+                     Label="@L["DefaultFromDisplayName"]"></FluentTextField>
     <FluentValidationMessage For="()=> EmailSettings.DefaultFromDisplayName"></FluentValidationMessage>
 
-    <FluentTextField @bind-Value="EmailSettings.DefaultFromAddress"></FluentTextField>
-    <FluentValidationMessage For="()=> EmailSettings.DefaultFromAddress"></FluentValidationMessage>
+    <FluentTextField @bind-Value="EmailSettings.DefaultFromAddress" Label="@L["DefaultFromAddress"]"></FluentTextField>
+    <FluentValidationMessage For="()=> EmailSettings.DefaultFromAddress" ></FluentValidationMessage>
 
-    <FluentTextField @bind-Value="EmailSettings.SmtpHost"></FluentTextField>
+    <FluentTextField @bind-Value="EmailSettings.SmtpHost" Label="@L["SmtpHost"]"></FluentTextField>
     <FluentValidationMessage For="()=> EmailSettings.SmtpHost"></FluentValidationMessage>
 
-    <FluentNumberField @bind-Value="EmailSettings.SmtpPort"></FluentNumberField>
+    <FluentNumberField @bind-Value="EmailSettings.SmtpPort" Label="@L["SmtpPort"]"></FluentNumberField>
     <FluentValidationMessage For="()=> EmailSettings.SmtpPort"></FluentValidationMessage>
 
     <FluentCheckbox @bind-Value="EmailSettings.SmtpEnableSsl">@L["SmtpEnableSsl"]</FluentCheckbox>
@@ -24,14 +25,14 @@
 
     @if (!EmailSettings.SmtpUseDefaultCredentials)
     {
-        <FluentTextField @bind-Value="EmailSettings.SmtpDomain"></FluentTextField>
+        <FluentTextField @bind-Value="EmailSettings.SmtpDomain" Label="@L["SmtpDomain"]"></FluentTextField>
         <FluentValidationMessage For="()=> EmailSettings.SmtpDomain"></FluentValidationMessage>
 
-        <FluentTextField @bind-Value="EmailSettings.SmtpUserName"></FluentTextField>
+        <FluentTextField @bind-Value="EmailSettings.SmtpUserName" Label="@L["SmtpUserName"]"></FluentTextField>
         <FluentValidationMessage For="()=> EmailSettings.SmtpUserName"></FluentValidationMessage>
 
         <FluentTextField TextFieldType="TextFieldType.Password"
-                         @bind-Value="EmailSettings.SmtpPassword"></FluentTextField>
+                         @bind-Value="EmailSettings.SmtpPassword" Label="@L["SmtpPassword"]"></FluentTextField>
         <FluentValidationMessage For="()=> EmailSettings.SmtpPassword"></FluentValidationMessage>
     }
 </AbpDialogForm>

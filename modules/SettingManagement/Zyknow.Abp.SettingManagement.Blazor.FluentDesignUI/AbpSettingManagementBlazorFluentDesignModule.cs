@@ -2,10 +2,10 @@
 using Volo.Abp.AutoMapper;
 using Volo.Abp.Modularity;
 using Volo.Abp.SettingManagement;
-using Volo.Abp.SettingManagement.Blazor;
 using Volo.Abp.UI.Navigation;
 using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme;
 using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Routing;
+using Zyknow.Abp.GroupComponent.Abstract.FluentDesignUI;
 using Zyknow.Abp.SettingManagement.Blazor.FluentDesignUI.Settings;
 
 namespace Zyknow.Abp.SettingManagement.Blazor.FluentDesignUI;
@@ -13,7 +13,8 @@ namespace Zyknow.Abp.SettingManagement.Blazor.FluentDesignUI;
 [DependsOn(
     typeof(AbpAutoMapperModule),
     typeof(AbpSettingManagementApplicationContractsModule),
-    typeof(AbpAspNetCoreComponentsWebFluentDesignThemeModule)
+    typeof(AbpAspNetCoreComponentsWebFluentDesignThemeModule),
+    typeof(AbpGroupComponentAbstractFluentDesignModule)
 )]
 public class AbpSettingManagementBlazorFluentDesignModule : AbpModule
 {
@@ -36,9 +37,9 @@ public class AbpSettingManagementBlazorFluentDesignModule : AbpModule
             options.AdditionalAssemblies.Add(typeof(AbpSettingManagementBlazorFluentDesignModule).Assembly);
         });
 
-        Configure<SettingManagementComponentOptions>(options =>
+        Configure<GroupComponentOptions>(options =>
         {
-            options.Contributors.Add(new FluentDesignSettingDefultPageContributor());
+            options.Contributors.Add(new FluentDesignSettingDefaultPageContributor());
             options.Contributors.Add(new FluentDesignTimeZonePageContributor());
         });
     }

@@ -18,8 +18,8 @@ using Volo.Abp.AspNetCore.Serilog;
 using Volo.Abp.Autofac;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.Security.Claims;
-using Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic;
-using Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic.Bundling;
+// using Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic;
+// using Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic.Bundling;
 using Volo.Abp.Modularity;
 using Volo.Abp.Swashbuckle;
 using Volo.Abp.UI.Navigation;
@@ -28,6 +28,7 @@ using Volo.Abp.VirtualFileSystem;
 using Volo.Abp.OpenIddict;
 using Volo.Abp.Account.Web;
 using Volo.Abp.Timing;
+using Zyknow.Abp.Account.Blazor.Server.FluentDesignUI;
 using Zyknow.Abp.AspnetCore.Components.Server.FluentDesignTheme;
 using Zyknow.Abp.AspnetCore.Components.Server.FluentDesignTheme.Bundling;
 using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Routing;
@@ -43,14 +44,15 @@ namespace Simple.Blazor;
     typeof(SimpleEntityFrameworkCoreModule),
     typeof(SimpleHttpApiModule),
     typeof(AbpAutofacModule),
-    typeof(AbpAspNetCoreMvcUiBasicThemeModule),
+    // typeof(AbpAspNetCoreMvcUiBasicThemeModule),
     typeof(AbpSwashbuckleModule),
     typeof(AbpAccountWebOpenIddictModule),
     typeof(AbpAspNetCoreSerilogModule),
     typeof(AbpAspNetCoreComponentsServerFluentDesignThemeModule),
     typeof(AbpTenantManagementBlazorFluentDesignModule),
     typeof(AbpIdentityBlazorServerFluentDesignModule),
-    typeof(AbpSettingManagementBlazorServerFluentDesignModule)
+    typeof(AbpSettingManagementBlazorServerFluentDesignModule),
+    typeof(AbpAccountBlazorServerFluentDesignModule)
 )]
 public class SimpleBlazorModule : AbpModule
 {
@@ -59,17 +61,17 @@ public class SimpleBlazorModule : AbpModule
         var hostingEnvironment = context.Services.GetHostingEnvironment();
         var configuration = context.Services.GetConfiguration();
 
-        context.Services.PreConfigure<AbpMvcDataAnnotationsLocalizationOptions>(options =>
-        {
-            options.AddAssemblyResource(
-                typeof(SimpleResource),
-                typeof(SimpleDomainModule).Assembly,
-                typeof(SimpleDomainSharedModule).Assembly,
-                typeof(SimpleApplicationModule).Assembly,
-                typeof(SimpleApplicationContractsModule).Assembly,
-                typeof(SimpleBlazorModule).Assembly
-            );
-        });
+        // context.Services.PreConfigure<AbpMvcDataAnnotationsLocalizationOptions>(options =>
+        // {
+        //     options.AddAssemblyResource(
+        //         typeof(SimpleResource),
+        //         typeof(SimpleDomainModule).Assembly,
+        //         typeof(SimpleDomainSharedModule).Assembly,
+        //         typeof(SimpleApplicationModule).Assembly,
+        //         typeof(SimpleApplicationContractsModule).Assembly,
+        //         typeof(SimpleBlazorModule).Assembly
+        //     );
+        // });
 
         PreConfigure<OpenIddictBuilder>(builder =>
         {
@@ -152,12 +154,12 @@ public class SimpleBlazorModule : AbpModule
 
     private void ConfigureUrls(IConfiguration configuration)
     {
-        Configure<AppUrlOptions>(options =>
-        {
-            options.Applications["MVC"].RootUrl = configuration["App:SelfUrl"];
-            options.RedirectAllowedUrls.AddRange(configuration["App:RedirectAllowedUrls"]?.Split(',') ??
-                                                 Array.Empty<string>());
-        });
+        // Configure<AppUrlOptions>(options =>
+        // {
+        //     options.Applications["MVC"].RootUrl = configuration["App:SelfUrl"];
+        //     options.RedirectAllowedUrls.AddRange(configuration["App:RedirectAllowedUrls"]?.Split(',') ??
+        //                                          Array.Empty<string>());
+        // });
     }
 
     private void ConfigureBundles()
@@ -168,14 +170,14 @@ public class SimpleBlazorModule : AbpModule
             options.Parameters.InteractiveAuto = true;
 
             // MVC UI
-            options.StyleBundles.Configure(
-                BasicThemeBundles.Styles.Global,
-                bundle =>
-                {
-                    bundle.AddFiles("/global-styles.css");
-                    bundle.AddFiles("/global-scripts.js");
-                }
-            );
+            // options.StyleBundles.Configure(
+            //     BasicThemeBundles.Styles.Global,
+            //     bundle =>
+            //     {
+            //         bundle.AddFiles("/global-styles.css");
+            //         bundle.AddFiles("/global-scripts.js");
+            //     }
+            // );
 
             // Blazor UI
             options.StyleBundles.Configure(
@@ -252,10 +254,10 @@ public class SimpleBlazorModule : AbpModule
 
     private void ConfigureAutoApiControllers()
     {
-        Configure<AbpAspNetCoreMvcOptions>(options =>
-        {
-            options.ConventionalControllers.Create(typeof(SimpleApplicationModule).Assembly);
-        });
+        // Configure<AbpAspNetCoreMvcOptions>(options =>
+        // {
+        //     options.ConventionalControllers.Create(typeof(SimpleApplicationModule).Assembly);
+        // });
     }
 
     private void ConfigureAutoMapper()

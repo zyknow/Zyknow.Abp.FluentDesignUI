@@ -4,7 +4,7 @@
 @using Volo.Abp.SettingManagement
 @using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Layout
 @using Microsoft.FluentUI.AspNetCore.Components
-@using Volo.Abp.SettingManagement.Blazor
+@using Zyknow.Abp.GroupComponent.Abstract.FluentDesignUI
 @attribute [Authorize]
 @attribute [RequiresFeature(SettingManagementFeatures.Enable)]
 <CascadingValue Value="this" IsFixed="true">
@@ -13,13 +13,13 @@
         <FluentDivider></FluentDivider>
         <div class="page-content">
             <FluentStack HorizontalGap="20">
-                <FluentListbox TOption="SettingComponentGroup" Width="300px" OptionText="s => s.DisplayName"
-                               @bind-SelectedOption="SelectedGroup"
+                <FluentListbox TOption="ComponentGroup" Width="300px" OptionText="s => s.DisplayName"
+                               @bind-SelectedOption="SelectedComponentGroup"
                                Items="@SettingComponentCreationContext.Groups">
                 </FluentListbox>
                 @foreach (var group in SettingComponentCreationContext.Groups)
                 {
-                    @if (SelectedGroup == group)
+                    @if (SelectedComponentGroup == group)
                     {
                         <FluentStack Orientation="Orientation.Vertical">
                             <FluentLabel Weight="FontWeight.Bold" Typo="Typography.H4">@group.DisplayName</FluentLabel>

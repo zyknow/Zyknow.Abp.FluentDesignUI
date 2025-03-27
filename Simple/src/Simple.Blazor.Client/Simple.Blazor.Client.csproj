@@ -33,6 +33,7 @@
 <!--  </ItemGroup>-->
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\modules\Account\Zyknow.Abp.Account.Blazor.WebAssembly.FluentDesignUI\Zyknow.Abp.Account.Blazor.WebAssembly.FluentDesignUI.csproj" />
     <ProjectReference Include="..\..\..\modules\FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.WebAssembly.FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.WebAssembly.FluentDesignTheme.csproj" />
     <ProjectReference Include="..\..\..\modules\IdentityManagement\Zyknow.Abp.IdentityManagement.Blazor.WebAssembly.FluentDesignUI\Zyknow.Abp.IdentityManagement.Blazor.WebAssembly.FluentDesignUI.csproj" />
     <ProjectReference Include="..\..\..\modules\SettingManagement\Zyknow.Abp.SettingManagement.Blazor.WebAssembly.FluentDesignUI\Zyknow.Abp.SettingManagement.Blazor.WebAssembly.FluentDesignUI.csproj" />
