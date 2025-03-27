@@ -5,7 +5,7 @@
 @inherits Zyknow.Abp.FluentDesignUI.AbpDialogFormBase<TInput,Volo.Abp.FeatureManagement.Localization.AbpFeatureManagementResource>
 
 <AbpDialogForm @bind-Loading="_loading" TInput="TInput" HeaderText="@L["Features"]"
-               Content="@Content" SubmitClick="SaveAsync">
+               Content="@Content" SubmitValidClick="SaveAsync">
     @if (!Groups.IsNullOrEmpty())
     {
         <FluentTabs Orientation="Orientation.Vertical">

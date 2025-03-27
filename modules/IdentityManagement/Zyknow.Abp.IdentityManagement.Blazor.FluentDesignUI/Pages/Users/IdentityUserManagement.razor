@@ -225,13 +225,15 @@
     }
 
     protected virtual Task ShowPermissionDialogAsync(PermissionManagementDialogInput input)
-        => ShowDialogAsync(@<PermissionManagementDialog Content="@input" />);
+        => ShowDialogAsync(@<PermissionManagementDialog Content="@input"/>, opt => { opt.Width = "700px"; });
 
     protected override Task ShowCreateDialogAsync()
-        => ShowDialogAsync(@<IdentityUserCreateDialog AssignRoles="NewUserRoles" Content="@NewEntity" SubmitClick="CreateEntityAsync" />);
+        => ShowDialogAsync(@<IdentityUserCreateDialog AssignRoles="NewUserRoles" Content="@NewEntity"
+                                                      SubmitClick="CreateEntityAsync"/>);
 
     protected override Task ShowEditDialogAsync()
-        => ShowDialogAsync(@<IdentityUserEditDialog AssignRoles="EditUserRoles" Content="@EditingEntity" SubmitClick="UpdateEntityAsync" />);
+        => ShowDialogAsync(@<IdentityUserEditDialog AssignRoles="EditUserRoles" Content="@EditingEntity"
+                                                    SubmitClick="UpdateEntityAsync"/>);
 
     protected override Task<IDialogReference> ShowDialogAsync(RenderFragment render, Action<DialogParameters> paraAction = null)
     {
@@ -240,5 +242,5 @@
         paraAction?.Invoke(dialogPara);
         return DialogService.ShowDialogAsync(render, dialogPara);
     }
-    
+
 }

@@ -7,7 +7,7 @@
                Content="@Content"
                CancelClick="@CancelClick"
                Localize="@LH.Localize"
-               SubmitClick="@SubmitClick">
+               SubmitValidClick="@SubmitClick">
     <FluentTextField Style="width: 100%" Label="@L["RoleName"]" @bind-Value="@Content.Name" />
     <FluentValidationMessage For="@(() => Content.Name)" />
 

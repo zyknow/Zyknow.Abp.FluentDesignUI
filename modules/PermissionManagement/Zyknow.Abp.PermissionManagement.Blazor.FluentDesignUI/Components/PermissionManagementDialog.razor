@@ -4,7 +4,7 @@
 
 
 <AbpDialogForm @bind-Loading="_loading" HeaderText="@($"{L["Permissions"]} - {Content.EntityDisplayName}")"
-               Content="@Content" SubmitClick="SaveAsync">
+               Content="@Content" SubmitValidClick="SaveAsync">
     @if (!_groups.IsNullOrEmpty())
     {
         var grantAll = _groups.All(x => x.Permissions.All(p => p.IsGranted));

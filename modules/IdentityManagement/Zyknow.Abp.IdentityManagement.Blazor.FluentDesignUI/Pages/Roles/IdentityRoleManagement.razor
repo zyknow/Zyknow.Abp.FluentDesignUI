@@ -134,7 +134,7 @@
     }
 
     protected virtual Task ShowPermissionDialogAsync(PermissionManagementDialogInput input)
-        => ShowDialogAsync(@<PermissionManagementDialog Content="@input" />);
+        => ShowDialogAsync(@<PermissionManagementDialog Content="@input" />, opt => { opt.Width = "700px"; });
 
     protected override Task ShowCreateDialogAsync()
         => ShowDialogAsync(@<IdentityRoleCreateDialog Content="@NewEntity" SubmitClick="CreateEntityAsync" />);

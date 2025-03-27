@@ -5,7 +5,7 @@
 <AbpDialogForm HeaderText="@($@"{L["Edit"]} - {Content.Name}")"
                IsConstHeader="true"
                Content="@Content"
-               SubmitClick="SubmitClick"
+               SubmitValidClick="SubmitClick"
                CancelClick="CancelClick"
                Localize="@LH.Localize">
     <FluentTextField Style="width: 100%" Label="@L["TenantName"]" @bind-Value="@Content.Name" />
