@@ -8,4 +8,7 @@
     <ItemGroup>
         <PackageReference Include="Volo.Abp.AutoMapper" Version="9.1.0" />
     </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\..\modules\FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.csproj" />
+    </ItemGroup>
 </Project>

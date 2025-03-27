@@ -1,4 +1,4 @@
-﻿namespace Zyknow.Abp.GroupComponent.Abstract.FluentDesignUI;
+﻿namespace Zyknow.Abp.GroupComponent.FluentDesignUI;
 
 public class GroupComponentOptions
 {

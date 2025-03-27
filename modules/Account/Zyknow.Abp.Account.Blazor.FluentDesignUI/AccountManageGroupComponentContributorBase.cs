@@ -1,11 +1,11 @@
-﻿using Zyknow.Abp.GroupComponent.Abstract.FluentDesignUI;
+﻿using Zyknow.Abp.GroupComponent.FluentDesignUI;
 
 namespace Zyknow.Abp.Account.Blazor.FluentDesignUI;
 
 public abstract class AccountManageGroupComponentContributorBase: IGroupComponentContributor
 {
-    public const string SettingGroupKey = "AccountManage";
-    public string GroupKey => SettingGroupKey;
+    public const string AccountGroupKey = "AccountManage";
+    public string GroupKey => AccountGroupKey;
 
     public abstract Task ConfigureAsync(GroupComponentCreationContext context);
 

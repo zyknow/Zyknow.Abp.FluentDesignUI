@@ -4,7 +4,7 @@ using Microsoft.Extensions.Localization;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.SettingManagement.Localization;
 using Volo.Abp.Timing;
-using Zyknow.Abp.GroupComponent.Abstract.FluentDesignUI;
+using Zyknow.Abp.GroupComponent.FluentDesignUI;
 using Zyknow.Abp.SettingManagement.Blazor.FluentDesignUI.Pages.SettingManagement.Groups;
 
 namespace Zyknow.Abp.SettingManagement.Blazor.FluentDesignUI.Settings;

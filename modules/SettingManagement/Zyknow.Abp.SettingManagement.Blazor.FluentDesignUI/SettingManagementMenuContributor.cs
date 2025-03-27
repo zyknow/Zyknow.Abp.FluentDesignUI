@@ -6,7 +6,7 @@ using Volo.Abp.SettingManagement;
 using Volo.Abp.SettingManagement.Localization;
 using Volo.Abp.UI.Navigation;
 using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Extensions;
-using Zyknow.Abp.GroupComponent.Abstract.FluentDesignUI;
+using Zyknow.Abp.GroupComponent.FluentDesignUI;
 
 namespace Zyknow.Abp.SettingManagement.Blazor.FluentDesignUI;
 

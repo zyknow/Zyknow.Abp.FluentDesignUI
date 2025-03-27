@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Volo.Abp.Timing;
 using Zyknow.Abp.Account.Blazor.FluentDesignUI.Pages.ProfileManagement.Groups;
-using Zyknow.Abp.GroupComponent.Abstract.FluentDesignUI;
+using Zyknow.Abp.GroupComponent.FluentDesignUI;
 
 namespace Zyknow.Abp.Account.Blazor.FluentDesignUI.Profiles;
 

@@ -8,78 +8,28 @@
 @using Microsoft.FluentUI.AspNetCore.Components
 @using Volo.Abp.SettingManagement.Localization
 @using Zyknow.Abp.FluentDesignUI
-@using Zyknow.Abp.GroupComponent.Abstract.FluentDesignUI
+@using Zyknow.Abp.GroupComponent.FluentDesignUI
+@using Zyknow.Abp.GroupComponent.FluentDesignUI.Components
 @attribute [Authorize]
 @attribute [RequiresFeature(SettingManagementFeatures.Enable)]
-<CascadingValue Value="this" IsFixed="true">
     <FluentStack Orientation="Orientation.Vertical" VerticalGap="20" HorizontalAlignment="HorizontalAlignment.Stretch">
         <AbpPageHeader Title="@L["Settings"]" BreadcrumbItems="@BreadcrumbItems"/>
         <FluentDivider></FluentDivider>
         <div class="page-content">
-            <FluentStack HorizontalGap="20">
-                <FluentListbox TOption="ComponentGroup" Width="300px" OptionText="s => s.DisplayName"
-                               @bind-SelectedOption="SelectedComponentGroup"
-                               Items="@ComponentCreationContext.Groups">
-                </FluentListbox>
-                @foreach (var group in ComponentCreationContext.Groups)
-                {
-                    @if (SelectedComponentGroup == group)
-                    {
-                        <FluentStack Orientation="Orientation.Vertical">
-                            <FluentLabel Weight="FontWeight.Bold" Typo="Typography.H4">@group.DisplayName</FluentLabel>
-                            <FluentDivider/>
-                            @{
-                                GroupItemRenders.Add(b =>
-                                {
-                                    b.OpenComponent(0, group.ComponentType);
-                                    b.CloseComponent();
-                                });
-                            }
-                            @GroupItemRenders.Last()
-                        </FluentStack>
-                    }
-                }
-            </FluentStack>
+            <AbpFluentDesignGroupManagement TResource="AbpSettingManagementResource"
+                                            GroupKey="@SettingGroupComponentContributorBase.SettingGroupKey">
+            </AbpFluentDesignGroupManagement>
         </div>
     </FluentStack>
-</CascadingValue>
 
 @code
 {
-    [Inject] protected IServiceProvider ServiceProvider { get; set; }
-
-    protected GroupComponentCreationContext ComponentCreationContext { get; set; }
-
-    [Inject] protected IOptions<GroupComponentOptions> _options { get; set; }
-
     [Inject] protected IStringLocalizer<AbpSettingManagementResource> L { get; set; }
 
-    protected List<IGroupComponentContributor> Contributors { get; set; }
-
-    protected List<RenderFragment> GroupItemRenders { get; set; } = new();
-
-    protected ComponentGroup SelectedComponentGroup { get; set; }
     protected List<AbpBreadcrumbItem> BreadcrumbItems = new();
-
-    protected virtual string GroupKey => SettingGroupComponentContributorBase.SettingGroupKey;
 
     protected override async Task OnInitializedAsync()
     {
         BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Settings"]));
-        ComponentCreationContext = new GroupComponentCreationContext(ServiceProvider);
-
-        Contributors = _options.Value.GetContributors(GroupKey);
-        foreach (var contributor in Contributors)
-        {
-            await contributor.ConfigureAsync(ComponentCreationContext);
-        }
-
-        GroupItemRenders.Clear();
-        SelectedComponentGroup = ComponentCreationContext.Groups.FirstOrDefault();
-    }
-
-    protected virtual string GetNormalizedString(string value)
-    {
-        return value.Replace('.', '_');
     }
 }

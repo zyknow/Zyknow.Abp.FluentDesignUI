@@ -7,7 +7,7 @@ using Volo.Abp.UI.Navigation;
 using Zyknow.Abp.Account.Blazor.FluentDesignUI.Profiles;
 using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme;
 using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Routing;
-using Zyknow.Abp.GroupComponent.Abstract.FluentDesignUI;
+using Zyknow.Abp.GroupComponent.FluentDesignUI;
 
 namespace Zyknow.Abp.Account.Blazor.FluentDesignUI;
 

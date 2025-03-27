@@ -1,0 +1,70 @@
+﻿@using Microsoft.Extensions.Localization
+@using Microsoft.Extensions.Options
+@typeparam TResource
+<CascadingValue Value="this" IsFixed="true">
+    <FluentStack Orientation="Orientation.Horizontal" VerticalGap="20"
+                 HorizontalAlignment="HorizontalAlignment.Stretch">
+        <FluentListbox TOption="ComponentGroup" Width="300px" OptionText="s => s.DisplayName"
+                       @bind-SelectedOption="SelectedComponentGroup"
+                       Items="@ComponentCreationContext.Groups">
+        </FluentListbox>
+        @foreach (var group in ComponentCreationContext.Groups)
+        {
+            @if (SelectedComponentGroup == group)
+            {
+                <FluentCard>
+                    <FluentStack Orientation="Orientation.Vertical" VerticalGap="20">
+                        <FluentLabel Weight="FontWeight.Bold" Typo="Typography.H4">@group.DisplayName</FluentLabel>
+                        <FluentDivider/>
+                        @{
+                            GroupItemRenders.Add(b =>
+                            {
+                                b.OpenComponent(0, group.ComponentType);
+                                b.CloseComponent();
+                            });
+                        }
+                        @GroupItemRenders.Last()
+                    </FluentStack>
+                </FluentCard>
+            }
+        }
+    </FluentStack>
+</CascadingValue>
+
+@code {
+    
+    [Parameter] public string GroupKey { get; set; }
+    
+    [Inject] protected IServiceProvider ServiceProvider { get; set; }
+
+    protected GroupComponentCreationContext ComponentCreationContext { get; set; }
+
+    [Inject] protected IOptions<GroupComponentOptions> _options { get; set; }
+
+    [Inject] protected IStringLocalizer<TResource> L { get; set; }
+
+    protected List<IGroupComponentContributor> Contributors { get; set; }
+
+    protected List<RenderFragment> GroupItemRenders { get; set; } = new();
+
+    protected ComponentGroup SelectedComponentGroup { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        ComponentCreationContext = new GroupComponentCreationContext(ServiceProvider);
+
+        Contributors = _options.Value.GetContributors(GroupKey);
+        foreach (var contributor in Contributors)
+        {
+            await contributor.ConfigureAsync(ComponentCreationContext);
+        }
+
+        GroupItemRenders.Clear();
+        SelectedComponentGroup = ComponentCreationContext.Groups.FirstOrDefault();
+    }
+
+    protected virtual string GetNormalizedString(string value)
+    {
+        return value.Replace('.', '_');
+    }
+}

@@ -96,7 +96,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zyknow.Abp.Account.Blazor.W
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "core", "core", "{F42DE5AE-14C5-43C2-8135-411C9D8DE251}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zyknow.Abp.GroupComponent.Abstract.FluentDesignUI", "core\Zyknow.Abp.GroupComponent.Abstract.FluentDesignUI\Zyknow.Abp.GroupComponent.Abstract.FluentDesignUI.csproj", "{9C9FC095-C80E-497B-97E2-03198B975356}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zyknow.Abp.GroupComponent.FluentDesignUI", "core\Zyknow.Abp.GroupComponent.FluentDesignUI\Zyknow.Abp.GroupComponent.FluentDesignUI.csproj", "{9C9FC095-C80E-497B-97E2-03198B975356}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
