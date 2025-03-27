@@ -232,4 +232,13 @@
 
     protected override Task ShowEditDialogAsync()
         => ShowDialogAsync(@<IdentityUserEditDialog AssignRoles="EditUserRoles" Content="@EditingEntity" SubmitClick="UpdateEntityAsync" />);
+
+    protected override Task<IDialogReference> ShowDialogAsync(RenderFragment render, Action<DialogParameters> paraAction = null)
+    {
+        var dialogPara = new DialogParameters();
+        dialogPara.Height = "70vh";
+        paraAction?.Invoke(dialogPara);
+        return DialogService.ShowDialogAsync(render, dialogPara);
+    }
+    
 }
