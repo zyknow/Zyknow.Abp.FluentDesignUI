@@ -1,11 +1,16 @@
-﻿@inherits AbpCreateOrUpdateDialogBase<TenantUpdateDto, AbpTenantManagementResource>
+﻿@using TInput = Volo.Abp.TenantManagement.TenantUpdateDto
+@using TResource = Volo.Abp.TenantManagement.Localization.AbpTenantManagementResource
+@inherits AbpDialogFormBase<TInput,TResource>
 
-<AbpCreateOrUpdateDialog Content="@Content"
-                         HeaderText="@(@$"{L["Edit"]} - {Content.Name}")" CancelClick="@CancelClick"
-                         SubmitClick="@SubmitClick" Localize="@LH.Localize">
+<AbpDialogForm HeaderText="@($@"{L["Edit"]} - {Content.Name}")"
+               IsConstHeader="true"
+               Content="@Content"
+               SubmitClick="SubmitClick"
+               CancelClick="CancelClick"
+               Localize="@LH.Localize">
     <FluentTextField Style="width: 100%" Label="@L["TenantName"]" @bind-Value="@Content.Name" />
     <FluentValidationMessage For="@(() => Content.Name)" />
 
-    <ExtensionProperties TEntityType="TenantUpdateDto" TResourceType="AbpTenantManagementResource"
+    <ExtensionProperties TEntityType="TInput" TResourceType="TResource"
                          Entity="@Content" LH="@LH" />
-</AbpCreateOrUpdateDialog>
+</AbpDialogForm>

@@ -1,23 +1,11 @@
 ﻿@using Microsoft.Extensions.Localization
 @using Volo.Abp.Validation.StringValues
-@inherits AbpFeatureManagementComponentBase
-@implements IDialogContentComponent<FeatureManagementDialogInput>
-@* Header *@
-<FluentDialogHeader ShowDismiss="true">
-    <FluentLabel Typo="Typography.Header">@L["Features"]</FluentLabel>
-</FluentDialogHeader>
+@using TInput = FeatureManagementDialogInput
+@using Zyknow.Abp.FluentDesignUI.Components
+@inherits Zyknow.Abp.FluentDesignUI.AbpDialogFormBase<TInput,Volo.Abp.FeatureManagement.Localization.AbpFeatureManagementResource>
 
-@* Footer *@
-<FluentDialogFooter>
-    <FluentStack HorizontalAlignment="HorizontalAlignment.End">
-        <FluentButton Appearance="Appearance.Accent" OnClick="@SaveAsync">@L["Save"]</FluentButton>
-        <FluentButton Appearance="Appearance.Neutral" OnClick="@CancelAsync">@L["Cancel"]</FluentButton>
-    </FluentStack>
-
-</FluentDialogFooter>
-
-@* Body *@
-<FluentDialogBody>
+<AbpDialogForm @bind-Loading="_loading" TInput="TInput" HeaderText="@L["Features"]"
+               Content="@Content" SubmitClick="SaveAsync">
     @if (!Groups.IsNullOrEmpty())
     {
         <FluentTabs Orientation="Orientation.Vertical">
@@ -71,8 +59,4 @@
             }
         </FluentTabs>
     }
-</FluentDialogBody>
-
-<FluentOverlay @bind-Visible="@_loading" Transparent="false" Dismissable="false">
-    <FluentProgressRing />
-</FluentOverlay>
+</AbpDialogForm>

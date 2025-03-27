@@ -21,30 +21,6 @@
     </AbpExtensibleDataGrid>
 </FluentStack>
 
-@if (HasCreatePermission)
-{
-    <FluentDialog @bind-Hidden="@CreateDialogHidden">
-        <IdentityRoleCreateDialog Content="@NewEntity" SubmitClick="@CreateEntityAsync"
-                                  CancelClick="() => CreateDialogHidden = true"></IdentityRoleCreateDialog>
-    </FluentDialog>
-}
-
-@if (HasUpdatePermission)
-{
-    <FluentDialog @bind-Hidden="@EditDialogHidden">
-        <IdentityRoleEditDialog Content="@EditingEntity" SubmitClick="@UpdateEntityAsync"
-                                CancelClick="()=> EditDialogHidden = true"></IdentityRoleEditDialog>
-    </FluentDialog>
-}
-
-@if (HasManagePermissionsPermission)
-{
-    <FluentDialog @bind-Hidden="PermissionDialogHidden">
-        <PermissionManagementDialog @ref="PermissionDialogRef"></PermissionManagementDialog>
-    </FluentDialog>
-}
-
-
 @code
 {
     protected const string PermissionProviderName = "R";
@@ -55,8 +31,6 @@
 
 
     protected bool PermissionDialogHidden = true;
-
-    protected PermissionManagementDialog PermissionDialogRef;
 
     protected List<FluentTableColumn> RoleManagementTableColumns => TableColumns.Get<IdentityRoleManagement>();
 
@@ -118,7 +92,7 @@
                     Clicked = async (data) =>
                     {
                         var role = data.As<IdentityRoleDto>();
-                        await PermissionDialogRef.ShowAsync(PermissionProviderName, role.Name);
+                        await ShowPermissionDialogAsync(new PermissionManagementDialogInput(PermissionProviderName, role.Name));
                         InvokeAsync(StateHasChanged);
                     }
                 },
@@ -158,4 +132,13 @@
 
         return base.SetTableColumnsAsync();
     }
+
+    protected virtual Task ShowPermissionDialogAsync(PermissionManagementDialogInput input)
+        => ShowDialogAsync(@<PermissionManagementDialog Content="@input" />);
+
+    protected override Task ShowCreateDialogAsync()
+        => ShowDialogAsync(@<IdentityRoleCreateDialog Content="@NewEntity" SubmitClick="CreateEntityAsync" />);
+
+    protected override Task ShowEditDialogAsync()
+        => ShowDialogAsync(@<IdentityRoleEditDialog Content="@EditingEntity" SubmitClick="UpdateEntityAsync" />);
 }

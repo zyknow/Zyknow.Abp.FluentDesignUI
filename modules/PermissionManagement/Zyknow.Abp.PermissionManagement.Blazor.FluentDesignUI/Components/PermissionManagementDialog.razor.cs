@@ -7,10 +7,11 @@ using Volo.Abp.PermissionManagement.Localization;
 
 namespace Zyknow.Abp.PermissionManagement.Blazor.FluentDesignUI.Components;
 
-public class PermissionManagementDialogInput
+public class PermissionManagementDialogInput(string providerName, string? providerKey = null, string entityDisplayName = null)
 {
-    public string ProviderName { get; set; }
-    public string? ProviderKey { get; set; }
+    public string ProviderName { get; set; } = providerName;
+    public string? ProviderKey { get; set; } = providerKey;
+    public string? EntityDisplayName { get; set; } = entityDisplayName;
 }
 
 public partial class PermissionManagementDialog
@@ -21,15 +22,11 @@ public partial class PermissionManagementDialog
     [Inject]
     protected ICurrentApplicationConfigurationCacheResetService CurrentApplicationConfigurationCacheResetService { get; set; }
 
-    private string _entityDisplayName;
     private List<PermissionGroupDto> _groups;
     private List<PermissionGrantInfoDto> _disabledPermissions = new();
     private string _selectedTabName;
 
 
-    [CascadingParameter] public FluentDialog? Dialog { get; set; }
-
-    [Parameter] public PermissionManagementDialogInput Content { get; set; } = new();
 
     private bool _loading = false;
 
@@ -37,22 +34,13 @@ public partial class PermissionManagementDialog
     {
         LocalizationResource = typeof(AbpPermissionManagementResource);
     }
-    protected override void OnInitialized()
+
+    protected override async Task OnInitializedAsync()
     {
-        Dialog?.Hide();
+        await ShowAsync(Content.ProviderName, Content.ProviderKey, Content.EntityDisplayName);
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            // when not dialog or use dialogService to show
-            if (Dialog == null || Dialog.Hidden == false)
-                await ShowAsync(Content.ProviderName, Content.ProviderKey);
-        }
-    }
-
-    private async Task SaveAsync()
+    private async Task<bool> SaveAsync()
     {
         try
         {
@@ -68,20 +56,18 @@ public partial class PermissionManagementDialog
 
             await CurrentApplicationConfigurationCacheResetService.ResetAsync();
 
-            await Dialog?.CloseAsync();
+            return true;
         }
         catch (Exception ex)
         {
             await HandleErrorAsync(ex);
+            return false;
         }
     }
 
     protected virtual async Task CancelAsync()
     {
-        InvokeAsync(() =>
-        {
-            Dialog.Hide();
-        });
+
     }
 
     public async Task ShowAsync(string providerName, string providerKey, string entityDisplayName = null)
@@ -90,13 +76,13 @@ public partial class PermissionManagementDialog
         await InvokeAsync(StateHasChanged);
         try
         {
-            Dialog?.Show();
             Content.ProviderName = providerName;
             Content.ProviderKey = providerKey;
+            Content.EntityDisplayName = entityDisplayName;
 
             var result = await PermissionAppService.GetAsync(Content.ProviderName, Content.ProviderKey);
 
-            _entityDisplayName = entityDisplayName ?? result.EntityDisplayName;
+            Content.EntityDisplayName = entityDisplayName ?? result.EntityDisplayName;
             _groups = result.Groups;
 
             foreach (var permission in _groups.SelectMany(x => x.Permissions))

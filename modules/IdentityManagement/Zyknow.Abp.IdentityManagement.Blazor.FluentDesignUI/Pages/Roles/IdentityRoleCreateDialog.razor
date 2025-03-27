@@ -1,8 +1,10 @@
-﻿@inherits AbpCreateOrUpdateDialogBase<IdentityRoleCreateDto, IdentityResource>
-<AbpCreateOrUpdateDialog HeaderText="@L["NewRole"]"
+﻿@using TInput = Volo.Abp.Identity.IdentityRoleCreateDto
+@using TResource = Volo.Abp.Identity.Localization.IdentityResource
+@inherits AbpDialogFormBase<TInput,TResource>
+<AbpDialogForm HeaderText="@L["NewRole"]"
                          Content="@Content"
-                         CancelClick="@CancelClick"
                          Localize="@LH.Localize"
+                         CancelClick="CancelClick"
                          SubmitClick="@SubmitClick">
 
 <FluentTextField Style="width: 100%" Label="@L["RoleName"]" @bind-Value="@Content.Name" />
@@ -15,4 +17,4 @@
         <FluentCheckbox @bind-Value="Content.IsPublic" Label="@L["DisplayName:IsPublic"]"></FluentCheckbox>
     </FluentStack>
 
-</AbpCreateOrUpdateDialog>
+</AbpDialogForm>

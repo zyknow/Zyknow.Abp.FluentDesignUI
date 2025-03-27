@@ -1,24 +1,10 @@
-﻿@using Microsoft.Extensions.Localization
-@using Volo.Abp.Validation.StringValues
-@inherits Volo.Abp.AspNetCore.Components.AbpComponentBase
-@implements Microsoft.FluentUI.AspNetCore.Components.IDialogContentComponent<PermissionManagementDialogInput>
+﻿@using TInput = PermissionManagementDialogInput
+@using Zyknow.Abp.FluentDesignUI.Components
+@inherits Zyknow.Abp.FluentDesignUI.AbpDialogFormBase<TInput,Volo.Abp.PermissionManagement.Localization.AbpPermissionManagementResource>
 
-@* Header *@
-<FluentDialogHeader ShowDismiss="true" ShowDismissTooltip="false">
-    <FluentLabel Typo="Typography.Header">@($"{L["Permissions"]} - {_entityDisplayName}")</FluentLabel>
-</FluentDialogHeader>
 
-@* Footer *@
-<FluentDialogFooter>
-    <FluentStack HorizontalAlignment="HorizontalAlignment.End">
-        <FluentButton Appearance="Appearance.Accent" OnClick="@SaveAsync">@L["Save"]</FluentButton>
-        <FluentButton Appearance="Appearance.Neutral" OnClick="@CancelAsync">@L["Cancel"]</FluentButton>
-    </FluentStack>
-
-</FluentDialogFooter>
-
-@* Body *@
-<FluentDialogBody>
+<AbpDialogForm @bind-Loading="_loading" HeaderText="@($"{L["Permissions"]} - {Content.EntityDisplayName}")"
+               Content="@Content" SubmitClick="SaveAsync">
     @if (!_groups.IsNullOrEmpty())
     {
         var grantAll = _groups.All(x => x.Permissions.All(p => p.IsGranted));
@@ -76,9 +62,4 @@
 
         </FluentStack>
     }
-
-</FluentDialogBody>
-
-<FluentOverlay @bind-Visible="@_loading" Transparent="false" Dismissable="false">
-    <FluentProgressRing />
-</FluentOverlay>
+</AbpDialogForm>

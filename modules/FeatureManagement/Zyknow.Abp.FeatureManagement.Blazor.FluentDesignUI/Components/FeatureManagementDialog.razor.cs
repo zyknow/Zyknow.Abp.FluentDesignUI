@@ -11,10 +11,10 @@ using Volo.Abp.Validation.StringValues;
 
 namespace Zyknow.Abp.FeatureManagement.Blazor.FluentDesignUI.Components;
 
-public class FeatureManagementDialogInput
+public class FeatureManagementDialogInput(string providerName, string? providerKey = null)
 {
-    public string ProviderName { get; set; }
-    public string? ProviderKey { get; set; }
+    public string ProviderName { get; set; } = providerName;
+    public string? ProviderKey { get; set; } = providerKey;
 }
 
 public partial class FeatureManagementDialog
@@ -35,9 +35,6 @@ public partial class FeatureManagementDialog
         set;
     }
 
-    [CascadingParameter] public FluentDialog? Dialog { get; set; }
-
-    [Parameter] public FeatureManagementDialogInput Content { get; set; } = new();
 
     protected List<FeatureGroupDto> Groups { get; set; }
 
@@ -45,21 +42,11 @@ public partial class FeatureManagementDialog
 
     protected Dictionary<string, string> SelectionStringValues;
 
-    protected bool _loading;
+    private bool _loading = false;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        Dialog?.Hide();
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            // when not dialog or use dialogService to show
-            if (Dialog == null || Dialog.Hidden == false)
-                await ShowAsync(Content.ProviderName, Content.ProviderKey);
-        }
+        await ShowAsync(Content.ProviderName, Content.ProviderKey);
     }
 
     public virtual async Task ShowAsync(string providerName, string? providerKey = null)
@@ -69,11 +56,10 @@ public partial class FeatureManagementDialog
         if (Content.ProviderName.IsNullOrWhiteSpace() && Content.ProviderKey.IsNullOrWhiteSpace())
             return;
 
-
         try
         {
             _loading = true;
-            await InvokeAsync(StateHasChanged);
+            InvokeAsync(StateHasChanged);
 
             ToggleValues = new Dictionary<string, bool>();
             SelectionStringValues = new Dictionary<string, string>();
@@ -97,7 +83,6 @@ public partial class FeatureManagementDialog
                     }
                 }
             }
-            Dialog?.Show();
         }
         catch (Exception ex)
         {
@@ -106,12 +91,12 @@ public partial class FeatureManagementDialog
         finally
         {
             _loading = false;
-            await InvokeAsync(StateHasChanged);
+            InvokeAsync(StateHasChanged);
         }
     }
 
 
-    protected virtual async Task SaveAsync()
+    protected virtual async Task<bool> SaveAsync()
     {
         try
         {
@@ -129,20 +114,14 @@ public partial class FeatureManagementDialog
 
             await CurrentApplicationConfigurationCacheResetService.ResetAsync();
 
-            await Dialog?.CloseAsync();
+            return true;
+
         }
         catch (Exception ex)
         {
             await HandleErrorAsync(ex);
+            return false;
         }
-    }
-
-    protected virtual async Task CancelAsync()
-    {
-        InvokeAsync(() =>
-        {
-            Dialog.Hide();
-        });
     }
 
     protected virtual string GetNormalizedGroupName(string name)

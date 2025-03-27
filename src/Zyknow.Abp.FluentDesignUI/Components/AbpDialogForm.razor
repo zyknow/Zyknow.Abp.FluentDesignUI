@@ -13,7 +13,7 @@
     }
     else
     {
-        <FluentLabel Typo="Typography.H4">@HeaderText</FluentLabel>
+        <FluentLabel Typo="Typography.H4">@(IsConstHeader ? _constHeaderText : HeaderText)</FluentLabel>
     }
 </FluentDialogHeader>
 
@@ -34,45 +34,64 @@
     {
 
         <FluentStack HorizontalAlignment="HorizontalAlignment.End">
-            <FluentButton Loading="@SubmitBtnLoading" Appearance="Appearance.Accent"
-                          OnClick="@SubmitAsync">@UL["Save"]</FluentButton>
+            <FluentButton Loading="@Loading" Appearance="Appearance.Accent"
+                          OnClick="@OnSubmitBtnClickAsync">@UL["Submit"]</FluentButton>
             <FluentButton Appearance="Appearance.Neutral"
-                          OnClick="@CloseDialogAsync">@UL["Cancel"]</FluentButton>
+                          OnClick="@OnCancelBtnClickAsync">@UL["Cancel"]</FluentButton>
         </FluentStack>
     }
 
 </FluentDialogFooter>
 
+
+<FluentOverlay @bind-Visible="@Loading" Transparent="false" Dismissable="false">
+    <FluentProgressRing />
+</FluentOverlay>
+
 @code {
 
     [Parameter] public virtual string HeaderText { get; set; }
     [Parameter] public virtual RenderFragment? Header { get; set; }
+    [Parameter] public bool IsConstHeader { get; set; }
 
     [Parameter] public virtual RenderFragment ChildContent { get; set; }
+
     [Parameter] public virtual RenderFragment? Footer { get; set; }
+
+
+    [Parameter] public bool Loading { get; set; }
+    [Parameter] public EventCallback<bool> LoadingChanged { get; set; }
 
     [Parameter] public TInput Content { get; set; }
 
 
     [CascadingParameter] public FluentDialog? Dialog { get; set; }
 
-    private FluentEditForm FormRef;
-
-    protected bool SubmitBtnLoading;
-
-
-    [Parameter] public EventCallback SubmitClick { get; set; }
+    [Parameter] public Func<Task<bool>> SubmitClick { get; set; }
 
     [Parameter] public EventCallback CancelClick { get; set; }
-    
+
     [Parameter] public Func<string, IEnumerable<string>, string>? Localize { get; set; }
 
-    async Task SubmitAsync()
-    {
-        SubmitBtnLoading = true;
 
+    string _constHeaderText;
+
+    private FluentEditForm FormRef;
+
+    protected override void OnInitialized()
+    {
+        if (IsConstHeader)
+        {
+            _constHeaderText = HeaderText;
+        }
+        base.OnInitialized();
+    }
+
+    protected virtual async Task OnSubmitBtnClickAsync()
+    {
         try
         {
+            Loading = true;
             var validate = true;
             if (FormRef != null)
             {
@@ -81,7 +100,9 @@
 
             if (validate)
             {
-                await SubmitClick.InvokeAsync();
+                var succeeded = await SubmitClick.Invoke();
+                if (succeeded)
+                    await Dialog?.CloseAsync();
             }
         }
         catch (Exception ex)
@@ -90,14 +111,14 @@
         }
         finally
         {
-            SubmitBtnLoading = false;
+            Loading = false;
         }
     }
 
-    async Task CloseDialogAsync()
+    protected virtual async Task OnCancelBtnClickAsync()
     {
-        await Dialog?.CloseAsync();
         await CancelClick.InvokeAsync();
+        await Dialog?.CloseAsync();
     }
 
 }

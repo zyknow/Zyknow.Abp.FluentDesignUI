@@ -189,9 +189,6 @@ public abstract class AbpCrudPageBase<
 
     public AbpExtensibleDataGrid<TListViewModel> AbpExtensibleDataGridRef { get; set; }
 
-    protected bool CreateDialogHidden = true;
-    protected bool EditDialogHidden = true;
-
     protected AbpFluentPaginationState Pagination { get; set; } = new();
 
     protected string CreatePolicyName { get; set; }
@@ -293,6 +290,10 @@ public abstract class AbpCrudPageBase<
         return res;
     }
 
+    protected abstract Task ShowCreateDialogAsync();
+
+    protected abstract Task ShowEditDialogAsync();
+
     protected virtual async Task OpenCreateDialogAsync()
     {
         try
@@ -300,8 +301,7 @@ public abstract class AbpCrudPageBase<
             await CheckCreatePolicyAsync();
 
             NewEntity = new TCreateViewModel();
-            CreateDialogHidden = false;
-            await InvokeAsync(StateHasChanged);
+            await ShowCreateDialogAsync();
         }
         catch (Exception ex)
         {
@@ -318,9 +318,8 @@ public abstract class AbpCrudPageBase<
 
             EditingEntityId = entity.Id;
             EditingEntity = MapToEditingEntity(entityDto);
-            EditDialogHidden = false;
+            await ShowEditDialogAsync();
 
-            await InvokeAsync(StateHasChanged);
         }
         catch (Exception ex)
         {
@@ -353,17 +352,19 @@ public abstract class AbpCrudPageBase<
         return ObjectMapper.Map<TUpdateViewModel, TUpdateInput>(updateViewModel);
     }
 
-    protected virtual async Task CreateEntityAsync()
+    protected virtual async Task<bool> CreateEntityAsync()
     {
         try
         {
             var createInput = MapToCreateInput(NewEntity);
             await AppService.CreateAsync(createInput);
             await OnCreatedEntityAsync();
+            return true;
         }
         catch (Exception ex)
         {
             await HandleErrorAsync(ex);
+            return false;
         }
     }
 
@@ -375,12 +376,11 @@ public abstract class AbpCrudPageBase<
     protected virtual async Task OnCreatedEntityAsync()
     {
         NewEntity = new TCreateViewModel();
-        CreateDialogHidden = true;
         await GetEntitiesAsync();
 
     }
 
-    protected virtual async Task UpdateEntityAsync()
+    protected virtual async Task<bool> UpdateEntityAsync()
     {
         try
         {
@@ -391,10 +391,12 @@ public abstract class AbpCrudPageBase<
             await AppService.UpdateAsync(EditingEntityId, updateInput);
 
             await OnUpdatedEntityAsync();
+            return true;
         }
         catch (Exception ex)
         {
             await HandleErrorAsync(ex);
+            return false;
         }
     }
 
@@ -405,7 +407,6 @@ public abstract class AbpCrudPageBase<
 
     protected virtual async Task OnUpdatedEntityAsync()
     {
-        EditDialogHidden = true;
         await GetEntitiesAsync();
     }
 
@@ -491,6 +492,14 @@ public abstract class AbpCrudPageBase<
     protected virtual ValueTask SetToolbarItemsAsync()
     {
         return ValueTask.CompletedTask;
+    }
+
+
+    protected virtual Task<IDialogReference> ShowDialogAsync(RenderFragment render, Action<DialogParameters> paraAction = null)
+    {
+        var dialogPara = new DialogParameters();
+        paraAction?.Invoke(dialogPara);
+        return DialogService.ShowDialogAsync(render, dialogPara);
     }
 
     protected virtual IEnumerable<FluentTableColumn> GetExtensionTableColumns(string moduleName, string entityType)

@@ -1,21 +1,25 @@
-﻿@inherits AbpCreateOrUpdateDialogBase<TenantCreateDto, AbpTenantManagementResource>
+﻿@using TInput = Volo.Abp.TenantManagement.TenantCreateDto
+@using TResource = Volo.Abp.TenantManagement.Localization.AbpTenantManagementResource
+@inherits AbpDialogFormBase<TInput,TResource>
 
-<AbpCreateOrUpdateDialog Content="@Content"
-                         HeaderText="@L["NewTenant"]" CancelClick="@CancelClick"
-                         SubmitClick="@SubmitClick" Localize="@LH.Localize">
-    <FluentTextField Style="width: 100%" Label="@L["TenantName"]" @bind-Value="@Content.Name"/>
-    <FluentValidationMessage For="@(() => Content.Name)"/>
+<AbpDialogForm HeaderText="@L["NewTenant"]"
+               Content="@Content"
+               SubmitClick="SubmitClick"
+               CancelClick="CancelClick"
+               Localize="@LH.Localize">
+    <FluentTextField Style="width: 100%" Label="@L["TenantName"]" @bind-Value="@Content.Name" />
+    <FluentValidationMessage For="@(() => Content.Name)" />
 
     <FluentTextField Style="width: 100%" TextFieldType="TextFieldType.Email"
                      Label="@L["DisplayName:AdminEmailAddress"]"
-                     @bind-Value="@Content.AdminEmailAddress"/>
-    <FluentValidationMessage For="@(() => Content.AdminEmailAddress)"/>
+                     @bind-Value="@Content.AdminEmailAddress" />
+    <FluentValidationMessage For="@(() => Content.AdminEmailAddress)" />
 
     <FluentTextField Style="width: 100%" TextFieldType="TextFieldType.Password"
                      Label="@L["DisplayName:AdminPassword"]"
-                     @bind-Value="@Content.AdminPassword"/>
-    <FluentValidationMessage For="@(() => Content.AdminPassword)"/>
+                     @bind-Value="@Content.AdminPassword" />
+    <FluentValidationMessage For="@(() => Content.AdminPassword)" />
 
-    <ExtensionProperties TEntityType="TenantCreateDto" TResourceType="AbpTenantManagementResource"
-                         Entity="@Content" LH="@LH"/>
-</AbpCreateOrUpdateDialog>
+    <ExtensionProperties TEntityType="TInput" TResourceType="TResource"
+                         Entity="@Content" LH="@LH" />
+</AbpDialogForm>
