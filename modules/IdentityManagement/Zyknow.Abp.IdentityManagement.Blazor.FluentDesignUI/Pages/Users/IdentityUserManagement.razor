@@ -228,8 +228,8 @@
         => ShowDialogAsync(@<PermissionManagementDialog Content="@input" />);
 
     protected override Task ShowCreateDialogAsync()
-        => ShowDialogAsync(@<IdentityUserCreateDialog Content="@NewEntity" SubmitClick="CreateEntityAsync" />);
+        => ShowDialogAsync(@<IdentityUserCreateDialog AssignRoles="NewUserRoles" Content="@NewEntity" SubmitClick="CreateEntityAsync" />);
 
     protected override Task ShowEditDialogAsync()
-        => ShowDialogAsync(@<IdentityUserEditDialog Content="@EditingEntity" SubmitClick="UpdateEntityAsync" />);
+        => ShowDialogAsync(@<IdentityUserEditDialog AssignRoles="EditUserRoles" Content="@EditingEntity" SubmitClick="UpdateEntityAsync" />);
 }
