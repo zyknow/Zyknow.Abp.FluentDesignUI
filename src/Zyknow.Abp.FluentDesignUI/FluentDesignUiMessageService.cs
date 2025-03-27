@@ -11,40 +11,38 @@ namespace Zyknow.Abp.FluentDesignUI;
 public class FluentDesignUiMessageService(IStringLocalizer<AbpUiResource> localizer)
     : IUiMessageService, IScopedDependency
 {
+    [Inject] public IToastService ToastService { get; set; }
     [Inject] public IDialogService DialogService { get; set; }
-
 
     public async Task Info(string message, string title = null, Action<UiMessageOptions> options = null)
     {
-        DialogService.ShowInfo(message, title ?? localizer["Info"]);
+        ToastService.ShowInfo(message);
     }
 
     public async Task Success(string message, string title = null, Action<UiMessageOptions> options = null)
     {
-        DialogService.ShowSuccess(message, title ?? localizer["Success"]);
+        ToastService.ShowSuccess(message);
     }
 
     public async Task Warn(string message, string title = null, Action<UiMessageOptions> options = null)
     {
-        DialogService.ShowWarning(message, title ?? localizer["Warn"]);
+        ToastService.ShowWarning(message);
     }
 
     public async Task Error(string message, string title = null, Action<UiMessageOptions> options = null)
     {
-        DialogService.ShowError(message, title ?? localizer["Error"]);
+        ToastService.ShowError(message);
     }
 
     public async Task<bool> Confirm(string message, string title = null, Action<UiMessageOptions> options = null)
     {
-        var res =  await DialogService.ShowConfirmationAsync(
+        var res = await DialogService.ShowConfirmationAsync(
             message,
             localizer["Yes"],
             localizer["Cancel"],
             title ?? localizer["Confirm"]
-            );
-
+        );
         var result = await res.Result;
-
         return !result.Cancelled;
     }
 }

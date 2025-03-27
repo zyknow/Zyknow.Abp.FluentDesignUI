@@ -6,46 +6,30 @@
 @implements IDialogContentComponent<TInput>
 @inherits Volo.Abp.AspNetCore.Components.AbpComponentBase
 @inject IStringLocalizer<AbpUiResource> UL
-<FluentDialogHeader ShowDismiss="true">
-    @if (Header != null)
-    {
-        @Header
-    }
-    else
-    {
-        <FluentLabel Typo="Typography.H4">@(IsConstHeader ? _constHeaderText : HeaderText)</FluentLabel>
-    }
-</FluentDialogHeader>
+@if (Dialog != null)
+{
+    <FluentDialogHeader ShowDismiss="true">
+        @HeaderContentRender
+    </FluentDialogHeader>
+    <FluentDialogBody>
+        @BodyContentRender
+    </FluentDialogBody>
 
-<FluentDialogBody>
-    <FluentEditForm @ref="FormRef" Model="@Content">
-        <AbpDataAnnotationsValidator Localize="@Localize" />
-        @* <FluentValidationSummary/> *@
-        @ChildContent
-    </FluentEditForm>
-</FluentDialogBody>
-
-<FluentDialogFooter>
-    @if (Footer != null)
-    {
-        @Footer
-    }
-    else
-    {
-
-        <FluentStack HorizontalAlignment="HorizontalAlignment.End">
-            <FluentButton Loading="@Loading" Appearance="Appearance.Accent"
-                          OnClick="@OnSubmitBtnClickAsync">@UL["Submit"]</FluentButton>
-            <FluentButton Appearance="Appearance.Neutral"
-                          OnClick="@OnCancelBtnClickAsync">@UL["Cancel"]</FluentButton>
-        </FluentStack>
-    }
-
-</FluentDialogFooter>
-
+    <FluentDialogFooter>
+        @FooterContentRender
+    </FluentDialogFooter>
+}
+else
+{
+    <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch" Width="100%">
+        @HeaderContentRender
+        @BodyContentRender
+        @FooterContentRender
+    </FluentStack>
+}
 
 <FluentOverlay @bind-Visible="@Loading" Transparent="false" Dismissable="false">
-    <FluentProgressRing />
+    <FluentProgressRing/>
 </FluentOverlay>
 
 @code {
@@ -67,16 +51,63 @@
 
     [CascadingParameter] public FluentDialog? Dialog { get; set; }
 
-    [Parameter] public Func<Task<bool>> SubmitClick { get; set; }
+    [Parameter] public Func<Task<bool>> SubmitValidClick { get; set; }
+
+    [Parameter] public EventCallback SubmitClick { get; set; }
 
     [Parameter] public EventCallback CancelClick { get; set; }
 
     [Parameter] public Func<string, IEnumerable<string>, string>? Localize { get; set; }
 
-
     string _constHeaderText;
 
     private FluentEditForm FormRef;
+
+
+    protected virtual RenderFragment HeaderContentRender => __builder =>
+    {
+        if (Header != null)
+        {
+            @Header
+        }
+        else
+        {
+            <FluentLabel Typo="Typography.H4">@(IsConstHeader ? _constHeaderText : HeaderText)</FluentLabel>
+        }
+    };
+
+    protected virtual RenderFragment BodyContentRender => __builder =>
+    {
+        <FluentEditForm @ref="FormRef" Model="@Content">
+            <AbpDataAnnotationsValidator Localize="@Localize"/>
+            @* <FluentValidationSummary/> *@
+            <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch">
+                @ChildContent
+            </FluentStack>
+        </FluentEditForm>
+    };
+
+    protected virtual RenderFragment FooterContentRender => __builder =>
+    {
+        if (Footer != null)
+        {
+            @Footer
+        }
+        else
+        {
+            <FluentStack HorizontalAlignment="HorizontalAlignment.End">
+                <FluentButton Loading="@Loading" Appearance="Appearance.Accent"
+                              OnClick="@OnSubmitBtnClickAsync">@UL["Submit"]</FluentButton>
+
+                @if (Dialog != null)
+                {
+                    <FluentButton Appearance="Appearance.Neutral"
+                                  OnClick="@OnCancelBtnClickAsync">@UL["Cancel"]</FluentButton>
+                }
+            </FluentStack>
+        }
+    };
+
 
     protected override void OnInitialized()
     {
@@ -84,6 +115,7 @@
         {
             _constHeaderText = HeaderText;
         }
+
         base.OnInitialized();
     }
 
@@ -100,9 +132,21 @@
 
             if (validate)
             {
-                var succeeded = await SubmitClick.Invoke();
-                if (succeeded)
-                    await Dialog?.CloseAsync();
+                if (SubmitValidClick != null)
+                {
+                    var succeeded = await SubmitValidClick.Invoke();
+                    if (succeeded)
+                        await Dialog?.CloseAsync();
+                }
+                else
+                {
+                    if (SubmitClick.HasDelegate)
+                    {
+                        await SubmitClick.InvokeAsync();
+                        if (Dialog != null)
+                            await Dialog?.CloseAsync();
+                    }
+                }
             }
         }
         catch (Exception ex)
