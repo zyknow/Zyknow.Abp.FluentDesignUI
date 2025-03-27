@@ -12,15 +12,6 @@
 <FluentButton OnClick="Callback">alert</FluentButton>
 <div>@RendererInfo.Name</div>
 <div>@RendererInfo.IsInteractive</div>
-<div style="background-color: gray">
-    @for (int i = 0; i < 100; i++)
-    {
-        <FluentLabel>123</FluentLabel>
-    }
-</div>
-
-<div>666</div>
-
 
 @code {
 
@@ -28,7 +19,7 @@
     {
         // AlertManager.Alerts.Add(AlertType.Danger, "1234567890");
         // UiMessageService.Info("66");
-        UiNotificationService.Success("66");
+        UiNotificationService.Success(RendererInfo.Name);
     }
 
 }

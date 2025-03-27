@@ -1,0 +1,41 @@
+﻿@page "/setting-management"
+@using Microsoft.AspNetCore.Authorization
+@using Volo.Abp.Features
+@using Volo.Abp.SettingManagement
+@using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Layout
+@using Microsoft.FluentUI.AspNetCore.Components
+@using Volo.Abp.SettingManagement.Blazor
+@attribute [Authorize]
+@attribute [RequiresFeature(SettingManagementFeatures.Enable)]
+<CascadingValue Value="this" IsFixed="true">
+    <FluentStack Orientation="Orientation.Vertical" VerticalGap="20" HorizontalAlignment="HorizontalAlignment.Stretch">
+        <AbpPageHeader Title="@L["Settings"]" BreadcrumbItems="@BreadcrumbItems"/>
+        <FluentDivider></FluentDivider>
+        <div class="page-content">
+            <FluentStack HorizontalGap="20">
+                <FluentListbox TOption="SettingComponentGroup" Width="300px" OptionText="s => s.DisplayName"
+                               @bind-SelectedOption="SelectedGroup"
+                               Items="@SettingComponentCreationContext.Groups">
+                </FluentListbox>
+                @foreach (var group in SettingComponentCreationContext.Groups)
+                {
+                    @if (SelectedGroup == group)
+                    {
+                        <FluentStack Orientation="Orientation.Vertical">
+                            <FluentLabel Weight="FontWeight.Bold" Typo="Typography.H4">@group.DisplayName</FluentLabel>
+                            <FluentDivider/>
+                            @{
+                                SettingItemRenders.Add(b =>
+                                {
+                                    b.OpenComponent(0, group.ComponentType);
+                                    b.CloseComponent();
+                                });
+                            }
+                            @SettingItemRenders.Last()
+                        </FluentStack>
+                    }
+                }
+            </FluentStack>
+        </div>
+    </FluentStack>
+</CascadingValue>

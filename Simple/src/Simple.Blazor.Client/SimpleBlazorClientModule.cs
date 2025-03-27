@@ -4,11 +4,13 @@ using Volo.Abp.AspNetCore.Components.Web;
 using Volo.Abp.Autofac.WebAssembly;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.Modularity;
+using Volo.Abp.Timing;
 using Volo.Abp.UI.Navigation;
 using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Routing;
 using Zyknow.Abp.AspnetCore.Components.WebAssembly.FluentDesignTheme;
 using Zyknow.Abp.FeatureManagement.Blazor.WebAssembly.FluentDesignUI;
 using Zyknow.Abp.IdentityManagement.Blazor.WebAssembly.FluentDesignUI;
+using Zyknow.Abp.SettingManagement.Blazor.WebAssembly.FluentDesignUI;
 
 
 namespace Simple.Blazor.Client;
@@ -18,16 +20,14 @@ namespace Simple.Blazor.Client;
     typeof(SimpleHttpApiClientModule),
     typeof(AbpAspNetCoreComponentsWebAssemblyFluentDesignThemeModule),
     typeof(AbpFeatureManagementBlazorWebAssemblyFluentDesignModule),
-    typeof(AbpIdentityBlazorWebAssemblyFluentDesignModule)
+    typeof(AbpIdentityBlazorWebAssemblyFluentDesignModule),
+    typeof(AbpSettingManagementBlazorWebAssemblyFluentDesignModule)
 )]
 public class SimpleBlazorClientModule : AbpModule
 {
     public override void PreConfigureServices(ServiceConfigurationContext context)
     {
-        PreConfigure<AbpAspNetCoreComponentsWebOptions>(options =>
-        {
-            options.IsBlazorWebApp = true;
-        });
+        PreConfigure<AbpAspNetCoreComponentsWebOptions>(options => { options.IsBlazorWebApp = true; });
     }
 
     public override void ConfigureServices(ServiceConfigurationContext context)
@@ -41,6 +41,11 @@ public class SimpleBlazorClientModule : AbpModule
         ConfigureMenu(context);
         ConfigureAutoMapper(context);
         ConfigureBundles();
+        
+        Configure<AbpClockOptions>(options =>
+        {
+            options.Kind = DateTimeKind.Utc;
+        });
     }
 
 
@@ -67,7 +72,8 @@ public class SimpleBlazorClientModule : AbpModule
         builder.Services.AddBlazorWebAppServices();
     }
 
-    private static void ConfigureHttpClient(ServiceConfigurationContext context, IWebAssemblyHostEnvironment environment)
+    private static void ConfigureHttpClient(ServiceConfigurationContext context,
+        IWebAssemblyHostEnvironment environment)
     {
         context.Services.AddTransient(sp => new HttpClient
         {
@@ -77,10 +83,7 @@ public class SimpleBlazorClientModule : AbpModule
 
     private void ConfigureAutoMapper(ServiceConfigurationContext context)
     {
-        Configure<AbpAutoMapperOptions>(options =>
-        {
-            options.AddMaps<SimpleBlazorClientModule>();
-        });
+        Configure<AbpAutoMapperOptions>(options => { options.AddMaps<SimpleBlazorClientModule>(); });
     }
 
     private void ConfigureBundles()

@@ -35,6 +35,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\modules\FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.WebAssembly.FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.WebAssembly.FluentDesignTheme.csproj" />
     <ProjectReference Include="..\..\..\modules\IdentityManagement\Zyknow.Abp.IdentityManagement.Blazor.WebAssembly.FluentDesignUI\Zyknow.Abp.IdentityManagement.Blazor.WebAssembly.FluentDesignUI.csproj" />
+    <ProjectReference Include="..\..\..\modules\SettingManagement\Zyknow.Abp.SettingManagement.Blazor.WebAssembly.FluentDesignUI\Zyknow.Abp.SettingManagement.Blazor.WebAssembly.FluentDesignUI.csproj" />
     <ProjectReference Include="..\..\..\modules\TenantManagement\Zyknow.Abp.TenantManagement.Blazor.Webassembly.FluentDesignUI\Zyknow.Abp.TenantManagement.Blazor.Webassembly.FluentDesignUI.csproj" />
     <ProjectReference Include="..\..\src\Simple.HttpApi.Client\Simple.HttpApi.Client.csproj" />
   </ItemGroup>

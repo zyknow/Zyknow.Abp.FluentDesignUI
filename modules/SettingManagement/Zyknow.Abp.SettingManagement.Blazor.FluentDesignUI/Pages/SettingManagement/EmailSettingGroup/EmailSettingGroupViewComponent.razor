@@ -1,0 +1,37 @@
+﻿@using Microsoft.FluentUI.AspNetCore.Components
+@using Volo.Abp.AspNetCore.Components.Web
+@using Volo.Abp.SettingManagement.Localization
+@using Zyknow.Abp.FluentDesignUI.Components
+@inherits Volo.Abp.AspNetCore.Components.AbpComponentBase
+@inject AbpBlazorMessageLocalizerHelper<AbpSettingManagementResource> LH
+
+<AbpDialogForm Content="EmailSettings" SubmitClick="UpdateSettingsAsync">
+    <FluentTextField @bind-Value="EmailSettings.DefaultFromDisplayName"></FluentTextField>
+    <FluentValidationMessage For="()=> EmailSettings.DefaultFromDisplayName"></FluentValidationMessage>
+
+    <FluentTextField @bind-Value="EmailSettings.DefaultFromAddress"></FluentTextField>
+    <FluentValidationMessage For="()=> EmailSettings.DefaultFromAddress"></FluentValidationMessage>
+
+    <FluentTextField @bind-Value="EmailSettings.SmtpHost"></FluentTextField>
+    <FluentValidationMessage For="()=> EmailSettings.SmtpHost"></FluentValidationMessage>
+
+    <FluentNumberField @bind-Value="EmailSettings.SmtpPort"></FluentNumberField>
+    <FluentValidationMessage For="()=> EmailSettings.SmtpPort"></FluentValidationMessage>
+
+    <FluentCheckbox @bind-Value="EmailSettings.SmtpEnableSsl">@L["SmtpEnableSsl"]</FluentCheckbox>
+    <FluentCheckbox
+        @bind-Value="EmailSettings.SmtpUseDefaultCredentials">@L["SmtpUseDefaultCredentials"]</FluentCheckbox>
+
+    @if (!EmailSettings.SmtpUseDefaultCredentials)
+    {
+        <FluentTextField @bind-Value="EmailSettings.SmtpDomain"></FluentTextField>
+        <FluentValidationMessage For="()=> EmailSettings.SmtpDomain"></FluentValidationMessage>
+
+        <FluentTextField @bind-Value="EmailSettings.SmtpUserName"></FluentTextField>
+        <FluentValidationMessage For="()=> EmailSettings.SmtpUserName"></FluentValidationMessage>
+
+        <FluentTextField TextFieldType="TextFieldType.Password"
+                         @bind-Value="EmailSettings.SmtpPassword"></FluentTextField>
+        <FluentValidationMessage For="()=> EmailSettings.SmtpPassword"></FluentValidationMessage>
+    }
+</AbpDialogForm>

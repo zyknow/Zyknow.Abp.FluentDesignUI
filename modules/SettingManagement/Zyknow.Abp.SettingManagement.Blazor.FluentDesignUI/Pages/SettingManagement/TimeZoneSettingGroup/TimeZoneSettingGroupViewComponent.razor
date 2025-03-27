@@ -1,0 +1,19 @@
+@using Microsoft.FluentUI.AspNetCore.Components
+@using Volo.Abp
+@using Volo.Abp.AspNetCore.Components.Web
+@using Volo.Abp.SettingManagement.Localization
+@using Zyknow.Abp.FluentDesignUI.Components
+@inherits Volo.Abp.AspNetCore.Components.AbpComponentBase
+@inject AbpBlazorMessageLocalizerHelper<AbpSettingManagementResource> LH
+
+<AbpDialogForm Content="TimezoneSettings" SubmitClick="UpdateSettingsAsync">
+    <FluentSelect TOption="NameValue"
+                  Label="@L["DisplayName:Timezone"]"
+                  Items="@TimezoneSettings.TimeZoneItems"
+                  OptionValue="@(p => p.Value.ToString())"
+                  OptionText="@(p => p.Name)"
+                  Height="200px"
+                  Width="100%"
+                  @bind-Value="@TimezoneSettings.Timezone" />
+
+</AbpDialogForm>

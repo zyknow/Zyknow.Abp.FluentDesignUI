@@ -27,10 +27,12 @@ using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.VirtualFileSystem;
 using Volo.Abp.OpenIddict;
 using Volo.Abp.Account.Web;
+using Volo.Abp.Timing;
 using Zyknow.Abp.AspnetCore.Components.Server.FluentDesignTheme;
 using Zyknow.Abp.AspnetCore.Components.Server.FluentDesignTheme.Bundling;
 using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Routing;
 using Zyknow.Abp.IdentityManagement.Blazor.Server.FluentDesignUI;
+using Zyknow.Abp.SettingManagement.Blazor.Server.FluentDesignUI;
 using Zyknow.Abp.TenantManagement.Blazor.FluentDesignUI;
 using App = Simple.Blazor.Components.App;
 
@@ -47,7 +49,8 @@ namespace Simple.Blazor;
     typeof(AbpAspNetCoreSerilogModule),
     typeof(AbpAspNetCoreComponentsServerFluentDesignThemeModule),
     typeof(AbpTenantManagementBlazorFluentDesignModule),
-    typeof(AbpIdentityBlazorServerFluentDesignModule)
+    typeof(AbpIdentityBlazorServerFluentDesignModule),
+    typeof(AbpSettingManagementBlazorServerFluentDesignModule)
 )]
 public class SimpleBlazorModule : AbpModule
 {
@@ -94,6 +97,11 @@ public class SimpleBlazorModule : AbpModule
         }
 
         PreConfigure<AbpAspNetCoreComponentsWebOptions>(options => { options.IsBlazorWebApp = true; });
+        
+        Configure<AbpClockOptions>(options =>
+        {
+            options.Kind = DateTimeKind.Utc;
+        });
     }
 
     public override void ConfigureServices(ServiceConfigurationContext context)

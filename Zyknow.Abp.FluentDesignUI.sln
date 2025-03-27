@@ -80,6 +80,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zyknow.Abp.PermissionManage
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zyknow.Abp.PermissionManagement.Blazor.WebAssembly.FluentDesignUI", "modules\PermissionManagement\Zyknow.Abp.PermissionManagement.Blazor.WebAssembly.FluentDesignUI\Zyknow.Abp.PermissionManagement.Blazor.WebAssembly.FluentDesignUI.csproj", "{C3C7F79E-1DCB-4A12-B9FE-000CBF965B91}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zyknow.Abp.SettingManagement.Blazor.FluentDesignUI", "modules\SettingManagement\Zyknow.Abp.SettingManagement.Blazor.FluentDesignUI\Zyknow.Abp.SettingManagement.Blazor.FluentDesignUI.csproj", "{3D569831-3F49-4598-A15A-6846B67884C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zyknow.Abp.SettingManagement.Blazor.Server.FluentDesignUI", "modules\SettingManagement\Zyknow.Abp.SettingManagement.Blazor.Server.FluentDesignUI\Zyknow.Abp.SettingManagement.Blazor.Server.FluentDesignUI.csproj", "{1755859B-C147-40B2-A827-301976E9AE6A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zyknow.Abp.SettingManagement.Blazor.WebAssembly.FluentDesignUI", "modules\SettingManagement\Zyknow.Abp.SettingManagement.Blazor.WebAssembly.FluentDesignUI\Zyknow.Abp.SettingManagement.Blazor.WebAssembly.FluentDesignUI.csproj", "{F963C0C9-81D3-496D-B031-15772F67B02F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -190,6 +196,18 @@ Global
 		{C3C7F79E-1DCB-4A12-B9FE-000CBF965B91}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3C7F79E-1DCB-4A12-B9FE-000CBF965B91}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C3C7F79E-1DCB-4A12-B9FE-000CBF965B91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D569831-3F49-4598-A15A-6846B67884C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D569831-3F49-4598-A15A-6846B67884C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D569831-3F49-4598-A15A-6846B67884C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D569831-3F49-4598-A15A-6846B67884C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1755859B-C147-40B2-A827-301976E9AE6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1755859B-C147-40B2-A827-301976E9AE6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1755859B-C147-40B2-A827-301976E9AE6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1755859B-C147-40B2-A827-301976E9AE6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F963C0C9-81D3-496D-B031-15772F67B02F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F963C0C9-81D3-496D-B031-15772F67B02F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F963C0C9-81D3-496D-B031-15772F67B02F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F963C0C9-81D3-496D-B031-15772F67B02F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -227,6 +245,9 @@ Global
 		{0315F9D5-F8F7-4124-B9A3-F92EC0E54385} = {E19DF34B-8078-4420-8092-39DF59331EE3}
 		{F198C0B5-54A3-4287-B429-9271EB86C493} = {E19DF34B-8078-4420-8092-39DF59331EE3}
 		{C3C7F79E-1DCB-4A12-B9FE-000CBF965B91} = {E19DF34B-8078-4420-8092-39DF59331EE3}
+		{3D569831-3F49-4598-A15A-6846B67884C3} = {C9F4E43F-1844-4AF9-A599-E03C8E7882DB}
+		{1755859B-C147-40B2-A827-301976E9AE6A} = {C9F4E43F-1844-4AF9-A599-E03C8E7882DB}
+		{F963C0C9-81D3-496D-B031-15772F67B02F} = {C9F4E43F-1844-4AF9-A599-E03C8E7882DB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {864DE782-FCBD-4420-849C-8C817BA24FF9}
