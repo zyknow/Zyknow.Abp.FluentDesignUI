@@ -4,7 +4,11 @@
 
 <div class="fluent-design-brand">
     <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center" HorizontalGap="15">
-        <FluentIcon Value="@(new Size24.Navigation())" OnClick="()=> CollapsedMenuClick.InvokeAsync()"></FluentIcon>
+        @if (CollapsedMenuIconVisible)
+        {
+            <FluentIcon Value="@(new Size24.Navigation())"
+                        OnClick="() => CollapsedMenuClick.InvokeAsync()"></FluentIcon>
+        }
 
         <a href="" style="text-decoration: none;user-select: none;">
             <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
@@ -25,4 +29,6 @@
 @code
 {
     [Parameter] public EventCallback CollapsedMenuClick { get; set; }
+
+    [Parameter] public bool CollapsedMenuIconVisible { get; set; } = true;
 }
