@@ -1,0 +1,64 @@
+﻿@inherits LayoutComponentBase
+@using Microsoft.Extensions.Options
+@using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Settings
+@using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Themes.FluentDesignTheme
+@inject IOptions<AbpFluentDesignThemeOptions> Options
+
+<FluentLayout Class="fluent-design-layout">
+    <FluentHeader>
+        <FluentStack HorizontalGap="20" Orientation="Orientation.Horizontal"
+                     HorizontalAlignment="HorizontalAlignment.Left"
+                     VerticalAlignment="VerticalAlignment.Center">
+            <Branding CollapsedMenuIconVisible="false"/>
+        </FluentStack>
+        <FluentSpacer/>
+        <NavToolbar/>
+    </FluentHeader>
+
+    <div style="display: flex; flex-direction: row; height: 100%;width: 100%">
+        <FluentBodyContent Class="fluent-design-body-content">
+            <PageAlert/>
+            @Body
+            <FluentToastProvider Position="ToastPosition.BottomRight"/>
+            <FluentDialogProvider/>
+            <FluentTooltipProvider/>
+            <FluentMessageBarProvider/>
+            <FluentMenuProvider/>
+            @* <UiPageProgress/> *@
+        </FluentBodyContent>
+    </div>
+
+    <FluentFooter>
+
+    </FluentFooter>
+
+</FluentLayout>
+
+@code
+{
+    [Inject] protected IFluentDesignSettingsProvider FluentDesignSettingsProvider { get; set; }
+
+    protected MenuPlacement MenuPlacement { get; set; }
+
+    protected string HeaderClass { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await SetLayout();
+        FluentDesignSettingsProvider.SettingChanged += OnSettingChanged;
+    }
+
+    protected virtual async Task OnSettingChanged()
+    {
+        await SetLayout();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task SetLayout()
+    {
+        // SiderTheme = MenuTheme  == MenuTheme.Light ? SiderTheme.Light : SiderTheme.Dark;
+        HeaderClass = MenuPlacement == MenuPlacement.Top ? "fluent-design-header-top" : "fluent-design-header-left";
+        // HeaderClass = MenuTheme == MenuTheme.Light ? $"{HeaderClass} {HeaderClass}-light" : HeaderClass;
+    }
+}
+
