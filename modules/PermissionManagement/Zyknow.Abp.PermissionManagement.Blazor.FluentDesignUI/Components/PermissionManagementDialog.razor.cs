@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.FluentUI.AspNetCore.Components;
 using Volo.Abp.AspNetCore.Components.Web.Configuration;
 using Volo.Abp.PermissionManagement;
 using Volo.Abp.PermissionManagement.Localization;

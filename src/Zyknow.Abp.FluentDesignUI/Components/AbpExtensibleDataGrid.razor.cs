@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Localization;
 using Microsoft.FluentUI.AspNetCore.Components;
 using System.Text.RegularExpressions;
-using Volo.Abp.Application.Dtos;
 using Volo.Abp.AspNetCore.Components.Web.Extensibility.TableColumns;
 
 namespace Zyknow.Abp.FluentDesignUI.Components;

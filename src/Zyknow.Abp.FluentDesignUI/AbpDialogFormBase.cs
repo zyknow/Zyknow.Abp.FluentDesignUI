@@ -1,12 +1,5 @@
-﻿using Localization.Resources.AbpUi;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.FluentUI.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Volo.Abp.AspNetCore.Components;
 using Volo.Abp.AspNetCore.Components.Web;
 using Volo.Abp.Localization;

@@ -1,14 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Volo.Abp.AspNetCore.Components;
-using Volo.Abp.AspNetCore.Components.Web;
 
 namespace Zyknow.Abp.FluentDesignUI.Validation;
 
