@@ -1,5 +1,8 @@
-﻿@inherits AbpCreateOrUpdateDialogBase<IdentityUserCreateDto, IdentityResource>
-<AbpCreateOrUpdateDialog HeaderText="@L["NewUser"]"
+﻿@using TInput = Volo.Abp.Identity.IdentityUserCreateDto
+@using TResource = Volo.Abp.Identity.Localization.IdentityResource
+@inherits AbpDialogFormBase<TInput,TResource>
+
+<AbpDialogForm HeaderText="@L["NewUser"]"
                          Content="@Content"
                          CancelClick="@CancelClick"
                          Localize="@LH.Localize"
@@ -50,7 +53,7 @@
   
         </FluentTab>
     </FluentTabs>
-</AbpCreateOrUpdateDialog>
+</AbpDialogForm>
 
 @code
 {
