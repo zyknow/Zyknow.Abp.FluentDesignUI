@@ -19,4 +19,8 @@
       <_ContentIncludedByDefault Remove="wwwroot\exampleJsInterop.js" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Components\GroupComponent\" />
+    </ItemGroup>
+
 </Project>
