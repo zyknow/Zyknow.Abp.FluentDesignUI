@@ -2,7 +2,7 @@
 @using TResource = Volo.Abp.TenantManagement.Localization.AbpTenantManagementResource
 @inherits AbpDialogFormBase<TInput,TResource>
 
-<AbpDialogForm HeaderText="@L["NewTenant"]"
+<AbpFluentForm HeaderText="@L["NewTenant"]"
                Content="@Content"
                SubmitValidClick="SubmitClick"
                CancelClick="CancelClick"
@@ -22,4 +22,4 @@
 
     <ExtensionProperties TEntityType="TInput" TResourceType="TResource"
                          Entity="@Content" LH="@LH" />
-</AbpDialogForm>
+</AbpFluentForm>

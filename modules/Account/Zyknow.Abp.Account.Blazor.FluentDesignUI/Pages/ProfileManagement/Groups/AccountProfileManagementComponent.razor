@@ -4,7 +4,7 @@
 
 @if (Input != null)
 {
-    <AbpDialogForm Content="Input" SubmitClick="UpdatePersonalInfoAsync" Localize="@LH.Localize">
+    <AbpFluentForm Content="Input" SubmitClick="UpdatePersonalInfoAsync" Localize="@LH.Localize">
         <FluentTextField Style="width: 100%" @bind-Value="Input.UserName"
                          Label="@L["DisplayName:UserName"]"></FluentTextField>
         <ValidationMessage For="@(() => Input.UserName)"></ValidationMessage>
@@ -24,7 +24,7 @@
         <FluentTextField Style="width: 100%" @bind-Value="Input.PhoneNumber"
                          Label="@L["DisplayName:PhoneNumber"]"></FluentTextField>
         <ValidationMessage For="@(() => Input.PhoneNumber)"></ValidationMessage>
-    </AbpDialogForm>
+    </AbpFluentForm>
 }
 
 @code {

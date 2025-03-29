@@ -17,13 +17,14 @@
 <FluentStack Orientation="Orientation.Vertical" VerticalGap="20">
     <FluentLabel Typo="Typography.H2">@L["Login"]</FluentLabel>
 
-    <AbpDialogForm @ref="FormRef" Content="@Input" Localize="@LH.Localize" SubmitClick="LoginAsync">
+    <AbpFluentForm @ref="FormRef" Content="@Input" Localize="@LH.Localize" SubmitClick="LoginAsync">
         <ChildContent>
             <FluentTextField @bind-Value="@Input.UserNameOrEmailAddress"
                              Label="@L["UserNameOrEmailAddress"]"/>
             <ValidationMessage For="@(() => Input.UserNameOrEmailAddress)"></ValidationMessage>
 
-            <FluentTextField @bind-Value="@Input.Password" Label="@L["Password"]"/>
+            <FluentTextField @bind-Value="@Input.Password" Label="@L["Password"]"
+                             TextFieldType="TextFieldType.Password"/>
             <ValidationMessage For="@(() => Input.Password)"></ValidationMessage>
 
             <FluentStack HorizontalAlignment="HorizontalAlignment.SpaceBetween"
@@ -37,7 +38,7 @@
             <FluentButton Loading="@FormRef.Loading" Appearance="Appearance.Accent"
                           OnClick="@FormRef.OnSubmitBtnClickAsync">@L["Login"]</FluentButton>
         </Footer>
-    </AbpDialogForm>
+    </AbpFluentForm>
 
     <FluentStack Orientation="Orientation.Vertical">
         <FluentLabel Typo="Typography.H5">@L["OrLoginWith"]</FluentLabel>
@@ -51,16 +52,16 @@
     [Inject] protected ISettingProvider SettingProvider { get; set; }
     [Inject] protected IAuthenticationSchemeProvider SchemeProvider { get; set; }
     [Inject] protected IOptions<AbpAccountOptions> AccountOptions { get; set; }
-    [Inject] protected IOptions<IdentityOptions> IdentityOptions { get;set; }
-    [Inject] protected IdentityDynamicClaimsPrincipalContributorCache IdentityDynamicClaimsPrincipalContributorCache { get;set;  }
-    [Inject] protected IWebHostEnvironment WebHostEnvironment { get;set;  }
+    [Inject] protected IOptions<IdentityOptions> IdentityOptions { get; set; }
+    [Inject] protected IdentityDynamicClaimsPrincipalContributorCache IdentityDynamicClaimsPrincipalContributorCache { get; set; }
+    [Inject] protected IWebHostEnvironment WebHostEnvironment { get; set; }
     [Inject] protected SignInManager<IdentityUser> SignInManager { get; set; }
     [Inject] protected UserManager<IdentityUser> UserManager { get; set; }
-    [Inject] protected IAbpTenantAppService AbpTenantAppService { get;set;  }
-    [Inject] protected IDistributedCache<LoginTicketCacheItem> LoginTicketCache { get;set;  }
-    [Inject] protected IStringEncryptionService StringEncryptionService { get;set;  }
+    [Inject] protected IAbpTenantAppService AbpTenantAppService { get; set; }
+    [Inject] protected IDistributedCache<LoginTicketCacheItem> LoginTicketCache { get; set; }
+    [Inject] protected IStringEncryptionService StringEncryptionService { get; set; }
 
-    AbpDialogForm<LoginInput> FormRef;
+    AbpFluentForm<LoginInput> FormRef;
 
     protected virtual LoginInput Input { get; set; } = new();
 
@@ -75,8 +76,8 @@
     // TODO: init these values ?
     protected virtual bool ShowCancelButton { get; set; }
     protected virtual bool ShowRequireMigrateSeedMessage { get; set; }
-    
-    
+
+
     protected virtual string TenancyName { get; set; }
 
     //TODO: Why there is an ExternalProviders if only the VisibleExternalProviders is used.
@@ -159,7 +160,7 @@
         {
             UserId = user.Id,
             TenantId = CurrentTenant.Id,
-            UserNameOrEmailAddress =  Input.UserNameOrEmailAddress,
+            UserNameOrEmailAddress = Input.UserNameOrEmailAddress,
             RememberMe = Input.RememberMe,
             ReturnUrl = ReturnUrl,
             ReturnUrlHash = ReturnUrlHash

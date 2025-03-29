@@ -2,7 +2,7 @@
 @using TResource = Volo.Abp.Identity.Localization.IdentityResource
 @inherits AbpDialogFormBase<TInput,TResource>
 
-<AbpDialogForm HeaderText="@L["NewUser"]"
+<AbpFluentForm HeaderText="@L["NewUser"]"
                          Content="@Content"
                          CancelClick="@CancelClick"
                          Localize="@LH.Localize"
@@ -53,7 +53,7 @@
   
         </FluentTab>
     </FluentTabs>
-</AbpDialogForm>
+</AbpFluentForm>
 
 @code
 {

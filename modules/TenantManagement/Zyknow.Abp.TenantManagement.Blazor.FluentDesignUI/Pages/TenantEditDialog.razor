@@ -2,7 +2,7 @@
 @using TResource = Volo.Abp.TenantManagement.Localization.AbpTenantManagementResource
 @inherits AbpDialogFormBase<TInput,TResource>
 
-<AbpDialogForm HeaderText="@($@"{L["Edit"]} - {Content.Name}")"
+<AbpFluentForm HeaderText="@($@"{L["Edit"]} - {Content.Name}")"
                IsConstHeader="true"
                Content="@Content"
                SubmitValidClick="SubmitClick"
@@ -13,4 +13,4 @@
 
     <ExtensionProperties TEntityType="TInput" TResourceType="TResource"
                          Entity="@Content" LH="@LH" />
-</AbpDialogForm>
+</AbpFluentForm>

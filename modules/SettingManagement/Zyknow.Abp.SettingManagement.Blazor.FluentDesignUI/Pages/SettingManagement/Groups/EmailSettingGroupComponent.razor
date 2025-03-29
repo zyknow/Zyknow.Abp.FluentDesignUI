@@ -5,7 +5,7 @@
 @inherits Volo.Abp.AspNetCore.Components.AbpComponentBase
 @inject AbpBlazorMessageLocalizerHelper<AbpSettingManagementResource> LH
 
-<AbpDialogForm Content="EmailSettings" SubmitClick="UpdateSettingsAsync">
+<AbpFluentForm Content="EmailSettings" SubmitClick="UpdateSettingsAsync">
     <FluentTextField @bind-Value="EmailSettings.DefaultFromDisplayName"
                      Label="@L["DefaultFromDisplayName"]"></FluentTextField>
     <FluentValidationMessage For="()=> EmailSettings.DefaultFromDisplayName"></FluentValidationMessage>
@@ -35,4 +35,4 @@
                          @bind-Value="EmailSettings.SmtpPassword" Label="@L["SmtpPassword"]"></FluentTextField>
         <FluentValidationMessage For="()=> EmailSettings.SmtpPassword"></FluentValidationMessage>
     }
-</AbpDialogForm>
+</AbpFluentForm>

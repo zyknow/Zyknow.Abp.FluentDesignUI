@@ -2,7 +2,7 @@
 @using TInput = Volo.Abp.Identity.IdentityRoleUpdateDto
 @inherits AbpDialogFormBase<TInput,TResource>
 
-<AbpDialogForm HeaderText="@($@"{L["Edit"]} - {Content.Name}")"
+<AbpFluentForm HeaderText="@($@"{L["Edit"]} - {Content.Name}")"
                IsConstHeader="true"
                Content="@Content"
                CancelClick="@CancelClick"
@@ -18,4 +18,4 @@
         <FluentCheckbox @bind-Value="Content.IsPublic" Label="@L["DisplayName:IsPublic"]"></FluentCheckbox>
     </FluentStack>
 
-</AbpDialogForm>
+</AbpFluentForm>

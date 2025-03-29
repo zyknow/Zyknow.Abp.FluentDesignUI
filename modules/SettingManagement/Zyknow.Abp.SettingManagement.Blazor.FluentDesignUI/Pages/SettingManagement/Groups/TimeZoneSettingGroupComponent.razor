@@ -6,7 +6,7 @@
 @inherits Volo.Abp.AspNetCore.Components.AbpComponentBase
 @inject AbpBlazorMessageLocalizerHelper<AbpSettingManagementResource> LH
 
-<AbpDialogForm Content="TimezoneSettings" SubmitClick="UpdateSettingsAsync">
+<AbpFluentForm Content="TimezoneSettings" SubmitClick="UpdateSettingsAsync">
     <FluentSelect TOption="NameValue"
                   Label="@L["DisplayName:Timezone"]"
                   Items="@TimezoneSettings.TimeZoneItems"
@@ -16,4 +16,4 @@
                   Width="100%"
                   @bind-Value="@TimezoneSettings.Timezone" />
 
-</AbpDialogForm>
+</AbpFluentForm>

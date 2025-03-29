@@ -2,7 +2,7 @@
 @inherits Zyknow.Abp.FluentDesignUI.AbpDialogFormBase<TInput,Volo.Abp.PermissionManagement.Localization.AbpPermissionManagementResource>
 
 
-<AbpDialogForm @bind-Loading="_loading" HeaderText="@($"{L["Permissions"]} - {Content.EntityDisplayName}")"
+<AbpFluentForm @bind-Loading="_loading" HeaderText="@($"{L["Permissions"]} - {Content.EntityDisplayName}")"
                Content="@Content" SubmitValidClick="SaveAsync">
     @if (!_groups.IsNullOrEmpty())
     {
@@ -61,4 +61,4 @@
 
         </FluentStack>
     }
-</AbpDialogForm>
+</AbpFluentForm>
