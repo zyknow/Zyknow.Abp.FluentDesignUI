@@ -5,7 +5,7 @@ using Volo.Abp.Timing;
 using Zyknow.Abp.Account.Blazor.FluentDesignUI.Pages.ProfileManagement.Groups;
 using Zyknow.Abp.GroupComponent.FluentDesignUI;
 
-namespace Zyknow.Abp.Account.Blazor.FluentDesignUI.Acconts;
+namespace Zyknow.Abp.Account.Blazor.FluentDesignUI.Account;
 
 public class FluentDesignPasswordManagementGroupContributor : AccountManageGroupComponentContributorBase
 {

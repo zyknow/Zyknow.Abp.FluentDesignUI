@@ -168,7 +168,7 @@
         {
             AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
         });
-        NavigationManager.NavigateTo($"/Account/TicketLogin?ticket={ticket}", forceLoad: true);
+        NavigationManager.NavigateTo($"api/Account/TicketLogin?ticket={ticket}", forceLoad: true);
     }
 
     protected virtual async Task SetTenantAsync()
@@ -197,7 +197,7 @@
     protected virtual async Task OnPostExternalLogin(string provider)
     {
         // var redirectUrl = Url.Page("./Login", pageHandler: "ExternalLoginCallback", values: new { ReturnUrl, ReturnUrlHash });
-        var redirectUrl = $"/Account/ExternalLogin?provider={provider}&returnUrl={Uri.EscapeDataString(ReturnUrl)}&returnUrlHash={Uri.EscapeDataString(ReturnUrlHash)}";
+        var redirectUrl = $"api/Account/ExternalLogin?provider={provider}&returnUrl={Uri.EscapeDataString(ReturnUrl)}&returnUrlHash={Uri.EscapeDataString(ReturnUrlHash)}";
         NavigationManager.NavigateTo(redirectUrl, forceLoad: true);
     }
 

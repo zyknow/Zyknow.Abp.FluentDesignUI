@@ -16,7 +16,7 @@ namespace Zyknow.Abp.Account.Blazor.Server.FluentDesignUI;
 
 public partial class LoginController
 {
-    [HttpGet("/Account/TicketLogin")]
+    [HttpGet("api/Account/TicketLogin")]
     public async Task<IActionResult> Login(string ticket)
     {
         var ticketCache = await loginTicketCache.GetAsync(ticket);
@@ -45,7 +45,7 @@ public partial class LoginController
         }
     }
 
-    [HttpGet("/Account/ExternalLogin")]
+    [HttpGet("api/Account/ExternalLogin")]
     public IActionResult ExternalLogin(string provider, string returnUrl, string returnUrlHash)
     {
         var redirectUrl = Url.Page(
