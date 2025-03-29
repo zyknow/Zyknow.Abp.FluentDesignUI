@@ -2,7 +2,7 @@
 using Volo.Abp.Account;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.Modularity;
-using Zyknow.Abp.Account.Blazor.FluentDesignUI.Profiles;
+using Zyknow.Abp.Account.Blazor.FluentDesignUI.Acconts;
 using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme;
 using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Routing;
 using Zyknow.Abp.GroupComponent.FluentDesignUI;
@@ -19,7 +19,6 @@ public class AbpAccountBlazorFluentDesignModule : AbpModule
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         context.Services.AddAutoMapperObjectMapper<AbpAccountBlazorFluentDesignModule>();
-
         Configure<AbpAutoMapperOptions>(options =>
         {
             options.AddProfile<AbpAccountBlazorFluentDesignAutoMapperProfile>(validate: true);

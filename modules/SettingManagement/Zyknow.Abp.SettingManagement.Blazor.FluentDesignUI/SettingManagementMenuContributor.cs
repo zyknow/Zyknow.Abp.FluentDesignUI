@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular;
 using Volo.Abp.Features;
@@ -10,13 +11,21 @@ using Zyknow.Abp.GroupComponent.FluentDesignUI;
 
 namespace Zyknow.Abp.SettingManagement.Blazor.FluentDesignUI;
 
-public class SettingManagementMenuContributor : IMenuContributor
+public class SettingManagementMenuContributor() : IMenuContributor
 {
     public async Task ConfigureMenuAsync(MenuConfigurationContext context)
     {
         if (context.Menu.Name == StandardMenus.Main)
         {
-            await ConfigureMainMenuAsync(context);
+            try
+            {
+                await ConfigureMainMenuAsync(context);
+            }
+            catch (Exception e)
+            {
+                var logger = context.ServiceProvider.GetRequiredService<ILogger<SettingManagementMenuContributor>>();
+                logger.LogWarning(e, "Error while configuring Setting Management menu");
+            }
         }
     }
 

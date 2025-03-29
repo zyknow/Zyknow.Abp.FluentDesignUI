@@ -1,0 +1,74 @@
+﻿@page "/Account/Login"
+@layout EmptyLayout
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Hosting
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.Extensions.Options
+@using Volo.Abp.Account.Settings
+@using Volo.Abp.Identity
+@using Volo.Abp.Settings
+@using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Themes.FluentDesignTheme
+@using Zyknow.Abp.Account.Blazor.Server.FluentDesignUI.Pages.Components
+@inject ISettingProvider SettingProvider
+@rendermode RenderMode.InteractiveServer
+@inherits Zyknow.Abp.Account.Blazor.FluentDesignUI.AccountBlazorFluentDesignComponentBase
+
+
+
+<section class="user">
+    <div class="user_options-container">
+        <div class="user_options-text">
+            <div class="user_options-unregistered">
+                <h2 class="user_unregistered-title">@L["AreYouANewUser"]</h2>
+                <button class="user_unregistered-signup" id="signup-button">@L["Register"]</button>
+            </div>
+
+            <div class="user_options-registered">
+                <h2 class="user_registered-title">@L["AlreadyRegistered"]</h2>
+                <button class="user_registered-login" id="login-button">@L["Login"]</button>
+            </div>
+        </div>
+        <div class="user_options-forms" id="user_options-forms">
+            <div class="user_forms-login">
+                @* login  *@
+                <LoginComponent></LoginComponent>
+            </div>
+
+            <div class="user_forms-signup">
+                @* register *@
+                <RegisterComponent></RegisterComponent>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    /**
+     * Variables
+     */
+    const signupButton = document.getElementById('signup-button'),
+        loginButton = document.getElementById('login-button'),
+        userForms = document.getElementById('user_options-forms')
+
+    /**
+     * Add event listener to the "Sign Up" button
+     */
+    signupButton.addEventListener('click', () => {
+        userForms.classList.remove('bounceRight')
+        userForms.classList.add('bounceLeft')
+    }, false)
+
+    /**
+     * Add event listener to the "Login" button
+     */
+    loginButton.addEventListener('click', () => {
+        userForms.classList.remove('bounceLeft')
+        userForms.classList.add('bounceRight')
+    }, false)
+</script>
+
+
+@code
+{
+
+}

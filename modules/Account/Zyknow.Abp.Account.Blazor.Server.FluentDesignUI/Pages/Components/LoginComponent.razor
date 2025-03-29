@@ -1,0 +1,218 @@
+﻿@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Hosting
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.Extensions.Caching.Distributed
+@using Microsoft.Extensions.Options
+@using Volo.Abp
+@using Volo.Abp.Account.Localization
+@using Volo.Abp.Account.Settings
+@using Volo.Abp.AspNetCore.Components.Web
+@using Volo.Abp.AspNetCore.Mvc.MultiTenancy
+@using Volo.Abp.Caching
+@using Volo.Abp.Identity
+@using Volo.Abp.Security.Encryption
+@using Volo.Abp.Settings
+@using IdentityUser = Volo.Abp.Identity.IdentityUser
+@inherits Zyknow.Abp.Account.Blazor.FluentDesignUI.AccountBlazorFluentDesignComponentBase
+<FluentStack Orientation="Orientation.Vertical" VerticalGap="20">
+    <FluentLabel Typo="Typography.H2">@L["Login"]</FluentLabel>
+
+    <AbpDialogForm @ref="FormRef" Content="@Input" Localize="@LH.Localize" SubmitClick="LoginAsync">
+        <ChildContent>
+            <FluentTextField @bind-Value="@Input.UserNameOrEmailAddress"
+                             Label="@L["UserNameOrEmailAddress"]"/>
+            <ValidationMessage For="@(() => Input.UserNameOrEmailAddress)"></ValidationMessage>
+
+            <FluentTextField @bind-Value="@Input.Password" Label="@L["Password"]"/>
+            <ValidationMessage For="@(() => Input.Password)"></ValidationMessage>
+
+            <FluentStack HorizontalAlignment="HorizontalAlignment.SpaceBetween"
+                         VerticalAlignment="VerticalAlignment.Center">
+                <FluentCheckbox @bind-Value="@Input.RememberMe" Label="@L["RememberMe"]"></FluentCheckbox>
+                <a href="@ForgotPasswordUrl">@L["ForgotPassword"]</a>
+            </FluentStack>
+        </ChildContent>
+
+        <Footer>
+            <FluentButton Loading="@FormRef.Loading" Appearance="Appearance.Accent"
+                          OnClick="@FormRef.OnSubmitBtnClickAsync">@L["Login"]</FluentButton>
+        </Footer>
+    </AbpDialogForm>
+
+    <FluentStack Orientation="Orientation.Vertical">
+        <FluentLabel Typo="Typography.H5">@L["OrLoginWith"]</FluentLabel>
+    </FluentStack>
+
+
+</FluentStack>
+
+@code {
+    [Inject] protected AbpBlazorMessageLocalizerHelper<AccountResource> LH { get; set; }
+    [Inject] protected ISettingProvider SettingProvider { get; set; }
+    [Inject] protected IAuthenticationSchemeProvider SchemeProvider { get; set; }
+    [Inject] protected IOptions<AbpAccountOptions> AccountOptions { get; set; }
+    [Inject] protected IOptions<IdentityOptions> IdentityOptions { get;set; }
+    [Inject] protected IdentityDynamicClaimsPrincipalContributorCache IdentityDynamicClaimsPrincipalContributorCache { get;set;  }
+    [Inject] protected IWebHostEnvironment WebHostEnvironment { get;set;  }
+    [Inject] protected SignInManager<IdentityUser> SignInManager { get; set; }
+    [Inject] protected UserManager<IdentityUser> UserManager { get; set; }
+    [Inject] protected IAbpTenantAppService AbpTenantAppService { get;set;  }
+    [Inject] protected IDistributedCache<LoginTicketCacheItem> LoginTicketCache { get;set;  }
+    [Inject] protected IStringEncryptionService StringEncryptionService { get;set;  }
+
+    AbpDialogForm<LoginInput> FormRef;
+
+    protected virtual LoginInput Input { get; set; } = new();
+
+    [SupplyParameterFromQuery] private string? ReturnUrl { get; set; }
+
+    [SupplyParameterFromQuery] private string? ReturnUrlHash { get; set; }
+
+    protected virtual string ForgotPasswordUrl { get; set; }
+    protected virtual bool IsSelfRegistrationEnabled { get; set; }
+    protected virtual bool EnableLocalLogin { get; set; }
+
+    // TODO: init these values ?
+    protected virtual bool ShowCancelButton { get; set; }
+    protected virtual bool ShowRequireMigrateSeedMessage { get; set; }
+    
+    
+    protected virtual string TenancyName { get; set; }
+
+    //TODO: Why there is an ExternalProviders if only the VisibleExternalProviders is used.
+    public IEnumerable<ExternalProviderModel> ExternalProviders { get; set; }
+    public IEnumerable<ExternalProviderModel> VisibleExternalProviders => ExternalProviders.Where(x => !String.IsNullOrWhiteSpace(x.DisplayName));
+
+    protected virtual bool IsExternalLoginOnly => EnableLocalLogin == false && ExternalProviders?.Count() == 1;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        ForgotPasswordUrl = NavigationManager.GetUriWithQueryParameters("/Account/ForgotPassword",
+            new Dictionary<string, object>
+            {
+                ["returnUrl"] = ReturnUrl,
+                ["returnUrlHash"] = ReturnUrlHash
+            });
+        IsSelfRegistrationEnabled = await SettingProvider.IsTrueAsync(AccountSettingNames.IsSelfRegistrationEnabled);
+        ExternalProviders = await GetExternalProviders();
+        EnableLocalLogin = await SettingProvider.IsTrueAsync(AccountSettingNames.EnableLocalLogin);
+
+        if (IsExternalLoginOnly)
+        {
+            await OnPostExternalLogin(ExternalProviders.First().AuthenticationScheme);
+        }
+    }
+
+    protected virtual async Task LoginAsync()
+    {
+        try
+        {
+            using (CurrentTenant.Change(Input.TenantId))
+            {
+                await LoginHandlerAsync();
+            }
+        }
+        catch (Exception e)
+        {
+            await HandleErrorAsync(e);
+        }
+    }
+
+    protected virtual async Task LoginHandlerAsync()
+    {
+        var user = await UserManager.FindByNameAsync(Input.UserNameOrEmailAddress);
+        if (user == null)
+        {
+            user = await UserManager.FindByEmailAsync(Input.UserNameOrEmailAddress);
+        }
+
+        if (user == null)
+        {
+            throw new UserFriendlyException(L["InvalidUserNameOrPassword"]);
+        }
+
+        var result = await SignInManager.CheckPasswordSignInAsync(user, Input.Password, lockoutOnFailure: true);
+        if (!result.Succeeded)
+        {
+            if (result.IsLockedOut)
+            {
+                throw new UserFriendlyException(L["UserLockedOutMessage"]);
+            }
+
+            if (result.IsNotAllowed)
+            {
+                throw new UserFriendlyException(L["LoginIsNotAllowed"]);
+            }
+
+            if (result.RequiresTwoFactor)
+            {
+                // TODO: Handle two-factor authentication ?
+                throw new UserFriendlyException(L["TwoFactorAuthenticationRequired"]);
+            }
+
+            throw new UserFriendlyException(L["InvalidUserNameOrPassword"]);
+        }
+
+        var ticket = $@"{Guid.NewGuid().ToString("N")}-{DateTime.Now.ToLongDateString()}";
+        var cacheItem = new LoginTicketCacheItem
+        {
+            UserId = user.Id,
+            TenantId = CurrentTenant.Id,
+            UserNameOrEmailAddress =  Input.UserNameOrEmailAddress,
+            RememberMe = Input.RememberMe,
+            ReturnUrl = ReturnUrl,
+            ReturnUrlHash = ReturnUrlHash
+        };
+        await LoginTicketCache.SetAsync(ticket, cacheItem, new DistributedCacheEntryOptions()
+        {
+            AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+        });
+        NavigationManager.NavigateTo($"/Account/TicketLogin?ticket={ticket}", forceLoad: true);
+    }
+
+    protected virtual async Task SetTenantAsync()
+    {
+        try
+        {
+            var tenant = await AbpTenantAppService.FindTenantByNameAsync(TenancyName);
+            if (tenant == null)
+            {
+                throw new UserFriendlyException(L["TenantNotFoundMessage"]);
+            }
+
+            if (!tenant.IsActive)
+            {
+                throw new UserFriendlyException(L["TenantNotActiveDetails", tenant.Name]);
+            }
+
+            Input.TenantId = tenant.TenantId;
+        }
+        catch (Exception e)
+        {
+            await HandleErrorAsync(e);
+        }
+    }
+
+    protected virtual async Task OnPostExternalLogin(string provider)
+    {
+        // var redirectUrl = Url.Page("./Login", pageHandler: "ExternalLoginCallback", values: new { ReturnUrl, ReturnUrlHash });
+        var redirectUrl = $"/Account/ExternalLogin?provider={provider}&returnUrl={Uri.EscapeDataString(ReturnUrl)}&returnUrlHash={Uri.EscapeDataString(ReturnUrlHash)}";
+        NavigationManager.NavigateTo(redirectUrl, forceLoad: true);
+    }
+
+    protected virtual async Task<List<ExternalProviderModel>> GetExternalProviders()
+    {
+        var schemes = await SchemeProvider.GetAllSchemesAsync();
+
+        return schemes
+            .Where(x => x.DisplayName != null || x.Name.Equals(AccountOptions.Value.WindowsAuthenticationSchemeName, StringComparison.OrdinalIgnoreCase))
+            .Select(x => new ExternalProviderModel
+            {
+                DisplayName = x.DisplayName,
+                AuthenticationScheme = x.Name
+            })
+            .ToList();
+    }
+
+}
