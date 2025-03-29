@@ -20,7 +20,8 @@
 }
 else
 {
-    <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch" Width="100%">
+    <FluentStack Orientation="Orientation.Vertical" VerticalAlignment="VerticalAlignment.SpaceBetween"
+                 HorizontalAlignment="HorizontalAlignment.Stretch" Width="100%" Style="height: 100%" VerticalGap="40">
         @HeaderContentRender
         @BodyContentRender
         @FooterContentRender
@@ -94,7 +95,7 @@ else
         }
         else
         {
-            <FluentStack HorizontalAlignment="HorizontalAlignment.End">
+            <FluentStack HorizontalAlignment="HorizontalAlignment.End" VerticalAlignment="VerticalAlignment.Bottom">
                 <FluentButton Loading="@Loading" Appearance="Appearance.Accent"
                               OnClick="@OnSubmitBtnClickAsync">@UL["Submit"]</FluentButton>
 
