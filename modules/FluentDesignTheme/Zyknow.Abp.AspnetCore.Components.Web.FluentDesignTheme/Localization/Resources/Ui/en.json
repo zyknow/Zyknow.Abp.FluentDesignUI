@@ -6,6 +6,7 @@
     "Info": "Info",
     "Warning": "Warning",
     "Error": "Error",
-    "Success": "Success"
+    "Success": "Success",
+    "NoSelected": "NoSelected"
   }
 }

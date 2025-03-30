@@ -1,0 +1,9 @@
+{
+  "culture": "en",
+  "texts": {
+    "Tenants": "Tenants",
+    "TenantName" : "Tenant Name",
+    "SwitchTenancy": "Switch Tenancy",
+    "SwitchTenancySubMessage": "Leave the name field empty to switch to host."
+  }
+}

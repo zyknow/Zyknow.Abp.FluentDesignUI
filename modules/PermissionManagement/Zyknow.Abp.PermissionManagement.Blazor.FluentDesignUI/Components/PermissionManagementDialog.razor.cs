@@ -1,11 +1,15 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.FluentUI.AspNetCore.Components;
 using Volo.Abp.AspNetCore.Components.Web.Configuration;
 using Volo.Abp.PermissionManagement;
 using Volo.Abp.PermissionManagement.Localization;
 
 namespace Zyknow.Abp.PermissionManagement.Blazor.FluentDesignUI.Components;
 
-public class PermissionManagementDialogInput(string providerName, string? providerKey = null, string entityDisplayName = null)
+public class PermissionManagementDialogInput(
+    string providerName,
+    string? providerKey = null,
+    string entityDisplayName = null)
 {
     public string ProviderName { get; set; } = providerName;
     public string? ProviderKey { get; set; } = providerKey;
@@ -14,16 +18,18 @@ public class PermissionManagementDialogInput(string providerName, string? provid
 
 public partial class PermissionManagementDialog
 {
-    [Inject]
-    protected IPermissionAppService PermissionAppService { get; set; }
+    [Inject] protected IPermissionAppService PermissionAppService { get; set; }
 
     [Inject]
-    protected ICurrentApplicationConfigurationCacheResetService CurrentApplicationConfigurationCacheResetService { get; set; }
+    protected ICurrentApplicationConfigurationCacheResetService CurrentApplicationConfigurationCacheResetService
+    {
+        get;
+        set;
+    }
 
     private List<PermissionGroupDto> _groups;
     private List<PermissionGrantInfoDto> _disabledPermissions = new();
     private string _selectedTabName;
-
 
 
     private bool _loading = false;
@@ -38,7 +44,7 @@ public partial class PermissionManagementDialog
         await ShowAsync(Content.ProviderName, Content.ProviderKey, Content.EntityDisplayName);
     }
 
-    private async Task<bool> SaveAsync()
+    private async Task<DialogResult> SaveAsync()
     {
         try
         {
@@ -54,18 +60,17 @@ public partial class PermissionManagementDialog
 
             await CurrentApplicationConfigurationCacheResetService.ResetAsync();
 
-            return true;
+            return DialogResult.Ok("");
         }
         catch (Exception ex)
         {
             await HandleErrorAsync(ex);
-            return false;
+            return DialogResult.Cancel();
         }
     }
 
     protected virtual async Task CancelAsync()
     {
-
     }
 
     public async Task ShowAsync(string providerName, string providerKey, string entityDisplayName = null)
@@ -171,12 +176,14 @@ public partial class PermissionManagementDialog
         permission.IsGranted = value;
     }
 
-    private PermissionGrantInfoDto GetParentPermission(PermissionGroupDto permissionGroup, PermissionGrantInfoDto permission)
+    private PermissionGrantInfoDto GetParentPermission(PermissionGroupDto permissionGroup,
+        PermissionGrantInfoDto permission)
     {
         return permissionGroup.Permissions.First(x => x.Name == permission.ParentName);
     }
 
-    private List<PermissionGrantInfoDto> GetChildPermissions(PermissionGroupDto permissionGroup, PermissionGrantInfoDto permission)
+    private List<PermissionGrantInfoDto> GetChildPermissions(PermissionGroupDto permissionGroup,
+        PermissionGrantInfoDto permission)
     {
         return permissionGroup.Permissions.Where(x => x.Name.StartsWith(permission.Name)).ToList();
     }

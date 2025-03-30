@@ -96,7 +96,7 @@ public partial class FeatureManagementDialog
     }
 
 
-    protected virtual async Task<bool> SaveAsync()
+    protected virtual async Task<DialogResult> SaveAsync()
     {
         try
         {
@@ -114,13 +114,13 @@ public partial class FeatureManagementDialog
 
             await CurrentApplicationConfigurationCacheResetService.ResetAsync();
 
-            return true;
+            return DialogResult.Ok("");
 
         }
         catch (Exception ex)
         {
             await HandleErrorAsync(ex);
-            return false;
+            return DialogResult.Ok("");
         }
     }
 

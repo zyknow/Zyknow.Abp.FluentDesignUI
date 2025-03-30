@@ -48,10 +48,16 @@ else
 
     [Parameter] public TInput Content { get; set; }
 
+    [Parameter] public EventCallback<TInput> ContentChanged { get; set; }
+
 
     [CascadingParameter] public FluentDialog? Dialog { get; set; }
 
-    [Parameter] public Func<Task<bool>> SubmitValidClick { get; set; }
+    /// <summary>
+    /// The method that will be called when the submit button is clicked and the form is valid.
+    /// if return null value then the dialog will not be closed.
+    /// </summary>
+    [Parameter] public Func<Task<DialogResult?>> SubmitValidClick { get; set; }
 
     [Parameter] public EventCallback SubmitClick { get; set; }
 
@@ -81,7 +87,7 @@ else
         <FluentEditForm @ref="FormRef" Model="@Content">
             <AbpDataAnnotationsValidator Localize="@Localize"/>
             @* <FluentValidationSummary/> *@
-            <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch">
+            <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch" VerticalGap="5">
                 @ChildContent
             </FluentStack>
         </FluentEditForm>
@@ -134,9 +140,12 @@ else
             {
                 if (SubmitValidClick != null)
                 {
-                    var succeeded = await SubmitValidClick.Invoke();
-                    if (succeeded)
-                        await Dialog?.CloseAsync();
+                    var res = await SubmitValidClick.Invoke();
+                    if (res == null)
+                        return;
+
+                    else
+                        await Dialog?.CloseAsync(res);
                 }
                 else
                 {
@@ -144,7 +153,7 @@ else
                     {
                         await SubmitClick.InvokeAsync();
                         if (Dialog != null)
-                            await Dialog?.CloseAsync();
+                            await Dialog?.CloseAsync(DialogResult.Ok(Content));
                     }
                 }
             }

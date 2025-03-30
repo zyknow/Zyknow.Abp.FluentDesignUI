@@ -4,6 +4,7 @@
         <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
     </PropertyGroup>
 
     <ItemGroup>
@@ -14,5 +15,13 @@
     <ItemGroup>
       <ProjectReference Include="..\..\..\core\Zyknow.Abp.GroupComponent.FluentDesignUI\Zyknow.Abp.GroupComponent.FluentDesignUI.csproj" />
       <ProjectReference Include="..\..\FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="9.0.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Localization\Resources\AbpMultiTenancy\*.json" />
     </ItemGroup>
 </Project>

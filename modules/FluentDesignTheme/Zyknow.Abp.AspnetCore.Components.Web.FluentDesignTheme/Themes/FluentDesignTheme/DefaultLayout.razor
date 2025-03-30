@@ -16,7 +16,7 @@ else
             <FluentStack HorizontalGap="20" Orientation="Orientation.Horizontal"
                          HorizontalAlignment="HorizontalAlignment.Left"
                          VerticalAlignment="VerticalAlignment.Center">
-                <Branding CollapsedMenuClick="OnCollapse"/>
+                <Branding CollapsedMenuIconVisible="true" CollapsedMenuClick="OnCollapse"/>
             </FluentStack>
             <FluentSpacer/>
             <NavToolbar/>
@@ -37,11 +37,11 @@ else
                 @*     <ReuseTabs Class="fluent-design-body-reusetabs" TabPaneClass="fluent-design-body-reusetabs-tabpane" *@
                 @*                Draggable></ReuseTabs> *@
                 @* } *@
-                <FluentToastProvider Position="ToastPosition.BottomRight"/>
                 <FluentDialogProvider/>
                 <FluentTooltipProvider/>
                 <FluentMessageBarProvider/>
                 <FluentMenuProvider/>
+                <FluentToastProvider Position="ToastPosition.BottomRight"/>
                 @* <UiPageProgress/> *@
             </FluentBodyContent>
         </div>

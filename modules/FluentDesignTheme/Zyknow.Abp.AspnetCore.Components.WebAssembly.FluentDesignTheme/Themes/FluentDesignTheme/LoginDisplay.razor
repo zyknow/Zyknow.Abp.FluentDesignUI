@@ -57,7 +57,7 @@
     {
         @if (CurrentTenant.Name != null)
         {
-            return $"{CurrentTenant.Name}{CurrentUser.UserName}";
+            return $"{CurrentTenant.Name}\\{CurrentUser.UserName}";
         }
         else
         {

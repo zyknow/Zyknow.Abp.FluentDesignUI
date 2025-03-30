@@ -9,7 +9,7 @@
         <FluentStack HorizontalGap="20" Orientation="Orientation.Horizontal"
                      HorizontalAlignment="HorizontalAlignment.Left"
                      VerticalAlignment="VerticalAlignment.Center">
-            <Branding CollapsedMenuIconVisible="false"/>
+            <Branding/>
         </FluentStack>
         <FluentSpacer/>
         <NavToolbar/>
@@ -19,11 +19,11 @@
         <FluentBodyContent Class="fluent-design-body-content">
             <PageAlert/>
             @Body
-            <FluentToastProvider Position="ToastPosition.BottomRight"/>
             <FluentDialogProvider/>
             <FluentTooltipProvider/>
             <FluentMessageBarProvider/>
             <FluentMenuProvider/>
+            <FluentToastProvider Position="ToastPosition.BottomRight"/>
             @* <UiPageProgress/> *@
         </FluentBodyContent>
     </div>

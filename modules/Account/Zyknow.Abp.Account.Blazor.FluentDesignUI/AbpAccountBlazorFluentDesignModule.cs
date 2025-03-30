@@ -1,7 +1,11 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Localization.Resources.AbpUi;
+using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.Account;
 using Volo.Abp.AutoMapper;
+using Volo.Abp.Localization;
 using Volo.Abp.Modularity;
+using Volo.Abp.MultiTenancy.Localization;
+using Volo.Abp.VirtualFileSystem;
 using Zyknow.Abp.Account.Blazor.FluentDesignUI.Account;
 using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme;
 using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Routing;
@@ -18,6 +22,19 @@ public class AbpAccountBlazorFluentDesignModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
+        
+        Configure<AbpVirtualFileSystemOptions>(options =>
+        {
+            options.FileSets.AddEmbedded<AbpAccountBlazorFluentDesignModule>();
+        });
+
+        context.Services.Configure<AbpLocalizationOptions>(options =>
+        {
+            options.Resources
+                .Get<AbpMultiTenancyResource>()
+                .AddVirtualJson("/Localization/Resources/AbpMultiTenancy");
+        });
+        
         context.Services.AddAutoMapperObjectMapper<AbpAccountBlazorFluentDesignModule>();
         Configure<AbpAutoMapperOptions>(options =>
         {

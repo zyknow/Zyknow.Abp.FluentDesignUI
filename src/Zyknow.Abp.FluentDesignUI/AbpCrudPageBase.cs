@@ -242,14 +242,12 @@ public abstract class AbpCrudPageBase<
         {
             await HandleErrorAsync(ex);
             return null;
-
         }
         finally
         {
             Loading = false;
             await InvokeAsync(StateHasChanged);
         }
-
     }
 
     private IReadOnlyList<TListViewModel> MapToListViewModel(IReadOnlyList<TGetListOutputDto> dtos)
@@ -306,6 +304,7 @@ public abstract class AbpCrudPageBase<
             await HandleErrorAsync(ex);
         }
     }
+
     protected virtual async Task OpenEditDialogAsync(TListViewModel entity)
     {
         try
@@ -317,7 +316,6 @@ public abstract class AbpCrudPageBase<
             EditingEntityId = entity.Id;
             EditingEntity = MapToEditingEntity(entityDto);
             await ShowEditDialogAsync();
-
         }
         catch (Exception ex)
         {
@@ -350,19 +348,19 @@ public abstract class AbpCrudPageBase<
         return ObjectMapper.Map<TUpdateViewModel, TUpdateInput>(updateViewModel);
     }
 
-    protected virtual async Task<bool> CreateEntityAsync()
+    protected virtual async Task<DialogResult?> CreateEntityAsync()
     {
         try
         {
             var createInput = MapToCreateInput(NewEntity);
             await AppService.CreateAsync(createInput);
             await OnCreatedEntityAsync();
-            return true;
+            return DialogResult.Ok(NewEntity);
         }
         catch (Exception ex)
         {
             await HandleErrorAsync(ex);
-            return false;
+            return null;
         }
     }
 
@@ -375,10 +373,9 @@ public abstract class AbpCrudPageBase<
     {
         NewEntity = new TCreateViewModel();
         await GetEntitiesAsync();
-
     }
 
-    protected virtual async Task<bool> UpdateEntityAsync()
+    protected virtual async Task<DialogResult?> UpdateEntityAsync()
     {
         try
         {
@@ -389,12 +386,12 @@ public abstract class AbpCrudPageBase<
             await AppService.UpdateAsync(EditingEntityId, updateInput);
 
             await OnUpdatedEntityAsync();
-            return true;
+            return DialogResult.Ok(EditingEntity);
         }
         catch (Exception ex)
         {
             await HandleErrorAsync(ex);
-            return false;
+            return null;
         }
     }
 
@@ -493,7 +490,8 @@ public abstract class AbpCrudPageBase<
     }
 
 
-    protected virtual Task<IDialogReference> ShowDialogAsync(RenderFragment render, Action<DialogParameters> paraAction = null)
+    protected virtual Task<IDialogReference> ShowDialogAsync(RenderFragment render,
+        Action<DialogParameters> paraAction = null)
     {
         var dialogPara = new DialogParameters();
         paraAction?.Invoke(dialogPara);

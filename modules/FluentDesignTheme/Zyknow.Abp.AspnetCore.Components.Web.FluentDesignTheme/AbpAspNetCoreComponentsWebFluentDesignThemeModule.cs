@@ -31,7 +31,7 @@ public class AbpAspNetCoreComponentsWebFluentDesignThemeModule : AbpModule
         {
             options.Resources
                 .Get<AbpUiResource>()
-                .AddVirtualJson("/Localization/Resources/Ui/FluentDesignWebExtensions");
+                .AddVirtualJson("/Localization/Resources/Ui");
         });
 
 

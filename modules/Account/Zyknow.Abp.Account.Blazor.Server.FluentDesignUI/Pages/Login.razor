@@ -1,74 +1,280 @@
 ﻿@page "/Account/Login"
-@layout EmptyLayout
+@layout AccountPublicLayout
+@rendermode RenderMode.InteractiveServer
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Hosting
 @using Microsoft.AspNetCore.Identity
+@using Microsoft.Extensions.Caching.Distributed
+@using Microsoft.Extensions.Localization
 @using Microsoft.Extensions.Options
+@using Volo.Abp
+@using Volo.Abp.Account.Localization
 @using Volo.Abp.Account.Settings
+@using Volo.Abp.AspNetCore.Components.Web
+@using Volo.Abp.AspNetCore.MultiTenancy
+@using Volo.Abp.AspNetCore.Mvc.MultiTenancy
+@using Volo.Abp.Caching
 @using Volo.Abp.Identity
+@using Volo.Abp.MultiTenancy
+@using Volo.Abp.MultiTenancy.Localization
+@using Volo.Abp.Security.Encryption
 @using Volo.Abp.Settings
-@using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Themes.FluentDesignTheme
+@using Volo.Abp.TenantManagement.Localization
 @using Zyknow.Abp.Account.Blazor.Server.FluentDesignUI.Pages.Components
-@inject ISettingProvider SettingProvider
-@rendermode RenderMode.InteractiveServer
+@using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Themes.FluentDesignTheme
+@using IdentityUser = Volo.Abp.Identity.IdentityUser
+@using Zyknow.Abp.AspnetCore.Components.Server.FluentDesignTheme.Themes.FluentDesignTheme
 @inherits Zyknow.Abp.Account.Blazor.FluentDesignUI.AccountBlazorFluentDesignComponentBase
 
+<FluentStack
+    HorizontalAlignment="HorizontalAlignment.Center"
+    VerticalAlignment="VerticalAlignment.Center">
 
+    <div class="login-card">
+        <FluentStack Orientation="Orientation.Vertical" VerticalGap="20">
+            <FluentStack HorizontalAlignment="HorizontalAlignment.SpaceBetween"
+                         VerticalAlignment="VerticalAlignment.Center">
+                <FluentLabel Typo="Typography.H2">@L["Login"]</FluentLabel>
+                <LanguageSwitch/>
+            </FluentStack>
 
-<section class="user">
-    <div class="user_options-container">
-        <div class="user_options-text">
-            <div class="user_options-unregistered">
-                <h2 class="user_unregistered-title">@L["AreYouANewUser"]</h2>
-                <button class="user_unregistered-signup" id="signup-button">@L["Register"]</button>
-            </div>
+            @if (EnableLocalLogin)
+            {
+                <AbpFluentForm @ref="FormRef" Content="@Input" Localize="@LH.Localize" SubmitClick="LoginAsync">
+                    <Header>
+                        @if (MultiTenancyOptions.Value.IsEnabled &&
+                             (TenantResolveResultAccessor.Result?.AppliedResolvers?.Contains(CookieTenantResolveContributor.ContributorName) == true ||
+                              TenantResolveResultAccessor.Result?.AppliedResolvers?.Contains(QueryStringTenantResolveContributor.ContributorName) == true))
+                        {
+                            <FluentStack Orientation="Orientation.Vertical" VerticalGap="5">
+                                <FluentStack HorizontalAlignment="HorizontalAlignment.SpaceBetween"
+                                             VerticalAlignment="VerticalAlignment.Center">
+                                    <FluentStack Orientation="Orientation.Vertical">
+                                        <FluentLabel Typo="Typography.Subject">@TL["Tenants"]</FluentLabel>
+                                    </FluentStack>
+                                    <div>
+                                        <FluentButton Appearance="Appearance.Stealth"
+                                                      OnClick="ShowSwitchTenancyDialogAsync">@TL["SwitchTenancy"]</FluentButton>
+                                    </div>
+                                </FluentStack>
+                                <FluentLabel
+                                    Typo="Typography.Body">@($@"{Tenant?.Name ?? L["NotSelected"]}")</FluentLabel>
+                            </FluentStack>
+                        }
 
-            <div class="user_options-registered">
-                <h2 class="user_registered-title">@L["AlreadyRegistered"]</h2>
-                <button class="user_registered-login" id="login-button">@L["Login"]</button>
-            </div>
-        </div>
-        <div class="user_options-forms" id="user_options-forms">
-            <div class="user_forms-login">
-                @* login  *@
-                <LoginComponent></LoginComponent>
-            </div>
+                    </Header>
+                    <ChildContent>
+                        <FluentTextField @bind-Value="@Input.UserNameOrEmailAddress"
+                                         Label="@L["UserNameOrEmailAddress"]"/>
+                        <ValidationMessage For="@(() => Input.UserNameOrEmailAddress)"></ValidationMessage>
 
-            <div class="user_forms-signup">
-                @* register *@
-                <RegisterComponent></RegisterComponent>
-            </div>
-        </div>
+                        <FluentTextField @bind-Value="@Input.Password" Label="@L["Password"]"
+                                         TextFieldType="TextFieldType.Password"/>
+                        <ValidationMessage For="@(() => Input.Password)"></ValidationMessage>
+
+                        <FluentStack Style="margin-top: 20px" HorizontalAlignment="HorizontalAlignment.SpaceBetween"
+                                     VerticalAlignment="VerticalAlignment.Center">
+                            <FluentCheckbox @bind-Value="@Input.RememberMe" Label="@L["RememberMe"]"></FluentCheckbox>
+                            <a href="@ForgotPasswordUrl">@L["ForgotPassword"]</a>
+                        </FluentStack>
+                    </ChildContent>
+
+                    <Footer>
+                        <FluentButton Disabled="@Loading" Style="height: 35px" Appearance="Appearance.Accent"
+                                      OnClick="@FormRef.OnSubmitBtnClickAsync">@L["Login"]</FluentButton>
+                    </Footer>
+                </AbpFluentForm>
+            }
+            @if (VisibleExternalProviders.Any())
+            {
+                <FluentStack Orientation="Orientation.Vertical">
+                    <FluentLabel Typo="Typography.H5" c>@L["OrLoginWith"]</FluentLabel>
+
+                    <FluentStack>
+                        @foreach (var provider in VisibleExternalProviders)
+                        {
+                            <FluentButton Style="height: 35px;" Loading="@Loading"
+                                          Appearance="Appearance.Hypertext"
+                                          OnClick="@(() => ExternalLoginAsync(provider.AuthenticationScheme))">@provider.DisplayName</FluentButton>
+                        }
+                    </FluentStack>
+                </FluentStack>
+            }
+
+            @if (!EnableLocalLogin && !VisibleExternalProviders.Any())
+            {
+                <FluentLabel Typo="Typography.Subject" Weight="FontWeight.Bold">@L["InvalidLoginRequest"]</FluentLabel>
+                <FluentLabel Typo="Typography.Subject"
+                             Weight="FontWeight.Bold">@L["ThereAreNoLoginSchemesConfiguredForThisClient"]</FluentLabel>
+            }
+
+        </FluentStack>
     </div>
-</section>
+</FluentStack>
 
-<script>
-    /**
-     * Variables
-     */
-    const signupButton = document.getElementById('signup-button'),
-        loginButton = document.getElementById('login-button'),
-        userForms = document.getElementById('user_options-forms')
-
-    /**
-     * Add event listener to the "Sign Up" button
-     */
-    signupButton.addEventListener('click', () => {
-        userForms.classList.remove('bounceRight')
-        userForms.classList.add('bounceLeft')
-    }, false)
-
-    /**
-     * Add event listener to the "Login" button
-     */
-    loginButton.addEventListener('click', () => {
-        userForms.classList.remove('bounceLeft')
-        userForms.classList.add('bounceRight')
-    }, false)
-</script>
+@code {
+    [Inject] protected IDialogService DialogService { get; set; }
+    [Inject] protected AbpBlazorMessageLocalizerHelper<AccountResource> LH { get; set; }
+    [Inject] protected IStringLocalizer<AbpMultiTenancyResource> TL { get; set; }
+    [Inject] protected ISettingProvider SettingProvider { get; set; }
+    [Inject] protected IAuthenticationSchemeProvider SchemeProvider { get; set; }
+    [Inject] protected IOptions<AbpAccountOptions> AccountOptions { get; set; }
+    [Inject] protected IOptions<AbpMultiTenancyOptions> MultiTenancyOptions { get; set; }
+    [Inject] protected IOptions<IdentityOptions> IdentityOptions { get; set; }
+    [Inject] protected IdentityDynamicClaimsPrincipalContributorCache IdentityDynamicClaimsPrincipalContributorCache { get; set; }
+    [Inject] protected IWebHostEnvironment WebHostEnvironment { get; set; }
+    [Inject] protected SignInManager<IdentityUser> SignInManager { get; set; }
+    [Inject] protected UserManager<IdentityUser> UserManager { get; set; }
+    [Inject] protected IDistributedCache<LoginTicketCacheItem> LoginTicketCache { get; set; }
+    [Inject] protected IStringEncryptionService StringEncryptionService { get; set; }
+    [Inject] protected ITenantResolveResultAccessor TenantResolveResultAccessor { get; set; }
 
 
-@code
-{
+    AbpFluentForm<LoginInput> FormRef;
+
+    protected virtual LoginInput Input { get; set; } = new();
+
+    [SupplyParameterFromQuery] private string? ReturnUrl { get; set; }
+
+    [SupplyParameterFromQuery] private string? ReturnUrlHash { get; set; }
+
+    protected virtual string ForgotPasswordUrl { get; set; }
+    protected virtual bool IsSelfRegistrationEnabled { get; set; }
+    protected virtual bool EnableLocalLogin { get; set; }
+
+    // TODO: init these values ?
+    protected virtual bool ShowCancelButton { get; set; }
+    protected virtual bool ShowRequireMigrateSeedMessage { get; set; }
+
+    protected virtual bool Loading { get; set; }
+
+    protected virtual FindTenantResultDto? Tenant { get; set; }
+
+    //TODO: Why there is an ExternalProviders if only the VisibleExternalProviders is used.
+    public IEnumerable<ExternalProviderModel> ExternalProviders { get; set; }
+    public IEnumerable<ExternalProviderModel> VisibleExternalProviders => ExternalProviders.Where(x => !String.IsNullOrWhiteSpace(x.DisplayName));
+
+    protected virtual bool IsExternalLoginOnly => EnableLocalLogin == false && ExternalProviders?.Count() == 1;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        ForgotPasswordUrl = NavigationManager.GetUriWithQueryParameters("/Account/ForgotPassword",
+            new Dictionary<string, object>
+            {
+                ["returnUrl"] = ReturnUrl,
+                ["returnUrlHash"] = ReturnUrlHash
+            });
+        IsSelfRegistrationEnabled = await SettingProvider.IsTrueAsync(AccountSettingNames.IsSelfRegistrationEnabled);
+        ExternalProviders = await GetExternalProviders();
+        EnableLocalLogin = await SettingProvider.IsTrueAsync(AccountSettingNames.EnableLocalLogin);
+
+        if (IsExternalLoginOnly)
+        {
+            await ExternalLoginAsync(ExternalProviders.First().AuthenticationScheme);
+        }
+    }
+
+    protected virtual async Task LoginAsync()
+    {
+        Loading = true;
+        try
+        {
+            using (CurrentTenant.Change(Input.TenantId))
+            {
+                var user = await UserManager.FindByNameAsync(Input.UserNameOrEmailAddress);
+                if (user == null)
+                {
+                    user = await UserManager.FindByEmailAsync(Input.UserNameOrEmailAddress);
+                }
+
+                if (user == null)
+                {
+                    throw new UserFriendlyException(L["InvalidUserNameOrPassword"]);
+                }
+
+                var result = await SignInManager.CheckPasswordSignInAsync(user, Input.Password, lockoutOnFailure: true);
+                if (!result.Succeeded)
+                {
+                    if (result.IsLockedOut)
+                    {
+                        throw new UserFriendlyException(L["UserLockedOutMessage"]);
+                    }
+
+                    if (result.IsNotAllowed)
+                    {
+                        throw new UserFriendlyException(L["LoginIsNotAllowed"]);
+                    }
+
+                    if (result.RequiresTwoFactor)
+                    {
+                        // TODO: Handle two-factor authentication ?
+                        throw new UserFriendlyException(L["TwoFactorAuthenticationRequired"]);
+                    }
+
+                    throw new UserFriendlyException(L["InvalidUserNameOrPassword"]);
+                }
+
+                using (CurrentTenant.Change(null))
+                {
+                    var ticket = $@"{Guid.NewGuid().ToString("N")}";
+                    var cacheItem = new LoginTicketCacheItem
+                    {
+                        UserId = user.Id,
+                        TenantId = Input.TenantId,
+                        UserNameOrEmailAddress = Input.UserNameOrEmailAddress,
+                        RememberMe = Input.RememberMe,
+                        ReturnUrl = ReturnUrl,
+                        ReturnUrlHash = ReturnUrlHash
+                    };
+                    await LoginTicketCache.SetAsync(ticket, cacheItem, new DistributedCacheEntryOptions()
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+                    });
+                    NavigationManager.NavigateTo($"api/Account/TicketLogin?ticket={ticket}", forceLoad: true);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            await HandleErrorAsync(e);
+            Loading = false;
+        }
+    }
+
+    protected virtual async Task ExternalLoginAsync(string provider)
+    {
+        Loading = true;
+        // var redirectUrl = Url.Page("./Login", pageHandler: "ExternalLoginCallback", values: new { ReturnUrl, ReturnUrlHash });
+        var redirectUrl = $"api/Account/ExternalLogin?provider={provider}&returnUrl={Uri.EscapeDataString(ReturnUrl)}&returnUrlHash={Uri.EscapeDataString(ReturnUrlHash)}";
+        NavigationManager.NavigateTo(redirectUrl, forceLoad: true);
+        Loading = false;
+    }
+
+    protected virtual async Task<List<ExternalProviderModel>> GetExternalProviders()
+    {
+        var schemes = await SchemeProvider.GetAllSchemesAsync();
+
+        return schemes
+            .Where(x => x.DisplayName != null || x.Name.Equals(AccountOptions.Value.WindowsAuthenticationSchemeName, StringComparison.OrdinalIgnoreCase))
+            .Select(x => new ExternalProviderModel
+            {
+                DisplayName = x.DisplayName,
+                AuthenticationScheme = x.Name
+            })
+            .ToList();
+    }
+
+    protected virtual async Task ShowSwitchTenancyDialogAsync()
+    {
+        var dialogRef = await DialogService.ShowDialogAsync<SwitchLoginTenantDialog>(Tenant?.Name, new DialogParameters());
+        var result = await dialogRef.Result;
+        if (!result.Cancelled)
+        {
+            Tenant = result.Data as FindTenantResultDto;
+            Input.TenantId = Tenant?.TenantId;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
 
 }

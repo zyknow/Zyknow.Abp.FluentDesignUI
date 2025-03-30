@@ -2,6 +2,7 @@
 @using System.Globalization
 @using System.Collections.Immutable
 @using Microsoft.AspNetCore.RequestLocalization
+@using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
 @inject ILanguageProvider LanguageProvider
 @inject NavigationManager NavigationManager
 @inject IAbpRequestLocalizationOptionsProvider RequestLocalizationOptionsProvider
@@ -9,10 +10,11 @@
 @if (_otherLanguages != null && _otherLanguages.Any() && _currentLanguage != null)
 {
     <FluentMenuButton
-    ButtonAppearance="@Appearance.Neutral"
-    Text="@_currentLanguage.DisplayName"
-    Items="@_menuItems"
-    OnMenuChanged="args => ChangeLanguage(_otherLanguages.First(x => x.CultureName == args.Id))">
+        IconStart="@(new Size20.Globe())"
+        ButtonAppearance="@Appearance.Stealth"
+        Text="@_currentLanguage.DisplayName"
+        Items="@_menuItems"
+        OnMenuChanged="args => ChangeLanguage(_otherLanguages.First(x => x.CultureName == args.Id))">
     </FluentMenuButton>
 }
 

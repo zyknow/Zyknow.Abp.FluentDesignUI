@@ -6,6 +6,7 @@
     "Info": "信息",
     "Warning": "警告",
     "Error": "错误",
-    "Success": "成功"
+    "Success": "成功",
+    "NoSelected" : "未选择"
   }
 }

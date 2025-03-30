@@ -1,0 +1,39 @@
+﻿@using Zyknow.Abp.FluentDesignUI.Components
+@using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Themes.FluentDesignTheme
+@inherits LayoutComponentBase
+
+<div style="width: 100vw;height: 100vh;" class="abp-account-public-layout">
+    <FluentStack
+                 Class="abp-account-public-layout-container"
+                 HorizontalAlignment="HorizontalAlignment.Center"
+                 Orientation="Orientation.Vertical"
+                 VerticalAlignment="VerticalAlignment.Center"
+                 VerticalGap="40">
+        <div style="scale: 2">
+            <Branding/>
+        </div>
+        <FluentStack
+            HorizontalAlignment="HorizontalAlignment.Center"
+            Orientation="Orientation.Vertical"
+            VerticalAlignment="VerticalAlignment.Center">
+            <PageAlert/>
+            @Body
+        </FluentStack>
+    </FluentStack>
+
+    <FluentDialogProvider/>
+    <FluentTooltipProvider/>
+    <FluentMessageBarProvider/>
+    <FluentMenuProvider/>
+    <FluentToastProvider/>
+</div>
+<style>
+    .abp-account-public-layout {
+        background-color: var(--neutral-layer-4) !important;
+    }
+
+    .abp-account-public-layout-container {
+        height: 100%;
+        width: 100%;
+    }
+</style>

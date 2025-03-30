@@ -1,0 +1,9 @@
+{
+  "culture": "zh-Hans",
+  "texts": {
+    "Tenants": "租户",
+    "TenantName" : "租户名称",
+    "SwitchTenancy": "切换租户",
+    "SwitchTenancySubMessage" : "将名称字段留空以切换到主机端。"
+  }
+}

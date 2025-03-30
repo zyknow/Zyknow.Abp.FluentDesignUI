@@ -21,8 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="Localization\Resources\Ui\FluentDesignWebExtensions\*.json" />
-        <Content Remove="Localization\Resources\Ui\FluentDesignWebExtensions\*.json" />
+        <EmbeddedResource Include="Localization\Resources\Ui\*.json" />
     </ItemGroup>
 
 </Project>
