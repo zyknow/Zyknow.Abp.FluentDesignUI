@@ -143,6 +143,7 @@
     [SupplyParameterFromQuery] protected string? ReturnUrl { get; set; }
 
     [SupplyParameterFromQuery] protected string? ReturnUrlHash { get; set; }
+    [SupplyParameterFromQuery] protected Guid? __tenant { get; set; }
 
     protected virtual string ForgotPasswordUrl { get; set; }
     protected virtual bool IsSelfRegistrationEnabled { get; set; }
@@ -169,17 +170,19 @@
         ForgotPasswordUrl = NavigationManager.GetUriWithQueryParameters("/Account/ForgotPassword",
             new Dictionary<string, object>
             {
-                ["returnUrl"] = ReturnUrl,
-                ["returnUrlHash"] = ReturnUrlHash
+                [nameof(ReturnUrl)] = ReturnUrl,
+                [nameof(ReturnUrlHash)] = ReturnUrlHash,
+                [nameof(__tenant)] = __tenant
             });
-        
+
         RegisterUrl = NavigationManager.GetUriWithQueryParameters("/Account/Register",
             new Dictionary<string, object>
             {
-                ["returnUrl"] = ReturnUrl,
-                ["returnUrlHash"] = ReturnUrlHash
+                [nameof(ReturnUrl)] = ReturnUrl,
+                [nameof(ReturnUrlHash)] = ReturnUrlHash,
+                [nameof(__tenant)] = __tenant
             });
-        
+
         IsSelfRegistrationEnabled = await SettingProvider.IsTrueAsync(AccountSettingNames.IsSelfRegistrationEnabled);
         ExternalProviders = await GetExternalProviders();
         EnableLocalLogin = await SettingProvider.IsTrueAsync(AccountSettingNames.EnableLocalLogin);

@@ -1,0 +1,74 @@
+﻿@* @page "/Account/Register" *@
+@* @layout AccountPublicLayout *@
+@* @rendermode RenderMode.InteractiveServer *@
+@* *@
+@* @using Microsoft.AspNetCore.Authentication *@
+@* @using Microsoft.Extensions.Options *@
+@* @using Volo.Abp.Identity *@
+@* @using Zyknow.Abp.Account.Blazor.Server.FluentDesignUI.Pages.Components *@
+@* @inherits Zyknow.Abp.Account.Blazor.FluentDesignUI.AccountBlazorFluentDesignComponentBase *@
+@* *@
+@* @code { *@
+@*     [SupplyParameterFromQuery] protected string? ReturnUrl { get; set; } *@
+@*     [SupplyParameterFromQuery] protected string? ReturnUrlHash { get; set; } *@
+@*     [SupplyParameterFromQuery] protected string? IsExternalLogin { get; set; } *@
+@*     [SupplyParameterFromQuery] protected string? ExternalLoginAuthSchema { get; set; } *@
+@* *@
+@*     public IEnumerable<ExternalProviderModel> ExternalProviders { get; set; } *@
+@*     public IEnumerable<ExternalProviderModel> VisibleExternalProviders => ExternalProviders.Where(x => !string.IsNullOrWhiteSpace(x.DisplayName)); *@
+@* *@
+@*     public bool EnableLocalRegister { get; set; } *@
+@* *@
+@*     public bool IsExternalLoginOnly => EnableLocalRegister == false && ExternalProviders?.Count() == 1; *@
+@* *@
+@*     public string ExternalLoginScheme => IsExternalLoginOnly ? ExternalProviders?.SingleOrDefault()?.AuthenticationScheme : null; *@
+@* *@
+@*     [Inject] protected IAuthenticationSchemeProvider SchemeProvider { get; } *@
+@*     [Inject] protected IOptions<AbpAccountOptions> AccountOptions { get; } *@
+@*     [Inject] protected IdentityDynamicClaimsPrincipalContributorCache IdentityDynamicClaimsPrincipalContributorCache { get; } *@
+@* *@
+@*     protected override async Task OnInitializedAsync() *@
+@*     { *@
+@*         if (!await CheckSelfRegistrationAsync()) *@
+@*         { *@
+@*             if (IsExternalLoginOnly) *@
+@*             { *@
+@*                 return await OnPostExternalLogin(ExternalLoginScheme); *@
+@*             } *@
+@* *@
+@*             Alerts.Warning(L["SelfRegistrationDisabledMessage"]); *@
+@*         } *@
+@* *@
+@*         await TrySetEmailAsync(); *@
+@*     } *@
+@*      *@
+@*     protected virtual async Task TrySetEmailAsync() *@
+@*     { *@
+@*         if (IsExternalLogin) *@
+@*         { *@
+@*             var externalLoginInfo = await SignInManager.GetExternalLoginInfoAsync(); *@
+@*             if (externalLoginInfo == null) *@
+@*             { *@
+@*                 return; *@
+@*             } *@
+@* *@
+@*             if (!externalLoginInfo.Principal.Identities.Any()) *@
+@*             { *@
+@*                 return; *@
+@*             } *@
+@* *@
+@*             var identity = externalLoginInfo.Principal.Identities.First(); *@
+@*             var emailClaim = identity.FindFirst(AbpClaimTypes.Email) ?? identity.FindFirst(ClaimTypes.Email); *@
+@* *@
+@*             if (emailClaim == null) *@
+@*             { *@
+@*                 return; *@
+@*             } *@
+@* *@
+@*             var userName = await UserManager.GetUserNameFromEmailAsync(emailClaim.Value); *@
+@*             Input = new PostInput { UserName = userName, EmailAddress = emailClaim.Value }; *@
+@*         } *@
+@*     } *@
+@* *@
+@* *@
+@* } *@
