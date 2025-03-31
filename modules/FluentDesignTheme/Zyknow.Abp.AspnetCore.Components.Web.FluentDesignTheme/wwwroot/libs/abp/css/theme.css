@@ -58,3 +58,8 @@ body {
         height: 40px;
     }
 }
+
+.fluent-card {
+    background-color: var(--neutral-fill-layer-rest);
+    padding: 2rem;
+}
