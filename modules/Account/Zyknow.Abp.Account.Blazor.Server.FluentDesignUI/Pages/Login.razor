@@ -19,9 +19,7 @@
 @using Volo.Abp.MultiTenancy.Localization
 @using Volo.Abp.Security.Encryption
 @using Volo.Abp.Settings
-@using Volo.Abp.TenantManagement.Localization
 @using Zyknow.Abp.Account.Blazor.Server.FluentDesignUI.Pages.Components
-@using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Themes.FluentDesignTheme
 @using IdentityUser = Volo.Abp.Identity.IdentityUser
 @using Zyknow.Abp.AspnetCore.Components.Server.FluentDesignTheme.Themes.FluentDesignTheme
 @inherits Zyknow.Abp.Account.Blazor.FluentDesignUI.AccountBlazorFluentDesignComponentBase
@@ -38,31 +36,39 @@
                 <LanguageSwitch/>
             </FluentStack>
 
+            @if (IsSelfRegistrationEnabled)
+            {
+                <FluentStack Orientation="Orientation.Horizontal">
+                    <FluentLabel>@L["AreYouANewUser"]</FluentLabel>
+                    <a href="@RegisterUrl">@L["Register"]</a>
+                </FluentStack>
+            }
+
+            @if (MultiTenancyOptions.Value.IsEnabled &&
+                 (TenantResolveResultAccessor.Result?.AppliedResolvers?.Contains(CookieTenantResolveContributor.ContributorName) == true ||
+                  TenantResolveResultAccessor.Result?.AppliedResolvers?.Contains(QueryStringTenantResolveContributor.ContributorName) == true))
+            {
+                <FluentStack Orientation="Orientation.Vertical" VerticalGap="5">
+                    <FluentStack HorizontalAlignment="HorizontalAlignment.SpaceBetween"
+                                 VerticalAlignment="VerticalAlignment.Center">
+                        <FluentStack Orientation="Orientation.Vertical">
+                            <FluentLabel Typo="Typography.Subject">@TL["Tenants"]</FluentLabel>
+                        </FluentStack>
+                        <div>
+                            <FluentButton Appearance="Appearance.Stealth"
+                                          OnClick="ShowSwitchTenancyDialogAsync">@TL["SwitchTenancy"]</FluentButton>
+                        </div>
+                    </FluentStack>
+                    <FluentLabel
+                        Typo="Typography.Body">@($@"{Tenant?.Name ?? L["NotSelected"]}")</FluentLabel>
+                </FluentStack>
+            }
+
+
+
             @if (EnableLocalLogin)
             {
                 <AbpFluentForm @ref="FormRef" Content="@Input" Localize="@LH.Localize" SubmitClick="LoginAsync">
-                    <Header>
-                        @if (MultiTenancyOptions.Value.IsEnabled &&
-                             (TenantResolveResultAccessor.Result?.AppliedResolvers?.Contains(CookieTenantResolveContributor.ContributorName) == true ||
-                              TenantResolveResultAccessor.Result?.AppliedResolvers?.Contains(QueryStringTenantResolveContributor.ContributorName) == true))
-                        {
-                            <FluentStack Orientation="Orientation.Vertical" VerticalGap="5">
-                                <FluentStack HorizontalAlignment="HorizontalAlignment.SpaceBetween"
-                                             VerticalAlignment="VerticalAlignment.Center">
-                                    <FluentStack Orientation="Orientation.Vertical">
-                                        <FluentLabel Typo="Typography.Subject">@TL["Tenants"]</FluentLabel>
-                                    </FluentStack>
-                                    <div>
-                                        <FluentButton Appearance="Appearance.Stealth"
-                                                      OnClick="ShowSwitchTenancyDialogAsync">@TL["SwitchTenancy"]</FluentButton>
-                                    </div>
-                                </FluentStack>
-                                <FluentLabel
-                                    Typo="Typography.Body">@($@"{Tenant?.Name ?? L["NotSelected"]}")</FluentLabel>
-                            </FluentStack>
-                        }
-
-                    </Header>
                     <ChildContent>
                         <FluentTextField @bind-Value="@Input.UserNameOrEmailAddress"
                                          Label="@L["UserNameOrEmailAddress"]"/>
@@ -134,12 +140,13 @@
 
     protected virtual LoginInput Input { get; set; } = new();
 
-    [SupplyParameterFromQuery] private string? ReturnUrl { get; set; }
+    [SupplyParameterFromQuery] protected string? ReturnUrl { get; set; }
 
-    [SupplyParameterFromQuery] private string? ReturnUrlHash { get; set; }
+    [SupplyParameterFromQuery] protected string? ReturnUrlHash { get; set; }
 
     protected virtual string ForgotPasswordUrl { get; set; }
     protected virtual bool IsSelfRegistrationEnabled { get; set; }
+    protected virtual string RegisterUrl { get; set; }
     protected virtual bool EnableLocalLogin { get; set; }
 
     // TODO: init these values ?
@@ -165,10 +172,17 @@
                 ["returnUrl"] = ReturnUrl,
                 ["returnUrlHash"] = ReturnUrlHash
             });
+        
+        RegisterUrl = NavigationManager.GetUriWithQueryParameters("/Account/Register",
+            new Dictionary<string, object>
+            {
+                ["returnUrl"] = ReturnUrl,
+                ["returnUrlHash"] = ReturnUrlHash
+            });
+        
         IsSelfRegistrationEnabled = await SettingProvider.IsTrueAsync(AccountSettingNames.IsSelfRegistrationEnabled);
         ExternalProviders = await GetExternalProviders();
         EnableLocalLogin = await SettingProvider.IsTrueAsync(AccountSettingNames.EnableLocalLogin);
-
         if (IsExternalLoginOnly)
         {
             await ExternalLoginAsync(ExternalProviders.First().AuthenticationScheme);
