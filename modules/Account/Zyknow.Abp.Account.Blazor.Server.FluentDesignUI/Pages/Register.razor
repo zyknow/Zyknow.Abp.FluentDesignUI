@@ -23,72 +23,74 @@
 @inherits Zyknow.Abp.Account.Blazor.FluentDesignUI.AccountBlazorFluentDesignComponentBase
 
 <div class="public-account-container">
-    <FluentStack Orientation="Orientation.Vertical" VerticalGap="20">
-        <FluentStack HorizontalAlignment="HorizontalAlignment.SpaceBetween"
-                     VerticalAlignment="VerticalAlignment.Center">
-            <FluentLabel Typo="Typography.H2" Weight="FontWeight.Bold">@L["Register"]</FluentLabel>
-            <LanguageSwitch/>
-        </FluentStack>
-
-
-        <FluentStack Orientation="Orientation.Horizontal">
-            <FluentLabel>@L["AlreadyRegistered"]</FluentLabel>
-            <a href="@LoginUrl">@L["Login"]</a>
-        </FluentStack>
-
-        @* TODO:  should check ? *@
-        @* MultiTenancyOptions.Value.IsEnabled && (TenantResolveResultAccessor.Result?.AppliedResolvers?.Contains(CookieTenantResolveContributor.ContributorName) == true || TenantResolveResultAccessor.Result?.AppliedResolvers?.Contains(QueryStringTenantResolveContributor.ContributorName) == true)  *@
-        @if (MultiTenancyOptions.Value.IsEnabled)
-        {
-            <TenantSwitch/>
-        }
-
-        <AbpFluentForm @ref="FormRef" Content="@Input" Localize="@LH.Localize" SubmitClick="RegisterAsync">
-            <ChildContent>
-                @if (EnableLocalRegister || IsExternalLogin)
-                {
-                    <FluentTextField @bind-Value="@Input.UserName"
-                                     Label="@L["UserName"]"/>
-                    <ValidationMessage For="@(() => Input.UserName)"></ValidationMessage>
-
-                    <FluentTextField @bind-Value="@Input.EmailAddress"
-                                     Label="@L["EmailAddress"]"/>
-                    <ValidationMessage For="@(() => Input.EmailAddress)"></ValidationMessage>
-                }
-
-                @if (!IsExternalLogin && EnableLocalRegister)
-                {
-                    <FluentTextField @bind-Value="@Input.Password" Label="@L["Password"]"
-                                     TextFieldType="TextFieldType.Password"/>
-                    <ValidationMessage For="@(() => Input.Password)"></ValidationMessage>
-                }
-            </ChildContent>
-
-            <Footer>
-                @if (EnableLocalRegister || IsExternalLogin)
-                {
-                    <FluentButton Disabled="@Loading" Style="height: 35px" Appearance="Appearance.Accent"
-                                  OnClick="@FormRef.OnSubmitBtnClickAsync">@L["Register"]</FluentButton>
-                }
-
-            </Footer>
-        </AbpFluentForm>
-        @if (VisibleExternalProviders.Any())
-        {
-            <FluentStack Orientation="Orientation.Vertical">
-                <FluentLabel Typo="Typography.H5" c>@L["OrLoginWith"]</FluentLabel>
-
-                <FluentStack>
-                    @foreach (var provider in VisibleExternalProviders)
-                    {
-                        <FluentButton Style="height: 35px;" Loading="@Loading"
-                                      Appearance="Appearance.Hypertext"
-                                      OnClick="@(() => ExternalLoginAsync(provider.AuthenticationScheme))">@provider.DisplayName</FluentButton>
-                    }
-                </FluentStack>
+    <AbpFluentForm @ref="FormRef" Content="@Input" Localize="@LH.Localize" SubmitClick="RegisterAsync">
+        <Header>
+            <FluentStack HorizontalAlignment="HorizontalAlignment.SpaceBetween"
+                         VerticalAlignment="VerticalAlignment.Center">
+                <FluentLabel Typo="Typography.H2" Weight="FontWeight.Bold">@L["Register"]</FluentLabel>
+                <LanguageSwitch/>
             </FluentStack>
-        }
-    </FluentStack>
+
+
+
+            @* TODO:  should check ? *@
+            @* MultiTenancyOptions.Value.IsEnabled && (TenantResolveResultAccessor.Result?.AppliedResolvers?.Contains(CookieTenantResolveContributor.ContributorName) == true || TenantResolveResultAccessor.Result?.AppliedResolvers?.Contains(QueryStringTenantResolveContributor.ContributorName) == true)  *@
+            @if (MultiTenancyOptions.Value.IsEnabled)
+            {
+                <TenantSwitch/>
+            }
+        </Header>
+        <ChildContent>
+
+            <FluentStack Orientation="Orientation.Horizontal" Style="margin-bottom: 20px;">
+                <FluentLabel>@L["AlreadyRegistered"]</FluentLabel>
+                <a href="@LoginUrl">@L["Login"]</a>
+            </FluentStack>
+
+            @if (EnableLocalRegister || IsExternalLogin)
+            {
+                <FluentTextField @bind-Value="@Input.UserName"
+                                 Label="@L["UserName"]"/>
+                <ValidationMessage For="@(() => Input.UserName)"></ValidationMessage>
+
+                <FluentTextField @bind-Value="@Input.EmailAddress"
+                                 Label="@L["EmailAddress"]"/>
+                <ValidationMessage For="@(() => Input.EmailAddress)"></ValidationMessage>
+            }
+
+            @if (!IsExternalLogin && EnableLocalRegister)
+            {
+                <FluentTextField @bind-Value="@Input.Password" Label="@L["Password"]"
+                                 TextFieldType="TextFieldType.Password"/>
+                <ValidationMessage For="@(() => Input.Password)"></ValidationMessage>
+            }
+        </ChildContent>
+
+        <Footer>
+            @if (EnableLocalRegister || IsExternalLogin)
+            {
+                <FluentButton Disabled="@Loading" Style="height: 35px" Appearance="Appearance.Accent"
+                              OnClick="@FormRef.OnSubmitBtnClickAsync">@L["Register"]</FluentButton>
+            }
+
+            @if (VisibleExternalProviders.Any())
+            {
+                <FluentStack Orientation="Orientation.Vertical">
+                    <FluentLabel Typo="Typography.H5" c>@L["OrRegisterWith"]</FluentLabel>
+
+                    <FluentStack>
+                        @foreach (var provider in VisibleExternalProviders)
+                        {
+                            <FluentButton Style="height: 35px;" Loading="@Loading"
+                                          Appearance="Appearance.Hypertext"
+                                          OnClick="@(() => ExternalLoginAsync(provider.AuthenticationScheme))">@provider.DisplayName</FluentButton>
+                        }
+                    </FluentStack>
+                </FluentStack>
+            }
+
+        </Footer>
+    </AbpFluentForm>
 </div>
 
 @code {
@@ -299,4 +301,5 @@
 
         return user.Id;
     }
+
 }
