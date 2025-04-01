@@ -219,7 +219,7 @@
                 AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
             });
 
-            var redirectUrl = NavigationManager.GetUriWithQueryParameters("/Account/LoginSucceededRedirect",
+            var redirectUrl = NavigationManager.GetUriWithQueryParameters("/api/Account/LoginSucceededRedirect",
                 new Dictionary<string, object>
                 {
                     ["ticket"] = ticket
