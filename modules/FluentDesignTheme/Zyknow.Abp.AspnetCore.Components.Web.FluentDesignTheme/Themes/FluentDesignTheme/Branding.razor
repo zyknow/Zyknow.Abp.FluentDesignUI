@@ -17,7 +17,7 @@
                     <img style="height: 30px" src="@BrandingProvider.LogoUrl.TrimStart('/', '~')"
                          alt="@BrandingProvider.AppName"/>
                 }
-                <FluentLabel Color="Color.Neutral" Typo="Typography.Header"
+                <FluentLabel Color="@TitleColor" Typo="Typography.Header"
                              Style="font-weight: bold">@BrandingProvider.AppName</FluentLabel>
             </FluentStack>
 
@@ -31,4 +31,6 @@
     [Parameter] public EventCallback CollapsedMenuClick { get; set; }
 
     [Parameter] public bool CollapsedMenuIconVisible { get; set; } = false;
+
+    [Parameter] public Color TitleColor { get; set; } = Color.Neutral;
 }

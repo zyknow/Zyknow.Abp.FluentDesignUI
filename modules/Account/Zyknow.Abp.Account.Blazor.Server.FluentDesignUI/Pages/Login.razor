@@ -21,79 +21,77 @@
 @using Zyknow.Abp.AspnetCore.Components.Server.FluentDesignTheme.Themes.FluentDesignTheme
 @inherits Zyknow.Abp.Account.Blazor.FluentDesignUI.AccountBlazorFluentDesignComponentBase
 
-<div class="public-account-container">
-    <AbpFluentForm @ref="FormRef" Content="@Input" Localize="@LH.Localize" SubmitClick="LoginAsync">
-        <Header>
-            <FluentStack HorizontalAlignment="HorizontalAlignment.SpaceBetween"
-                         VerticalAlignment="VerticalAlignment.Center">
-                <FluentLabel Typo="Typography.H2" Weight="FontWeight.Bold">@L["Login"]</FluentLabel>
-                <LanguageSwitch/>
+<AbpFluentForm @ref="FormRef" Content="@Input" Localize="@LH.Localize" SubmitClick="LoginAsync">
+    <Header>
+        <FluentStack HorizontalAlignment="HorizontalAlignment.SpaceBetween"
+                     VerticalAlignment="VerticalAlignment.Center">
+            <FluentLabel Typo="Typography.H2" Weight="FontWeight.Bold">@L["Login"]</FluentLabel>
+            <LanguageSwitch/>
+        </FluentStack>
+
+        @* TODO:  should check ? *@
+        @* MultiTenancyOptions.Value.IsEnabled && (TenantResolveResultAccessor.Result?.AppliedResolvers?.Contains(CookieTenantResolveContributor.ContributorName) == true || TenantResolveResultAccessor.Result?.AppliedResolvers?.Contains(QueryStringTenantResolveContributor.ContributorName) == true)  *@
+        @if (MultiTenancyOptions.Value.IsEnabled)
+        {
+            <TenantSwitch/>
+        }
+    </Header>
+    <ChildContent>
+        @if (IsSelfRegistrationEnabled)
+        {
+            <FluentStack Orientation="Orientation.Horizontal" Style="margin-bottom: 20px;">
+                <FluentLabel>@L["AreYouANewUser"]</FluentLabel>
+                <a href="@RegisterUrl">@L["Register"]</a>
             </FluentStack>
+        }
+        @if (EnableLocalLogin)
+        {
+            <FluentTextField @bind-Value="@Input.UserNameOrEmailAddress"
+                             Label="@L["UserNameOrEmailAddress"]"/>
+            <ValidationMessage For="@(() => Input.UserNameOrEmailAddress)"></ValidationMessage>
 
-            @* TODO:  should check ? *@
-            @* MultiTenancyOptions.Value.IsEnabled && (TenantResolveResultAccessor.Result?.AppliedResolvers?.Contains(CookieTenantResolveContributor.ContributorName) == true || TenantResolveResultAccessor.Result?.AppliedResolvers?.Contains(QueryStringTenantResolveContributor.ContributorName) == true)  *@
-            @if (MultiTenancyOptions.Value.IsEnabled)
-            {
-                <TenantSwitch/>
-            }
-        </Header>
-        <ChildContent>
-            @if (IsSelfRegistrationEnabled)
-            {
-                <FluentStack Orientation="Orientation.Horizontal" Style="margin-bottom: 20px;">
-                    <FluentLabel>@L["AreYouANewUser"]</FluentLabel>
-                    <a href="@RegisterUrl">@L["Register"]</a>
+            <FluentTextField @bind-Value="@Input.Password" Label="@L["Password"]"
+                             TextFieldType="TextFieldType.Password"/>
+            <ValidationMessage For="@(() => Input.Password)"></ValidationMessage>
+
+            <FluentStack Style="margin-top: 20px" HorizontalAlignment="HorizontalAlignment.SpaceBetween"
+                         VerticalAlignment="VerticalAlignment.Center">
+                <FluentCheckbox @bind-Value="@Input.RememberMe" Label="@L["RememberMe"]"></FluentCheckbox>
+                <a href="@ForgotPasswordUrl">@L["ForgotPassword"]</a>
+            </FluentStack>
+        }
+
+    </ChildContent>
+
+    <Footer>
+        <FluentButton Disabled="@Loading" Style="height: 35px" Appearance="Appearance.Accent"
+                      OnClick="@FormRef.OnSubmitBtnClickAsync">@L["Login"]</FluentButton>
+
+        @if (VisibleExternalProviders.Any())
+        {
+            <FluentStack Orientation="Orientation.Vertical">
+                <FluentLabel Typo="Typography.H5" c>@L["OrLoginWith"]</FluentLabel>
+
+                <FluentStack>
+                    @foreach (var provider in VisibleExternalProviders)
+                    {
+                        <FluentButton Style="height: 35px;" Loading="@Loading"
+                                      Appearance="Appearance.Hypertext"
+                                      OnClick="@(() => ExternalLoginAsync(provider.AuthenticationScheme))">@provider.DisplayName</FluentButton>
+                    }
                 </FluentStack>
-            }
-            @if (EnableLocalLogin)
-            {
-                <FluentTextField @bind-Value="@Input.UserNameOrEmailAddress"
-                                 Label="@L["UserNameOrEmailAddress"]"/>
-                <ValidationMessage For="@(() => Input.UserNameOrEmailAddress)"></ValidationMessage>
+            </FluentStack>
+        }
 
-                <FluentTextField @bind-Value="@Input.Password" Label="@L["Password"]"
-                                 TextFieldType="TextFieldType.Password"/>
-                <ValidationMessage For="@(() => Input.Password)"></ValidationMessage>
-
-                <FluentStack Style="margin-top: 20px" HorizontalAlignment="HorizontalAlignment.SpaceBetween"
-                             VerticalAlignment="VerticalAlignment.Center">
-                    <FluentCheckbox @bind-Value="@Input.RememberMe" Label="@L["RememberMe"]"></FluentCheckbox>
-                    <a href="@ForgotPasswordUrl">@L["ForgotPassword"]</a>
-                </FluentStack>
-            }
-
-        </ChildContent>
-
-        <Footer>
-            <FluentButton Disabled="@Loading" Style="height: 35px" Appearance="Appearance.Accent"
-                          OnClick="@FormRef.OnSubmitBtnClickAsync">@L["Login"]</FluentButton>
-
-            @if (VisibleExternalProviders.Any())
-            {
-                <FluentStack Orientation="Orientation.Vertical">
-                    <FluentLabel Typo="Typography.H5" c>@L["OrLoginWith"]</FluentLabel>
-
-                    <FluentStack>
-                        @foreach (var provider in VisibleExternalProviders)
-                        {
-                            <FluentButton Style="height: 35px;" Loading="@Loading"
-                                          Appearance="Appearance.Hypertext"
-                                          OnClick="@(() => ExternalLoginAsync(provider.AuthenticationScheme))">@provider.DisplayName</FluentButton>
-                        }
-                    </FluentStack>
-                </FluentStack>
-            }
-
-            @if (!EnableLocalLogin && !VisibleExternalProviders.Any())
-            {
-                <FluentLabel Typo="Typography.Subject"
-                             Weight="FontWeight.Bold">@L["InvalidLoginRequest"]</FluentLabel>
-                <FluentLabel Typo="Typography.Subject"
-                             Weight="FontWeight.Bold">@L["ThereAreNoLoginSchemesConfiguredForThisClient"]</FluentLabel>
-            }
-        </Footer>
-    </AbpFluentForm>
-</div>
+        @if (!EnableLocalLogin && !VisibleExternalProviders.Any())
+        {
+            <FluentLabel Typo="Typography.Subject"
+                         Weight="FontWeight.Bold">@L["InvalidLoginRequest"]</FluentLabel>
+            <FluentLabel Typo="Typography.Subject"
+                         Weight="FontWeight.Bold">@L["ThereAreNoLoginSchemesConfiguredForThisClient"]</FluentLabel>
+        }
+    </Footer>
+</AbpFluentForm>
 
 @code {
     [Inject] protected IDialogService DialogService { get; set; }

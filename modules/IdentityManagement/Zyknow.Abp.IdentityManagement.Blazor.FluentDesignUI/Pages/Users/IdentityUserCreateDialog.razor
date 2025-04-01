@@ -1,12 +1,12 @@
 ﻿@using TInput = Volo.Abp.Identity.IdentityUserCreateDto
 @using TResource = Volo.Abp.Identity.Localization.IdentityResource
-@inherits AbpDialogFormBase<TInput,TResource>
+@inherits AbpDialogFormBase<TInput, TResource>
 
 <AbpFluentForm HeaderText="@L["NewUser"]"
-                         Content="@Content"
-                         CancelClick="@CancelClick"
-                         Localize="@LH.Localize"
-                         SubmitValidClick="@SubmitClick">
+               Content="@Content"
+               CancelClick="@CancelClick"
+               Localize="@LH.Localize"
+               SubmitValidClick="@SubmitClick">
 
     <FluentTabs>
         <FluentTab Label="@L["UserInformations"]">
@@ -40,7 +40,7 @@
             </FluentStack>
         </FluentTab>
 
-        <FluentTab Label="@L["Roles"]">
+        <FluentTab Label="@(@$"{@L["Roles"]}({AssignRoles.Count(x => x.IsAssigned)})")">
             <FluentStack Orientation="Orientation.Vertical">
                 @if (!AssignRoles.IsNullOrEmpty())
                 {
@@ -50,7 +50,7 @@
                     }
                 }
             </FluentStack>
-  
+
         </FluentTab>
     </FluentTabs>
 </AbpFluentForm>

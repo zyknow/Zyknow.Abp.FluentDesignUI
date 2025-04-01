@@ -1,49 +1,45 @@
 ﻿@using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Themes.FluentDesignTheme
 @inherits LayoutComponentBase
 
-<div style="width: 100vw;height: 100vh;" class="abp-account-public-layout">
+<FluentStack
+    Class="abp-account-public-layout"
+    HorizontalAlignment="HorizontalAlignment.Center"
+    Orientation="Orientation.Vertical"
+    VerticalAlignment="VerticalAlignment.Center"
+    VerticalGap="40">
+    <div style="scale: 2">
+        <Branding TitleColor="Color.Lightweight"/>
+    </div>
     <FluentStack
         Class="abp-account-public-layout-container"
-        HorizontalAlignment="HorizontalAlignment.Center"
+        HorizontalAlignment="HorizontalAlignment.Stretch"
         Orientation="Orientation.Vertical"
-        VerticalAlignment="VerticalAlignment.Center"
-        VerticalGap="40">
-        <div style="scale: 2">
-            <Branding/>
-        </div>
-        <FluentStack
-            HorizontalAlignment="HorizontalAlignment.Center"
-            Orientation="Orientation.Vertical"
-            VerticalAlignment="VerticalAlignment.Center">
-            <PageAlert/>
-            @Body
-        </FluentStack>
+        VerticalAlignment="VerticalAlignment.Center">
+        <PageAlert/>
+        @Body
     </FluentStack>
+</FluentStack>
 
-    <FluentDialogProvider/>
-    <FluentTooltipProvider/>
-    <FluentMessageBarProvider/>
-    <FluentMenuProvider/>
-    <FluentToastProvider/>
-</div>
+<FluentDialogProvider/>
+<FluentTooltipProvider/>
+<FluentMessageBarProvider/>
+<FluentMenuProvider/>
+<FluentToastProvider/>
 
 
 <style>
     .abp-account-public-layout {
+        height: 100vh;
+        width: 100vw;
         /*background: var(--neutral-layer-4) !important;*/
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         background-image: url("_content/Zyknow.Abp.Account.Blazor.Server.FluentDesignUI/account-public-background.svg");
     }
 
     .abp-account-public-layout-container {
-        height: 100%;
-        width: 100%;
-    }
-
-    .public-account-container {
         box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
         background-color: var(--neutral-fill-layer-rest);
-        width: 380px;
+        width: 380px !important;
         padding: 44px;
     }
 </style>

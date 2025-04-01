@@ -6,7 +6,7 @@
     <FluentStack HorizontalAlignment="HorizontalAlignment.SpaceBetween"
                  VerticalAlignment="VerticalAlignment.Center">
         <FluentStack Orientation="Orientation.Vertical">
-            <FluentLabel Typo="Typography.Subject">@TL["Tenants"]</FluentLabel>
+            <FluentLabel Typo="Typography.Body" Color="Color.Info">@TL["Tenants"]</FluentLabel>
         </FluentStack>
         <div>
             <FluentButton Appearance="Appearance.Stealth"
@@ -14,7 +14,7 @@
         </div>
     </FluentStack>
     <FluentLabel
-        Typo="Typography.Body">@($@"{CurrentTenant?.Name ?? L["NotSelected"]}")</FluentLabel>
+        Typo="Typography.Subject"  Color="Color.Info">@($@"{CurrentTenant?.Name ?? L["NotSelected"]}")</FluentLabel>
 </FluentStack>
 
 @code {

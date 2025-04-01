@@ -236,7 +236,7 @@
     protected override Task<IDialogReference> ShowDialogAsync(RenderFragment render, Action<DialogParameters> paraAction = null)
     {
         var dialogPara = new DialogParameters();
-        dialogPara.Height = "70vh";
+        dialogPara.Height = "80vh";
         paraAction?.Invoke(dialogPara);
         return DialogService.ShowDialogAsync(render, dialogPara);
     }
