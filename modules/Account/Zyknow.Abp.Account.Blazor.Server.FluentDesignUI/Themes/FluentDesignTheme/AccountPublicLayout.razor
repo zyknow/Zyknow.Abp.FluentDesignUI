@@ -2,7 +2,7 @@
 @inherits LayoutComponentBase
 
 <FluentStack
-    Class="abp-account-public-layout"
+    Class="account-public-layout"
     HorizontalAlignment="HorizontalAlignment.Center"
     Orientation="Orientation.Vertical"
     VerticalAlignment="VerticalAlignment.Center"
@@ -11,7 +11,7 @@
         <Branding TitleColor="Color.Lightweight"/>
     </div>
     <FluentStack
-        Class="abp-account-public-layout-container"
+        Class="account-public-layout-container"
         HorizontalAlignment="HorizontalAlignment.Stretch"
         Orientation="Orientation.Vertical"
         VerticalAlignment="VerticalAlignment.Center">
@@ -26,9 +26,8 @@
 <FluentMenuProvider/>
 <FluentToastProvider/>
 
-
-<style>
-    .abp-account-public-layout {
+<style scoped>
+    .account-public-layout {
         height: 100vh;
         width: 100vw;
         /*background: var(--neutral-layer-4) !important;*/
@@ -36,7 +35,7 @@
         background-image: url("_content/Zyknow.Abp.Account.Blazor.Server.FluentDesignUI/account-public-background.svg");
     }
 
-    .abp-account-public-layout-container {
+    .account-public-layout-container {
         box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
         background-color: var(--neutral-fill-layer-rest);
         width: 380px !important;
