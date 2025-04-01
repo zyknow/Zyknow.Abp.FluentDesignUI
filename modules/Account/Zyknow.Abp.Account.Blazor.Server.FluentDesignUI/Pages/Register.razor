@@ -1,74 +1,302 @@
-﻿@* @page "/Account/Register" *@
-@* @layout AccountPublicLayout *@
-@* @rendermode RenderMode.InteractiveServer *@
-@* *@
-@* @using Microsoft.AspNetCore.Authentication *@
-@* @using Microsoft.Extensions.Options *@
-@* @using Volo.Abp.Identity *@
-@* @using Zyknow.Abp.Account.Blazor.Server.FluentDesignUI.Pages.Components *@
-@* @inherits Zyknow.Abp.Account.Blazor.FluentDesignUI.AccountBlazorFluentDesignComponentBase *@
-@* *@
-@* @code { *@
-@*     [SupplyParameterFromQuery] protected string? ReturnUrl { get; set; } *@
-@*     [SupplyParameterFromQuery] protected string? ReturnUrlHash { get; set; } *@
-@*     [SupplyParameterFromQuery] protected string? IsExternalLogin { get; set; } *@
-@*     [SupplyParameterFromQuery] protected string? ExternalLoginAuthSchema { get; set; } *@
-@* *@
-@*     public IEnumerable<ExternalProviderModel> ExternalProviders { get; set; } *@
-@*     public IEnumerable<ExternalProviderModel> VisibleExternalProviders => ExternalProviders.Where(x => !string.IsNullOrWhiteSpace(x.DisplayName)); *@
-@* *@
-@*     public bool EnableLocalRegister { get; set; } *@
-@* *@
-@*     public bool IsExternalLoginOnly => EnableLocalRegister == false && ExternalProviders?.Count() == 1; *@
-@* *@
-@*     public string ExternalLoginScheme => IsExternalLoginOnly ? ExternalProviders?.SingleOrDefault()?.AuthenticationScheme : null; *@
-@* *@
-@*     [Inject] protected IAuthenticationSchemeProvider SchemeProvider { get; } *@
-@*     [Inject] protected IOptions<AbpAccountOptions> AccountOptions { get; } *@
-@*     [Inject] protected IdentityDynamicClaimsPrincipalContributorCache IdentityDynamicClaimsPrincipalContributorCache { get; } *@
-@* *@
-@*     protected override async Task OnInitializedAsync() *@
-@*     { *@
-@*         if (!await CheckSelfRegistrationAsync()) *@
-@*         { *@
-@*             if (IsExternalLoginOnly) *@
-@*             { *@
-@*                 return await OnPostExternalLogin(ExternalLoginScheme); *@
-@*             } *@
-@* *@
-@*             Alerts.Warning(L["SelfRegistrationDisabledMessage"]); *@
-@*         } *@
-@* *@
-@*         await TrySetEmailAsync(); *@
-@*     } *@
-@*      *@
-@*     protected virtual async Task TrySetEmailAsync() *@
-@*     { *@
-@*         if (IsExternalLogin) *@
-@*         { *@
-@*             var externalLoginInfo = await SignInManager.GetExternalLoginInfoAsync(); *@
-@*             if (externalLoginInfo == null) *@
-@*             { *@
-@*                 return; *@
-@*             } *@
-@* *@
-@*             if (!externalLoginInfo.Principal.Identities.Any()) *@
-@*             { *@
-@*                 return; *@
-@*             } *@
-@* *@
-@*             var identity = externalLoginInfo.Principal.Identities.First(); *@
-@*             var emailClaim = identity.FindFirst(AbpClaimTypes.Email) ?? identity.FindFirst(ClaimTypes.Email); *@
-@* *@
-@*             if (emailClaim == null) *@
-@*             { *@
-@*                 return; *@
-@*             } *@
-@* *@
-@*             var userName = await UserManager.GetUserNameFromEmailAsync(emailClaim.Value); *@
-@*             Input = new PostInput { UserName = userName, EmailAddress = emailClaim.Value }; *@
-@*         } *@
-@*     } *@
-@* *@
-@* *@
-@* } *@
+﻿@page "/Account/Register"
+@layout AccountPublicLayout
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.Extensions.Logging
+@using Microsoft.Extensions.Options
+@using Volo.Abp
+@using Volo.Abp.Account.Localization
+@using Volo.Abp.Account.Settings
+@using Volo.Abp.AspNetCore.Components.Web
+@using Volo.Abp.AspNetCore.ExceptionHandling
+@using Volo.Abp.AspNetCore.MultiTenancy
+@using Volo.Abp.ExceptionHandling
+@using Volo.Abp.Guids
+@using Volo.Abp.Identity
+@using Volo.Abp.MultiTenancy
+@using Volo.Abp.Security.Claims
+@using Volo.Abp.Settings
+@using Zyknow.Abp.Account.Blazor.Server.FluentDesignUI.Pages.Components
+@using IdentityUser = Volo.Abp.Identity.IdentityUser
+@using Zyknow.Abp.AspnetCore.Components.Server.FluentDesignTheme.Themes.FluentDesignTheme
+@inherits Zyknow.Abp.Account.Blazor.FluentDesignUI.AccountBlazorFluentDesignComponentBase
+
+<div class="public-account-container">
+    <FluentStack Orientation="Orientation.Vertical" VerticalGap="20">
+        <FluentStack HorizontalAlignment="HorizontalAlignment.SpaceBetween"
+                     VerticalAlignment="VerticalAlignment.Center">
+            <FluentLabel Typo="Typography.H2" Weight="FontWeight.Bold">@L["Register"]</FluentLabel>
+            <LanguageSwitch/>
+        </FluentStack>
+
+
+        <FluentStack Orientation="Orientation.Horizontal">
+            <FluentLabel>@L["AlreadyRegistered"]</FluentLabel>
+            <a href="@LoginUrl">@L["Login"]</a>
+        </FluentStack>
+
+        @* TODO:  should check ? *@
+        @* MultiTenancyOptions.Value.IsEnabled && (TenantResolveResultAccessor.Result?.AppliedResolvers?.Contains(CookieTenantResolveContributor.ContributorName) == true || TenantResolveResultAccessor.Result?.AppliedResolvers?.Contains(QueryStringTenantResolveContributor.ContributorName) == true)  *@
+        @if (MultiTenancyOptions.Value.IsEnabled)
+        {
+            <TenantSwitch/>
+        }
+
+        <AbpFluentForm @ref="FormRef" Content="@Input" Localize="@LH.Localize" SubmitClick="RegisterAsync">
+            <ChildContent>
+                @if (EnableLocalRegister || IsExternalLogin)
+                {
+                    <FluentTextField @bind-Value="@Input.UserName"
+                                     Label="@L["UserName"]"/>
+                    <ValidationMessage For="@(() => Input.UserName)"></ValidationMessage>
+
+                    <FluentTextField @bind-Value="@Input.EmailAddress"
+                                     Label="@L["EmailAddress"]"/>
+                    <ValidationMessage For="@(() => Input.EmailAddress)"></ValidationMessage>
+                }
+
+                @if (!IsExternalLogin && EnableLocalRegister)
+                {
+                    <FluentTextField @bind-Value="@Input.Password" Label="@L["Password"]"
+                                     TextFieldType="TextFieldType.Password"/>
+                    <ValidationMessage For="@(() => Input.Password)"></ValidationMessage>
+                }
+            </ChildContent>
+
+            <Footer>
+                @if (EnableLocalRegister || IsExternalLogin)
+                {
+                    <FluentButton Disabled="@Loading" Style="height: 35px" Appearance="Appearance.Accent"
+                                  OnClick="@FormRef.OnSubmitBtnClickAsync">@L["Register"]</FluentButton>
+                }
+
+            </Footer>
+        </AbpFluentForm>
+        @if (VisibleExternalProviders.Any())
+        {
+            <FluentStack Orientation="Orientation.Vertical">
+                <FluentLabel Typo="Typography.H5" c>@L["OrLoginWith"]</FluentLabel>
+
+                <FluentStack>
+                    @foreach (var provider in VisibleExternalProviders)
+                    {
+                        <FluentButton Style="height: 35px;" Loading="@Loading"
+                                      Appearance="Appearance.Hypertext"
+                                      OnClick="@(() => ExternalLoginAsync(provider.AuthenticationScheme))">@provider.DisplayName</FluentButton>
+                    }
+                </FluentStack>
+            </FluentStack>
+        }
+    </FluentStack>
+</div>
+
+@code {
+
+    [Inject] protected IAuthenticationSchemeProvider SchemeProvider { get; set; }
+    [Inject] protected IOptions<AbpAccountOptions> AccountOptions { get; set; }
+    [Inject] protected IdentityDynamicClaimsPrincipalContributorCache IdentityDynamicClaimsPrincipalContributorCache { get; set; }
+    [Inject] protected IdentityUserManager UserManager { get; set; }
+    [Inject] protected SignInManager<IdentityUser> SignInManager { get; set; }
+    [Inject] protected ISettingProvider SettingProvider { get; set; }
+    [Inject] protected IGuidGenerator GuidGenerator { get; set; }
+    [Inject] protected IOptions<IdentityOptions> IdentityOptions { get; set; }
+    [Inject] protected IOptions<AbpMultiTenancyOptions> MultiTenancyOptions { get; set; }
+    [Inject] protected ITenantResolveResultAccessor TenantResolveResultAccessor { get; set; }
+    [Inject] protected AbpBlazorMessageLocalizerHelper<AccountResource> LH { get; set; }
+
+
+    [SupplyParameterFromQuery] protected string? ReturnUrl { get; set; }
+    [SupplyParameterFromQuery] protected string? ReturnUrlHash { get; set; }
+    [SupplyParameterFromQuery] protected bool IsExternalLogin { get; set; }
+    [SupplyParameterFromQuery] protected string? ExternalLoginAuthSchema { get; set; }
+
+    public IEnumerable<ExternalProviderModel> ExternalProviders { get; set; }
+    public IEnumerable<ExternalProviderModel> VisibleExternalProviders => ExternalProviders.Where(x => !string.IsNullOrWhiteSpace(x.DisplayName));
+
+    public bool EnableLocalRegister { get; set; }
+
+    public bool IsExternalLoginOnly => EnableLocalRegister == false && ExternalProviders?.Count() == 1;
+
+    public string ExternalLoginScheme => IsExternalLoginOnly ? ExternalProviders?.SingleOrDefault()?.AuthenticationScheme : null;
+
+    AbpFluentForm<RegisterInput> FormRef;
+    protected RegisterInput Input { get; set; } = new RegisterInput();
+    protected virtual bool Loading { get; set; }
+
+    protected virtual string LoginUrl { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        LoginUrl = NavigationManager.GetUriWithQueryParameters("/Account/Login",
+            new Dictionary<string, object>
+            {
+                ["returnUrl"] = ReturnUrl,
+                ["returnUrlHash"] = ReturnUrlHash
+            });
+
+        if (!await CheckSelfRegistrationAsync())
+        {
+            if (IsExternalLoginOnly)
+            {
+                await ExternalLoginAsync(ExternalLoginScheme);
+            }
+
+            Alerts.Warning(L["SelfRegistrationDisabledMessage"]);
+        }
+
+        await TrySetEmailAsync();
+    }
+
+    protected virtual async Task TrySetEmailAsync()
+    {
+        if (IsExternalLogin)
+        {
+            var externalLoginInfo = await SignInManager.GetExternalLoginInfoAsync();
+            if (externalLoginInfo == null)
+            {
+                return;
+            }
+
+            if (!externalLoginInfo.Principal.Identities.Any())
+            {
+                return;
+            }
+
+            var identity = externalLoginInfo.Principal.Identities.First();
+            var emailClaim = identity.FindFirst(AbpClaimTypes.Email) ?? identity.FindFirst(ClaimTypes.Email);
+
+            if (emailClaim == null)
+            {
+                return;
+            }
+
+            var userName = await UserManager.GetUserNameFromEmailAsync(emailClaim.Value);
+            Input = new RegisterInput() { UserName = userName, EmailAddress = emailClaim.Value };
+        }
+    }
+
+    protected virtual async Task<bool> CheckSelfRegistrationAsync()
+    {
+        EnableLocalRegister = await SettingProvider.IsTrueAsync(AccountSettingNames.EnableLocalLogin) &&
+                              await SettingProvider.IsTrueAsync(AccountSettingNames.IsSelfRegistrationEnabled);
+
+        if (IsExternalLogin)
+        {
+            return true;
+        }
+
+        if (!EnableLocalRegister)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    protected virtual async Task ExternalLoginAsync(string provider)
+    {
+        Loading = true;
+        var redirectUrl = NavigationManager.GetUriWithQueryParameters("api/Account/ExternalLogin",
+            new Dictionary<string, object>
+            {
+                ["provider"] = provider,
+                [nameof(ReturnUrl)] = Uri.EscapeDataString(ReturnUrl),
+                [nameof(ReturnUrlHash)] = Uri.EscapeDataString(ReturnUrlHash)
+            });
+        NavigationManager.NavigateTo(redirectUrl, forceLoad: true);
+        Loading = false;
+    }
+
+    public virtual async Task RegisterAsync()
+    {
+        try
+        {
+            Guid? userId = null;
+            if (!await CheckSelfRegistrationAsync())
+            {
+                throw new UserFriendlyException(L["SelfRegistrationDisabledMessage"]);
+            }
+
+            if (IsExternalLogin)
+            {
+                var externalLoginInfo = await SignInManager.GetExternalLoginInfoAsync();
+                if (externalLoginInfo == null)
+                {
+                    Logger.LogWarning("External login info is not available");
+                    NavigationManager.NavigateTo("./Login", forceLoad: true);
+                }
+
+                if (Input.UserName.IsNullOrWhiteSpace())
+                {
+                    Input.UserName = await UserManager.GetUserNameFromEmailAsync(Input.EmailAddress);
+                }
+
+                userId = await RegisterExternalUserAsync(externalLoginInfo, Input.UserName, Input.EmailAddress);
+            }
+            else
+            {
+                userId = await RegisterLocalUserAsync();
+            }
+
+            if (userId.HasValue)
+            {
+                var url = NavigationManager.GetUriWithQueryParameters("/api/Account/RegisterSucceededRedirect",
+                    new Dictionary<string, object>
+                    {
+                        ["returnUrl"] = ReturnUrl,
+                        ["returnUrlHash"] = ReturnUrlHash,
+                        ["userId"] = userId
+                    });
+
+                NavigationManager.NavigateTo(url, forceLoad: true);
+            }
+        }
+        catch (BusinessException e)
+        {
+            Alerts.Danger(GetLocalizeExceptionMessage(e));
+        }
+    }
+
+    protected virtual async Task<Guid> RegisterLocalUserAsync()
+    {
+        var userDto = await AccountAppService.RegisterAsync(
+            new RegisterDto
+            {
+                AppName = "MVC",
+                EmailAddress = Input.EmailAddress,
+                Password = Input.Password,
+                UserName = Input.UserName
+            }
+        );
+
+        return userDto.Id;
+    }
+
+    protected virtual async Task<Guid> RegisterExternalUserAsync(ExternalLoginInfo externalLoginInfo, string userName, string emailAddress)
+    {
+        await IdentityOptions.SetAsync();
+
+        var user = new IdentityUser(GuidGenerator.Create(), userName, emailAddress, CurrentTenant.Id);
+
+        (await UserManager.CreateAsync(user)).CheckErrors();
+        (await UserManager.AddDefaultRolesAsync(user)).CheckErrors();
+
+        var userLoginAlreadyExists = user.Logins.Any(x =>
+            x.TenantId == user.TenantId &&
+            x.LoginProvider == externalLoginInfo.LoginProvider &&
+            x.ProviderKey == externalLoginInfo.ProviderKey);
+
+        if (!userLoginAlreadyExists)
+        {
+            (await UserManager.AddLoginAsync(user, new UserLoginInfo(
+                externalLoginInfo.LoginProvider,
+                externalLoginInfo.ProviderKey,
+                externalLoginInfo.ProviderDisplayName
+            ))).CheckErrors();
+        }
+
+        return user.Id;
+    }
+}

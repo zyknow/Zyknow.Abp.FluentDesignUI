@@ -23,6 +23,7 @@ using Volo.Abp.UI.Navigation;
 using Volo.Abp.VirtualFileSystem;
 using Volo.Abp.OpenIddict;
 using Volo.Abp.Account.Web;
+using Volo.Abp.AspNetCore.Mvc.Libs;
 using Volo.Abp.Timing;
 using Zyknow.Abp.Account.Blazor.Server.FluentDesignUI;
 using Zyknow.Abp.AspnetCore.Components.Server.FluentDesignTheme;
@@ -136,6 +137,11 @@ public class SimpleBlazorModule : AbpModule
         ConfigureBlazorise(context);
         ConfigureRouter(context);
         ConfigureMenu(context);
+        
+        Configure<AbpMvcLibsOptions>(options =>
+        {
+            options.CheckLibs = false;
+        });
     }
 
     private void ConfigureAuthentication(ServiceConfigurationContext context)

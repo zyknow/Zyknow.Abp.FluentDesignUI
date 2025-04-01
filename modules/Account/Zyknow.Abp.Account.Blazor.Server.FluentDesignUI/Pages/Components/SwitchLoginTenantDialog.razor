@@ -5,7 +5,7 @@
 @using Volo.Abp.AspNetCore.Mvc.MultiTenancy
 @using TInput = string
 @using TResource = Volo.Abp.MultiTenancy.Localization.AbpMultiTenancyResource
-@implements IDialogContentComponent<TInput>
+@implements IDialogContentComponent
 @inherits Volo.Abp.AspNetCore.Components.AbpComponentBase
 @inject IStringLocalizer<TResource> TL
 @inject IStringLocalizer<AbpUiResource> UL
@@ -14,7 +14,7 @@
 </FluentDialogHeader>
 
 <FluentDialogBody>
-    <FluentTextField Style="width: 100%" Label="@TL["TenantName"]" @bind-Value="@Content"/>
+    <FluentTextField Style="width: 100%" Label="@TL["TenantName"]" @bind-Value="@TenantName"/>
 </FluentDialogBody>
 
 <FluentDialogFooter>
@@ -28,27 +28,47 @@
 
     [CascadingParameter] protected FluentDialog? DialogRef { get; set; }
 
-    [Parameter] public TInput Content { get; set; }
-
     [Inject] protected IAbpTenantAppService AbpTenantAppService { get; set; }
+    [Inject] protected ICookieService CookieService { get; set; }
+    [Inject] protected NavigationManager NavigationManager { get; set; }
+
+    public string TenantName { get; set; }
 
 
     protected virtual bool Loading { get; set; }
+
+    protected override void OnInitialized()
+    {
+        TenantName = CurrentTenant.Name;
+    }
 
     protected virtual async Task OnSubmitBtnClickAsync()
     {
         Loading = true;
         try
         {
-            if (Content.IsNullOrWhiteSpace())
+            if (TenantName.IsNullOrWhiteSpace())
             {
-                await DialogRef.CloseAsync(DialogResult.Ok<FindTenantResultDto>(null));
+                // can not delete
+                // await CookieService.DeleteAsync("__tenant", "/");
+                
+                await CookieService.SetAsync("__tenant",null,new CookieOptions()
+                {
+                    Path = "/",
+                    ExpireDate = DateTimeOffset.UtcNow.AddDays(30),
+                });
             }
             else
             {
                 var tenant = await GetTenantAsync();
-                await DialogRef.CloseAsync(DialogResult.Ok(tenant));
+                await CookieService.SetAsync("__tenant", tenant.TenantId.ToString(), new CookieOptions()
+                {
+                    Path = "/",
+                    ExpireDate = DateTimeOffset.UtcNow.AddDays(30),
+                });
             }
+
+            NavigationManager.Refresh();
         }
         catch (Exception e)
         {
@@ -62,7 +82,7 @@
 
     protected virtual async Task<FindTenantResultDto?> GetTenantAsync()
     {
-        var tenant = await AbpTenantAppService.FindTenantByNameAsync(Content);
+        var tenant = await AbpTenantAppService.FindTenantByNameAsync(TenantName);
         if (tenant == null)
         {
             throw new UserFriendlyException(L["TenantNotFoundMessage"]);

@@ -1,38 +1,23 @@
 ﻿using System.Diagnostics;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Volo.Abp;
 using Volo.Abp.Account.Settings;
-using Volo.Abp.AspNetCore.Mvc;
-using Volo.Abp.Caching;
-using Volo.Abp.ExceptionHandling;
 using Volo.Abp.Identity;
 using Volo.Abp.Identity.AspNetCore;
 using Volo.Abp.Security.Claims;
 using Volo.Abp.Settings;
-using Volo.Abp.UI.Navigation.Urls;
 using IdentityUser = Volo.Abp.Identity.IdentityUser;
 
 namespace Zyknow.Abp.Account.Blazor.Server.FluentDesignUI;
 
-[AllowAnonymous]
-public class LoginController(
-    SignInManager<IdentityUser> signInManager,
-    UserManager<IdentityUser> userManager,
-    IOptions<IdentityOptions> identityOptions,
-    IAppUrlProvider appUrlProvider,
-    IdentitySecurityLogManager identitySecurityLogManager,
-    ISettingProvider settingProvider,
-    IdentityDynamicClaimsPrincipalContributorCache identityDynamicClaimsPrincipalContributorCache,
-    IDistributedCache<LoginTicketCacheItem> loginTicketCache)
-    : AbpController
+public partial class AccountController
 {
-    [HttpGet("api/Account/TicketLogin")]
-    public async Task<IActionResult> Login(string ticket)
+    [HttpGet("api/Account/LoginSucceededRedirect")]
+    public async Task<IActionResult> LoginSucceededRedirectAsync(string ticket)
     {
         var ticketCache = await loginTicketCache.GetAsync(ticket);
         if (ticketCache == null)
@@ -40,31 +25,29 @@ public class LoginController(
             return BadRequest("Ticket not found!");
         }
 
-        using (CurrentTenant.Change(ticketCache.TenantId))
+
+        var user = await userManager.FindByIdAsync(ticketCache.UserId.ToString());
+        await signInManager.SignInAsync(user, ticketCache.RememberMe);
+
+        await identitySecurityLogManager.SaveAsync(new IdentitySecurityLogContext()
         {
-            var user = await userManager.FindByIdAsync(ticketCache.UserId.ToString());
-            await signInManager.SignInAsync(user, ticketCache.RememberMe);
-            
-            await identitySecurityLogManager.SaveAsync(new IdentitySecurityLogContext()
-            {
-                Identity = IdentitySecurityLogIdentityConsts.Identity,
-                Action = IdentitySecurityLogActionConsts.LoginSucceeded,
-                UserName = ticketCache.UserNameOrEmailAddress
-            });
-            
-            Debug.Assert(user != null, nameof(user) + " != null");
-            
-            await identityDynamicClaimsPrincipalContributorCache.ClearAsync(user.Id, user.TenantId);
-            
-            return await RedirectSafelyAsync(ticketCache.ReturnUrl, ticketCache.ReturnUrlHash);
-        }
+            Identity = IdentitySecurityLogIdentityConsts.Identity,
+            Action = IdentitySecurityLogActionConsts.LoginSucceeded,
+            UserName = ticketCache.UserNameOrEmailAddress
+        });
+
+        Debug.Assert(user != null, nameof(user) + " != null");
+
+        await identityDynamicClaimsPrincipalContributorCache.ClearAsync(user.Id, user.TenantId);
+
+        return await RedirectSafelyAsync(ticketCache.ReturnUrl, ticketCache.ReturnUrlHash);
     }
 
     [HttpGet("api/Account/ExternalLogin")]
     public IActionResult ExternalLogin(string provider, string returnUrl, string returnUrlHash)
     {
         var redirectUrl = Url.Page(
-            "./Login",
+            "./Account",
             pageHandler: "ExternalLoginCallback",
             values: new { ReturnUrl = returnUrl, ReturnUrlHash = returnUrlHash }
         );
@@ -75,7 +58,7 @@ public class LoginController(
         return Challenge(properties, provider);
     }
 
-    public virtual async Task<IActionResult> OnGetExternalLoginCallbackAsync(string returnUrl = "",
+    public virtual async Task<IActionResult> ExternalLoginCallbackAsync(string returnUrl = "",
         string returnUrlHash = "", string remoteError = null)
     {
         //TODO: Did not implemented Identity Server 4 sample for this method (see ExternalLoginCallback in Quickstart of IDS4 sample)
