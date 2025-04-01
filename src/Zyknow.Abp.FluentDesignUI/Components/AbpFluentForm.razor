@@ -7,7 +7,7 @@
 @inject IStringLocalizer<AbpUiResource> UL
 @if (Dialog != null)
 {
-    <FluentDialogHeader ShowDismiss="true">
+    <FluentDialogHeader ShowDismiss="true" ShowDismissTooltip="false">
         @HeaderContentRender
     </FluentDialogHeader>
     <FluentDialogBody>
@@ -20,11 +20,17 @@
 }
 else
 {
-    <FluentStack Orientation="Orientation.Vertical" VerticalAlignment="VerticalAlignment.SpaceBetween"
-                 HorizontalAlignment="HorizontalAlignment.Stretch" Width="100%" Style="height: 100%" VerticalGap="40">
-        @HeaderContentRender
-        @BodyContentRender
-        @FooterContentRender
+    <FluentStack Orientation="Orientation.Vertical"
+                 HorizontalAlignment="HorizontalAlignment.Stretch" Style="height: 100%" VerticalGap="40">
+        <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch">
+            @HeaderContentRender
+        </FluentStack>
+        <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch">
+            @BodyContentRender
+        </FluentStack>
+        <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch">
+            @FooterContentRender
+        </FluentStack>
     </FluentStack>
 }
 
@@ -57,7 +63,8 @@ else
     /// The method that will be called when the submit button is clicked and the form is valid.
     /// if return null value then the dialog will not be closed.
     /// </summary>
-    [Parameter] public Func<Task<DialogResult?>> SubmitValidClick { get; set; }
+    [Parameter]
+    public Func<Task<DialogResult?>> SubmitValidClick { get; set; }
 
     [Parameter] public EventCallback SubmitClick { get; set; }
 
@@ -87,7 +94,8 @@ else
         <FluentEditForm @ref="FormRef" Model="@Content">
             <AbpDataAnnotationsValidator Localize="@Localize"/>
             @* <FluentValidationSummary/> *@
-            <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch" VerticalGap="5">
+            <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch"
+                         VerticalGap="5">
                 @ChildContent
             </FluentStack>
         </FluentEditForm>
