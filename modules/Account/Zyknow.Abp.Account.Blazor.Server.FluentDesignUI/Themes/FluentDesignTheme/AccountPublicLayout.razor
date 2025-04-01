@@ -1,5 +1,4 @@
-﻿@using Zyknow.Abp.FluentDesignUI.Components
-@using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Themes.FluentDesignTheme
+﻿@using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Themes.FluentDesignTheme
 @inherits LayoutComponentBase
 
 <div style="width: 100vw;height: 100vh;" class="abp-account-public-layout">
@@ -27,9 +26,13 @@
     <FluentMenuProvider/>
     <FluentToastProvider/>
 </div>
+
+
 <style>
     .abp-account-public-layout {
-        background-color: var(--neutral-layer-4) !important;
+        /*background: var(--neutral-layer-4) !important;*/
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        background-image: url("_content/Zyknow.Abp.Account.Blazor.Server.FluentDesignUI/account-public-background.svg");
     }
 
     .abp-account-public-layout-container {
@@ -38,6 +41,7 @@
     }
 
     .public-account-container {
+        box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
         background-color: var(--neutral-fill-layer-rest);
         width: 380px;
         padding: 44px;
