@@ -32,8 +32,8 @@ public class Program
                         .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
                         .Enrich.FromLogContext()
                         .WriteTo.Async(c => c.File("Logs/logs.txt"))
-                        .WriteTo.Async(c => c.Console(theme: AnsiConsoleTheme.Sixteen))
-                        .WriteTo.Async(c => c.AbpStudio(services));
+                        .WriteTo.Async(c => c.Console(theme: AnsiConsoleTheme.Sixteen));
+                        // .WriteTo.Async(c => c.AbpStudio(services));
                 });
             await builder.AddApplicationAsync<SimpleBlazorModule>();
             var app = builder.Build();
