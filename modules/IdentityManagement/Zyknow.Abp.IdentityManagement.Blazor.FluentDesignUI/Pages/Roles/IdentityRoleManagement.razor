@@ -6,18 +6,17 @@
 @using Zyknow.Abp.PermissionManagement.Blazor.FluentDesignUI.Components
 @inherits Zyknow.Abp.FluentDesignUI.AbpCrudPageBase<IIdentityRoleAppService, IdentityRoleDto, Guid, GetIdentityRolesInput, IdentityRoleCreateDto, IdentityRoleUpdateDto>
 
-<FluentStack Orientation="Orientation.Vertical" VerticalGap="20" HorizontalAlignment="HorizontalAlignment.Stretch">
-    <AbpPageHeader Title="@L["Roles"]" BreadcrumbItems="@BreadcrumbItems" Toolbar="@Toolbar" />
-
-    <AbpSearch Loading="@Loading" @bind-PrimarySearchValue="GetListInput.Filter" OnSearch="SearchEntitiesAsync"></AbpSearch>
-
+<AbpAdaptiveDataGridLayout>
+    <AbpPageHeader Title="@L["Roles"]" BreadcrumbItems="@BreadcrumbItems" Toolbar="@Toolbar"/>
+    <AbpSearch Loading="@Loading" @bind-PrimarySearchValue="GetListInput.Filter"
+               OnSearch="SearchEntitiesAsync"></AbpSearch>
     <AbpExtensibleDataGrid Loading="@Loading"
                            Entities="Entities"
                            OnChange="@OnDataGridReadAsync"
                            Pagination="@Pagination"
                            Columns="@RoleManagementTableColumns">
     </AbpExtensibleDataGrid>
-</FluentStack>
+</AbpAdaptiveDataGridLayout>
 
 @code
 {
@@ -123,20 +122,20 @@
             IdentityModuleExtensionConsts.EntityNames.Role));
 
         RoleManagementTableColumns.Add(new FluentTableColumn
-            {
-                Title = L["Actions"],
-                Actions = EntityActions.Get<IdentityRoleManagement>()
-            });
+        {
+            Title = L["Actions"],
+            Actions = EntityActions.Get<IdentityRoleManagement>()
+        });
 
         return base.SetTableColumnsAsync();
     }
 
     protected virtual Task ShowPermissionDialogAsync(PermissionManagementDialogInput input)
-        => ShowDialogAsync(@<PermissionManagementDialog Content="@input" />, opt => { opt.Width = "700px"; });
+        => ShowDialogAsync(@<PermissionManagementDialog Content="@input"/>, opt => { opt.Width = "700px"; });
 
     protected override Task ShowCreateDialogAsync()
-        => ShowDialogAsync(@<IdentityRoleCreateDialog Content="@NewEntity" SubmitClick="CreateEntityAsync" />);
+        => ShowDialogAsync(@<IdentityRoleCreateDialog Content="@NewEntity" SubmitClick="CreateEntityAsync"/>);
 
     protected override Task ShowEditDialogAsync()
-        => ShowDialogAsync(@<IdentityRoleEditDialog Content="@EditingEntity" SubmitClick="UpdateEntityAsync" />);
+        => ShowDialogAsync(@<IdentityRoleEditDialog Content="@EditingEntity" SubmitClick="UpdateEntityAsync"/>);
 }

@@ -6,7 +6,7 @@
 @using Zyknow.Abp.PermissionManagement.Blazor.FluentDesignUI.Components
 @inherits Zyknow.Abp.FluentDesignUI.AbpCrudPageBase<IIdentityUserAppService, IdentityUserDto, Guid, GetIdentityUsersInput, IdentityUserCreateDto, IdentityUserUpdateDto>
 
-<FluentStack Orientation="Orientation.Vertical" VerticalGap="20" HorizontalAlignment="HorizontalAlignment.Stretch">
+<AbpAdaptiveDataGridLayout>
     <AbpPageHeader Title="@L["Users"]" BreadcrumbItems="@BreadcrumbItems" Toolbar="@Toolbar"/>
 
     <AbpSearch Loading="@Loading" @bind-PrimarySearchValue="GetListInput.Filter"
@@ -18,7 +18,7 @@
                            Pagination="@Pagination"
                            Columns="@UserManagementTableColumns">
     </AbpExtensibleDataGrid>
-</FluentStack>
+</AbpAdaptiveDataGridLayout>
 
 @code
 {

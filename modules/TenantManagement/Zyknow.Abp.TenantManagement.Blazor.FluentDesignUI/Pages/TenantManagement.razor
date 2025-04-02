@@ -7,10 +7,11 @@
 @using Zyknow.Abp.FeatureManagement.Blazor.FluentDesignUI.Components
 @inherits AbpCrudPageBase<ITenantAppService, TenantDto, Guid, GetTenantsInput, TenantCreateDto, TenantUpdateDto>
 
-<FluentStack Orientation="Orientation.Vertical" VerticalGap="20" HorizontalAlignment="HorizontalAlignment.Stretch">
-    <AbpPageHeader Title="@L["Tenants"]" BreadcrumbItems="@BreadcrumbItems" Toolbar="@Toolbar" />
+<AbpAdaptiveDataGridLayout>
+    <AbpPageHeader Title="@L["Tenants"]" BreadcrumbItems="@BreadcrumbItems" Toolbar="@Toolbar"/>
 
-    <AbpSearch Loading="@Loading" @bind-PrimarySearchValue="GetListInput.Filter" OnSearch="SearchEntitiesAsync"></AbpSearch>
+    <AbpSearch Loading="@Loading" @bind-PrimarySearchValue="GetListInput.Filter"
+               OnSearch="SearchEntitiesAsync"></AbpSearch>
 
     <AbpExtensibleDataGrid Loading="@Loading"
                            TItem="TenantDto"
@@ -19,7 +20,7 @@
                            Pagination="@Pagination"
                            Columns="@TenantManagementTableColumns">
     </AbpExtensibleDataGrid>
-</FluentStack>
+</AbpAdaptiveDataGridLayout>
 
 @code
 {
@@ -70,12 +71,9 @@
     protected override ValueTask SetToolbarItemsAsync()
     {
         Toolbar.AddButton(L["ManageHostFeatures"],
-            async () =>
-            {
-                await ShowFeatureDialogAsync(new FeatureManagementDialogInput(FeatureProviderName));
-            },
-    new Size20.Settings(),
-    requiredPolicyName: FeatureManagementPermissions.ManageHostFeatures);
+            async () => { await ShowFeatureDialogAsync(new FeatureManagementDialogInput(FeatureProviderName)); },
+            new Size20.Settings(),
+            requiredPolicyName: FeatureManagementPermissions.ManageHostFeatures);
         Toolbar.AddButton(L["NewTenant"],
             OpenCreateDialogAsync,
             new Size20.Add(),
@@ -102,7 +100,7 @@
                     Clicked = async (data) =>
                     {
                         var tenant = data.As<TenantDto>();
-                        await ShowFeatureDialogAsync(new FeatureManagementDialogInput(FeatureProviderName,tenant.Id.ToString()));
+                        await ShowFeatureDialogAsync(new FeatureManagementDialogInput(FeatureProviderName, tenant.Id.ToString()));
                     }
                 },
                 new FluentEntityAction
@@ -112,7 +110,7 @@
                     Clicked = async (data) => await DeleteEntityAsync(data.As<TenantDto>()),
                     ConfirmationMessage = (data) => GetDeleteConfirmationMessage(data.As<TenantDto>())
                 }
-    ]);
+            ]);
 
         return base.SetEntityActionsAsync();
     }
@@ -135,20 +133,20 @@
             TenantManagementModuleExtensionConsts.EntityNames.Tenant));
 
         TenantManagementTableColumns.Add(new FluentTableColumn
-            {
-                Title = L["Actions"],
-                Actions = EntityActions.Get<TenantManagement>()
-            });
+        {
+            Title = L["Actions"],
+            Actions = EntityActions.Get<TenantManagement>()
+        });
 
         return base.SetTableColumnsAsync();
     }
 
     protected virtual Task ShowFeatureDialogAsync(FeatureManagementDialogInput input)
-        => ShowDialogAsync(@<FeatureManagementDialog Content="@input" />);
+        => ShowDialogAsync(@<FeatureManagementDialog Content="@input"/>);
 
     protected override Task ShowCreateDialogAsync()
-        => ShowDialogAsync(@<TenantCreateDialog Content="@NewEntity" SubmitClick="CreateEntityAsync" />);
+        => ShowDialogAsync(@<TenantCreateDialog Content="@NewEntity" SubmitClick="CreateEntityAsync"/>);
 
     protected override Task ShowEditDialogAsync()
-        => ShowDialogAsync(@<TenantEditDialog Content="@EditingEntity" SubmitClick="UpdateEntityAsync" />);
+        => ShowDialogAsync(@<TenantEditDialog Content="@EditingEntity" SubmitClick="UpdateEntityAsync"/>);
 }

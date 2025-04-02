@@ -3,121 +3,125 @@
 @using Volo.Abp.Data
 @inject IStringLocalizer<AbpUiResource> UL
 @typeparam TItem
-<FluentDataGrid RefreshItems="OnChange" RowSize="DataGridRowSize.Medium" Items="Entities.AsQueryable()"
-                GenerateHeader="GenerateHeaderOption.Sticky" Loading="@Loading" Pagination="@Pagination"
-                TGridItem="TItem">
-    <EmptyContent>
-        <FluentStack HorizontalAlignment="HorizontalAlignment.Center" VerticalAlignment="VerticalAlignment.Center">
-            <FluentLabel Weight="FontWeight.Bold">@UL["NoDataAvailableInDatatable"]</FluentLabel>
-        </FluentStack>
-    </EmptyContent>
+<FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch" Style="flex:1;min-height: 0;">
+    <div style="flex:1;overflow-y: auto;min-height: 0;">
+        <FluentDataGrid RefreshItems="OnChange" RowSize="DataGridRowSize.Medium" Items="Entities.AsQueryable()"
+                        GenerateHeader="GenerateHeaderOption.Sticky" Loading="@Loading" Pagination="@Pagination"
+                        TGridItem="TItem">
+            <EmptyContent>
+                <FluentStack HorizontalAlignment="HorizontalAlignment.Center"
+                             VerticalAlignment="VerticalAlignment.Center">
+                    <FluentLabel Weight="FontWeight.Bold">@UL["NoDataAvailableInDatatable"]</FluentLabel>
+                </FluentStack>
+            </EmptyContent>
 
-    <ChildContent>
-        @if (Columns != null)
-        {
-            foreach (var column in Columns)
-            {
-                if (column.Actions.Any())
+            <ChildContent>
+                @if (Columns != null)
                 {
-                    <TemplateColumn TGridItem="TItem" Title="@column.Title"
-                                    Width="@(column.Width.IsNullOrWhiteSpace() && EntityActionsRef?.Type == ActionType.Dropdown ? "120px" : column.Width)"
-                                    Align="Align.Center">
-                        <EntityActions @ref="EntityActionsRef" TItem="@TItem">
-                            @foreach (var action in column.Actions)
-                            {
-                                <EntityAction ParentActions="@EntityActionsRef"
-                                              TItem="@TItem"
-                                              Clicked="@(async () => await action.Clicked(context))"
-                                              Appearance="@(action.Appearance ?? Appearance.Accent)"
-                                              Icon="@action.Icon"
-                                              ConfirmationMessage="action.ConfirmationMessage != null ? () => action.ConfirmationMessage.Invoke(context) : null"
-                                              Visible="@(action.Visible?.Invoke(context) ?? true)"
-                                              Text="@action.Text"
-                                              Disabled="@action.Disabled">
-                                </EntityAction>
-                            }
-                        </EntityActions>
-                    </TemplateColumn>
-                }
-                else
-                {
-                    if (column.Component != null)
+                    foreach (var column in Columns)
                     {
-                        <TemplateColumn Title="@column.Title" Sortable="@column.Sortable"
-                                        SortBy="@(new ColumnKeyGridSort<TItem>(column.PropertyName))">
-                            @RenderCustomTableColumnComponent(column.Component, context)
-                        </TemplateColumn>
-                    }
-                    else
-                    {
-                        if (!ExtensionPropertiesRegex.IsMatch(column.Data))
+                        if (column.Actions.Any())
                         {
-                            if (column.ValueConverter == null)
+                            <TemplateColumn TGridItem="TItem" Title="@column.Title"
+                                            Width="@(column.Width.IsNullOrWhiteSpace() && EntityActionsRef?.Type == ActionType.Dropdown ? "120px" : column.Width)"
+                                            Align="Align.Center">
+                                <EntityActions @ref="EntityActionsRef" TItem="@TItem">
+                                    @foreach (var action in column.Actions)
+                                    {
+                                        <EntityAction ParentActions="@EntityActionsRef"
+                                                      TItem="@TItem"
+                                                      Clicked="@(async () => await action.Clicked(context))"
+                                                      Appearance="@(action.Appearance ?? Appearance.Accent)"
+                                                      Icon="@action.Icon"
+                                                      ConfirmationMessage="action.ConfirmationMessage != null ? () => action.ConfirmationMessage.Invoke(context) : null"
+                                                      Visible="@(action.Visible?.Invoke(context) ?? true)"
+                                                      Text="@action.Text"
+                                                      Disabled="@action.Disabled">
+                                        </EntityAction>
+                                    }
+                                </EntityActions>
+                            </TemplateColumn>
+                        }
+                        else
+                        {
+                            if (column.Component != null)
                             {
-                                <TemplateColumn Sortable="@column.Sortable"
-                                                SortBy="@(new ColumnKeyGridSort<TItem>(column.PropertyName))"
-                                                Title="@column.Title">
-                                    @GetColumnValue(context, column.Data)
+                                <TemplateColumn Title="@column.Title" Sortable="@column.Sortable"
+                                                SortBy="@(new ColumnKeyGridSort<TItem>(column.PropertyName))">
+                                    @RenderCustomTableColumnComponent(column.Component, context)
                                 </TemplateColumn>
                             }
                             else
                             {
-                                <TemplateColumn Sortable="@column.Sortable"
-                                                SortBy="@(new ColumnKeyGridSort<TItem>(column.PropertyName))"
-                                                Title="@column.Title">
-                                    @(GetConvertedFieldValue(context, column))
-                                </TemplateColumn>
-                            }
-                        }
-                        else
-                        {
-                            <TemplateColumn Title="@column.Title" Sortable="@column.Sortable"
-                                            SortBy="@(new ColumnKeyGridSort<TItem>(column.PropertyName))">
-                                @{
-                                    var entity = context as IHasExtraProperties;
-                                    var propertyName = ExtensionPropertiesRegex.Match(column.Data).Groups[1].Value;
-                                    var propertyValue = entity.GetProperty(propertyName);
-                                    if (propertyValue is bool value)
+                                if (!ExtensionPropertiesRegex.IsMatch(column.Data))
+                                {
+                                    if (column.ValueConverter == null)
                                     {
-                                        if (value)
-                                        {
-                                            <FluentIcon
-                                                Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size20.CheckmarkCircle())"/>
-                                        }
-                                        else
-                                        {
-                                            <FluentIcon
-                                                Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size20.Prohibited())"/>
-                                        }
+                                        <TemplateColumn Sortable="@column.Sortable"
+                                                        SortBy="@(new ColumnKeyGridSort<TItem>(column.PropertyName))"
+                                                        Title="@column.Title">
+                                            @GetColumnValue(context, column.Data)
+                                        </TemplateColumn>
                                     }
                                     else
                                     {
-                                        if (column.ValueConverter != null)
-                                        {
+                                        <TemplateColumn Sortable="@column.Sortable"
+                                                        SortBy="@(new ColumnKeyGridSort<TItem>(column.PropertyName))"
+                                                        Title="@column.Title">
                                             @(GetConvertedFieldValue(context, column))
-                                        }
-                                        else
-                                        {
-                                            if (column.DisplayFormat == null)
+                                        </TemplateColumn>
+                                    }
+                                }
+                                else
+                                {
+                                    <TemplateColumn Title="@column.Title" Sortable="@column.Sortable"
+                                                    SortBy="@(new ColumnKeyGridSort<TItem>(column.PropertyName))">
+                                        @{
+                                            var entity = context as IHasExtraProperties;
+                                            var propertyName = ExtensionPropertiesRegex.Match(column.Data).Groups[1].Value;
+                                            var propertyValue = entity.GetProperty(propertyName);
+                                            if (propertyValue is bool value)
                                             {
-                                                @propertyValue
+                                                if (value)
+                                                {
+                                                    <FluentIcon
+                                                        Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size20.CheckmarkCircle())"/>
+                                                }
+                                                else
+                                                {
+                                                    <FluentIcon
+                                                        Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size20.Prohibited())"/>
+                                                }
                                             }
                                             else
                                             {
-                                                @string.Format(column.DisplayFormatProvider, column.DisplayFormat, propertyValue)
+                                                if (column.ValueConverter != null)
+                                                {
+                                                    @(GetConvertedFieldValue(context, column))
+                                                }
+                                                else
+                                                {
+                                                    if (column.DisplayFormat == null)
+                                                    {
+                                                        @propertyValue
+                                                    }
+                                                    else
+                                                    {
+                                                        @string.Format(column.DisplayFormatProvider, column.DisplayFormat, propertyValue)
+                                                    }
+                                                }
                                             }
                                         }
-                                    }
+                                    </TemplateColumn>
                                 }
-                            </TemplateColumn>
+                            }
                         }
                     }
                 }
-            }
-        }
-    </ChildContent>
+            </ChildContent>
 
-</FluentDataGrid>
+        </FluentDataGrid>
+    </div>
+    <AbpFluentPaginator State="@Pagination"/>
+</FluentStack>
 
-<AbpFluentPaginator State="@Pagination">
-</AbpFluentPaginator>
