@@ -40,23 +40,24 @@
     {
         if (firstRender)
         {
+            // TODO: how to expand NavGroup
+            
             // is nav group
-            if (Menu.IsLeaf && Menu.Url != null)
-            {
-                var url = Menu.Url.TrimStart('/', '~');
-
-                if (url.IsNullOrWhiteSpace())
-                    return;
-                
-                if (NavigationManager.Uri.Replace(NavigationManager.BaseUri,"").StartsWith(url))
-                {
-                    ExpandParentNavLink();
-                }
-            }
+            // if (Menu.IsLeaf && Menu.Url != null)
+            // {
+            //     var url = Menu.Url.TrimStart('/', '~');
+            //
+            //     if (url.IsNullOrWhiteSpace())
+            //         return;
+            //     
+            //     if (NavigationManager.Uri.Replace(NavigationManager.BaseUri,"").StartsWith(url))
+            //     {
+            //         ExpandParentNavLink();
+            //     }
+            // }
         }
     }
     
-    // TODO: how to expand parent NavGroup
     private async Task ExpandParentNavLink()
     {
     
