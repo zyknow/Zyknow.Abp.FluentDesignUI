@@ -7,7 +7,7 @@
 
     if (Menu.IsLeaf && Menu.Url != null)
     {
-        <FluentNavLink Icon="GetIcon()" Match="NavLinkMatch.All" Href="@url" Disabled="@Menu.IsDisabled">
+        <FluentNavLink @ref="navLink" Icon="GetIcon()" Match="NavLinkMatch.All" Href="@url" Disabled="@Menu.IsDisabled">
             <FluentLabel>@Menu.DisplayName</FluentLabel>
         </FluentNavLink>
     }
@@ -32,18 +32,36 @@
 
     [Parameter] public ApplicationMenuItem Menu { get; set; }
     [Parameter] public bool FirstLevel { get; set; }
+    [Inject] protected NavigationManager NavigationManager { get; set; }
 
-    RenderFragment GetSubMenuTemplate(ApplicationMenuItem menu)
+    FluentNavLink? navLink;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        return @<span>
-                   @if (!Menu.Icon.IsNullOrWhiteSpace())
+        if (firstRender)
+        {
+            // is nav group
+            if (Menu.IsLeaf && Menu.Url != null)
             {
-                // TODO: Set Icon
-                @* <FluentIcon Value="@Theme.Icon"></FluentIcon> *@
+                var url = Menu.Url.TrimStart('/', '~');
+
+                if (url.IsNullOrWhiteSpace())
+                    return;
+                
+                if (NavigationManager.Uri.Replace(NavigationManager.BaseUri,"").StartsWith(url))
+                {
+                    ExpandParentNavLink();
+                }
             }
-            <span>@menu.DisplayName</span>
-               </span>;
+        }
     }
+    
+    // TODO: how to expand parent NavGroup
+    private async Task ExpandParentNavLink()
+    {
+    
+    }
+    
 
     Icon? GetIcon()
     {
