@@ -1,18 +1,42 @@
 ﻿@using Localization.Resources.AbpUi
 @using Microsoft.Extensions.Localization
-@inject IStringLocalizer<AbpUiResource> L
+@using Volo.Abp.AspNetCore.Components.Web
+@inject IStringLocalizer<AbpUiResource> UL
 @if (State != null)
 {
     <FluentPaginator State="@State">
+        <PaginationTextTemplate>
+            <FluentLabel Weight="FontWeight.Bold">@(State.CurrentPageIndex + 1)</FluentLabel>
+        </PaginationTextTemplate>
         <SummaryTemplate>
-            <FluentLabel Typo="Typography.Body" Weight="FontWeight.Bolder">@L["Total"]: @State.TotalItemCount</FluentLabel>
+            <FluentStack VerticalAlignment="VerticalAlignment.Center"
+                         HorizontalAlignment="HorizontalAlignment.SpaceBetween">
+                <FluentLabel Style="white-space: nowrap;" Typo="Typography.Body"
+                             Weight="FontWeight.Bolder">@UL["Total"]: @State.TotalItemCount</FluentLabel>
+                <FluentStack HorizontalAlignment="HorizontalAlignment.Right"
+                             VerticalAlignment="VerticalAlignment.Center">
+                    <FluentSelect
+                        OptionText="@(v=> @UL["PagerShowMenuEntries"].Value.Replace("_MENU_", v.ToString()))"
+                        Items="@ItemsPerPageList" SelectedOption="@State.ItemsPerPage"
+                        TOption="int"
+                        SelectedOptionChanged="@(v=> State.SetItemsPerPageAsync(v))"></FluentSelect>
+                </FluentStack>
+            </FluentStack>
         </SummaryTemplate>
     </FluentPaginator>
-
 }
 
 @code {
+    [Parameter] public PaginationState State { get; set; } = new();
 
-    [Parameter]
-    public PaginationState State { get; set; } = new();
+    [Parameter] public List<int> ItemsPerPageList { get; set; } = [5, 10, 20, 50, 100, 1000];
 }
+
+<style scoped>
+    .paginator {
+        .summary {
+            margin-right: 20px;
+            width: 100%;
+        }
+    }
+</style>

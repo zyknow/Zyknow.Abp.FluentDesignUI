@@ -6,7 +6,6 @@
 <FluentDataGrid RefreshItems="OnChange" RowSize="DataGridRowSize.Medium" Items="Entities.AsQueryable()"
                 GenerateHeader="GenerateHeaderOption.Sticky" Loading="@Loading" Pagination="@Pagination"
                 TGridItem="TItem">
-
     <EmptyContent>
         <FluentStack HorizontalAlignment="HorizontalAlignment.Center" VerticalAlignment="VerticalAlignment.Center">
             <FluentLabel Weight="FontWeight.Bold">@UL["NoDataAvailableInDatatable"]</FluentLabel>
