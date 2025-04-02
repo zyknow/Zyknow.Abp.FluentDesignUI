@@ -48,11 +48,11 @@
         {
             <FluentTextField @bind-Value="@Input.UserNameOrEmailAddress"
                              Label="@L["UserNameOrEmailAddress"]"/>
-            <ValidationMessage For="@(() => Input.UserNameOrEmailAddress)"></ValidationMessage>
+            <FluentValidationMessage For="@(() => Input.UserNameOrEmailAddress)"></FluentValidationMessage>
 
             <FluentTextField @bind-Value="@Input.Password" Label="@L["Password"]"
                              TextFieldType="TextFieldType.Password"/>
-            <ValidationMessage For="@(() => Input.Password)"></ValidationMessage>
+            <FluentValidationMessage For="@(() => Input.Password)"></FluentValidationMessage>
 
             <FluentStack Style="margin-top: 20px" HorizontalAlignment="HorizontalAlignment.SpaceBetween"
                          VerticalAlignment="VerticalAlignment.Center">

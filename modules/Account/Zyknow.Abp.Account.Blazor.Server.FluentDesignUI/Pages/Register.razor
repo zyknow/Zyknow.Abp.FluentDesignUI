@@ -48,18 +48,18 @@
         {
             <FluentTextField @bind-Value="@Input.UserName"
                              Label="@L["UserName"]"/>
-            <ValidationMessage For="@(() => Input.UserName)"></ValidationMessage>
+            <FluentValidationMessage For="@(() => Input.UserName)"></FluentValidationMessage>
 
             <FluentTextField @bind-Value="@Input.EmailAddress"
                              Label="@L["EmailAddress"]"/>
-            <ValidationMessage For="@(() => Input.EmailAddress)"></ValidationMessage>
+            <FluentValidationMessage For="@(() => Input.EmailAddress)"></FluentValidationMessage>
         }
 
         @if (!IsExternalLogin && EnableLocalRegister)
         {
             <FluentTextField @bind-Value="@Input.Password" Label="@L["Password"]"
                              TextFieldType="TextFieldType.Password"/>
-            <ValidationMessage For="@(() => Input.Password)"></ValidationMessage>
+            <FluentValidationMessage For="@(() => Input.Password)"></FluentValidationMessage>
         }
     </ChildContent>
 

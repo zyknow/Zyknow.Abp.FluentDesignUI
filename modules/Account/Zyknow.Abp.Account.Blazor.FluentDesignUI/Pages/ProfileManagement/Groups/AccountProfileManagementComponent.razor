@@ -7,23 +7,23 @@
     <AbpFluentForm Content="Input" SubmitClick="UpdatePersonalInfoAsync" Localize="@LH.Localize">
         <FluentTextField Style="width: 100%" @bind-Value="Input.UserName"
                          Label="@L["DisplayName:UserName"]"></FluentTextField>
-        <ValidationMessage For="@(() => Input.UserName)"></ValidationMessage>
+        <FluentValidationMessage For="@(() => Input.UserName)"></FluentValidationMessage>
 
         <FluentTextField Style="width: 100%" @bind-Value="Input.Name"
                          Label="@L["DisplayName:Name"]"></FluentTextField>
-        <ValidationMessage For="@(() => Input.Name)"></ValidationMessage>
+        <FluentValidationMessage For="@(() => Input.Name)"></FluentValidationMessage>
 
         <FluentTextField Style="width: 100%" @bind-Value="Input.Surname"
                          Label="@L["DisplayName:Surname"]"></FluentTextField>
-        <ValidationMessage For="@(() => Input.Surname)"></ValidationMessage>
+        <FluentValidationMessage For="@(() => Input.Surname)"></FluentValidationMessage>
 
         <FluentTextField Style="width: 100%" @bind-Value="Input.Email"
                          Label="@L["DisplayName:Email"]"></FluentTextField>
-        <ValidationMessage For="@(() => Input.Email)"></ValidationMessage>
+        <FluentValidationMessage For="@(() => Input.Email)"></FluentValidationMessage>
 
         <FluentTextField Style="width: 100%" @bind-Value="Input.PhoneNumber"
                          Label="@L["DisplayName:PhoneNumber"]"></FluentTextField>
-        <ValidationMessage For="@(() => Input.PhoneNumber)"></ValidationMessage>
+        <FluentValidationMessage For="@(() => Input.PhoneNumber)"></FluentValidationMessage>
     </AbpFluentForm>
 }
 
