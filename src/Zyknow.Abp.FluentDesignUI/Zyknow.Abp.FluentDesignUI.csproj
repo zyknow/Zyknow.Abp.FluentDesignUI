@@ -5,22 +5,22 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.3" />
-        <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components" Version="4.11.7" />
-        <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Emoji" Version="4.11.7" />
-        <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="4.11.7" />
-        <PackageReference Include="Volo.Abp.AspNetCore.Components.Web" Version="9.1.0" />
-        <PackageReference Include="Volo.Abp.Authorization" Version="9.1.0" />
-        <PackageReference Include="Volo.Abp.Ddd.Application.Contracts" Version="9.1.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web"/>
+        <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components"/>
+        <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Emoji"/>
+        <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Icons"/>
+        <PackageReference Include="Volo.Abp.AspNetCore.Components.Web"/>
+        <PackageReference Include="Volo.Abp.Authorization"/>
+        <PackageReference Include="Volo.Abp.Ddd.Application.Contracts"/>
     </ItemGroup>
 
     <ItemGroup>
-      <_ContentIncludedByDefault Remove="wwwroot\background.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\exampleJsInterop.js" />
+        <_ContentIncludedByDefault Remove="wwwroot\background.png"/>
+        <_ContentIncludedByDefault Remove="wwwroot\exampleJsInterop.js"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Components\GroupComponent\" />
+        <Folder Include="Components\GroupComponent\"/>
     </ItemGroup>
 
 </Project>

@@ -1,0 +1,152 @@
+<Project>
+    <PropertyGroup>
+        <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+
+        <!-- Core Framework Versions -->
+        <ABPPackageVersion>9.0.0</ABPPackageVersion>
+        <MicrosoftAspNetCorePackageVersion>9.0.0</MicrosoftAspNetCorePackageVersion>
+        <MicrosoftAspNetCoreWebPackageVersion>9.0.3</MicrosoftAspNetCoreWebPackageVersion>
+        <MicrosoftExtensionsPackageVersion>9.0.0</MicrosoftExtensionsPackageVersion>
+        <MicrosoftEntityFrameworkCorePackageVersion>9.0.0</MicrosoftEntityFrameworkCorePackageVersion>
+
+        <!-- UI Component Versions -->
+        <FluentBlazorPackageVersion>4.11.7</FluentBlazorPackageVersion>
+
+        <!-- Logging and Monitoring Versions -->
+        <SerilogPackageVersion>9.0.0</SerilogPackageVersion>
+        <SerilogSinksAsyncPackageVersion>2.1.0</SerilogSinksAsyncPackageVersion>
+        <SerilogSinksFilePackageVersion>6.0.0</SerilogSinksFilePackageVersion>
+        <SerilogSinksConsolePackageVersion>6.0.0</SerilogSinksConsolePackageVersion>
+        <HealthChecksPackageVersion>9.0.0</HealthChecksPackageVersion>
+
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!-- AspNetCore.HealthChecks Related Packages -->
+        <PackageVersion Include="AspNetCore.HealthChecks.UI" Version="$(HealthChecksPackageVersion)" />
+        <PackageVersion Include="AspNetCore.HealthChecks.UI.Client" Version="$(HealthChecksPackageVersion)" />
+        <PackageVersion Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="$(HealthChecksPackageVersion)" />
+
+        <!-- Microsoft.AspNetCore Related Packages -->
+        <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="$(MicrosoftAspNetCoreWebPackageVersion)" />
+        <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="$(MicrosoftAspNetCoreWebPackageVersion)" />
+        <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="$(MicrosoftAspNetCoreWebPackageVersion)" />
+        <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="$(MicrosoftAspNetCoreWebPackageVersion)" />
+        <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="$(MicrosoftAspNetCoreWebPackageVersion)" />
+        <PackageVersion Include="Microsoft.AspNetCore.WebUtilities" Version="$(MicrosoftAspNetCoreWebPackageVersion)" />
+        <PackageVersion Include="Microsoft.Extensions.FileProviders.Embedded" Version="$(MicrosoftAspNetCorePackageVersion)" />
+        <PackageVersion Include="Microsoft.Extensions.Hosting" Version="$(MicrosoftExtensionsPackageVersion)" />
+
+        <!-- Microsoft.EntityFrameworkCore Related Packages -->
+        <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="$(MicrosoftEntityFrameworkCorePackageVersion)" />
+
+        <!-- Microsoft.FluentUI Related Packages -->
+        <PackageVersion Include="Microsoft.FluentUI.AspNetCore.Components" Version="$(FluentBlazorPackageVersion)" />
+        <PackageVersion Include="Microsoft.FluentUI.AspNetCore.Components.Emoji" Version="$(FluentBlazorPackageVersion)" />
+        <PackageVersion Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="$(FluentBlazorPackageVersion)" />
+
+        <!-- Serilog Related Packages -->
+        <PackageVersion Include="Serilog.AspNetCore" Version="$(SerilogPackageVersion)" />
+        <PackageVersion Include="Serilog.Extensions.Logging" Version="$(SerilogPackageVersion)" />
+        <PackageVersion Include="Serilog.Sinks.Async" Version="$(SerilogSinksAsyncPackageVersion)" />
+        <PackageVersion Include="Serilog.Sinks.Console" Version="$(SerilogSinksConsolePackageVersion)" />
+        <PackageVersion Include="Serilog.Sinks.File" Version="$(SerilogSinksFilePackageVersion)" />
+
+        <!-- Volo.Abp Core Packages -->
+        <PackageVersion Include="Volo.Abp.AspNetCore.Components.Server" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.AspNetCore.Components.Web" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.AspNetCore.Components.WebAssembly" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.AspNetCore.Mvc.UI.Bundling" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.AspNetCore.Mvc.UI.Packages" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.AspNetCore.MultiTenancy" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.AspNetCore.Serilog" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.Authorization" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.AutoMapper" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.Autofac" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.Autofac.WebAssembly" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.Caching" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.Ddd.Application.Contracts" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.Emailing" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.EntityFrameworkCore.PostgreSql" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.Features" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.GlobalFeatures" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.Http.Client.IdentityModel.WebAssembly" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.MultiTenancy.Abstractions" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.Swashbuckle" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.UI.Navigation" Version="$(ABPPackageVersion)" />
+
+        <!-- Volo.Abp Module Packages - Account -->
+        <PackageVersion Include="Volo.Abp.Account.Application" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.Account.Application.Contracts" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.Account.HttpApi" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.Account.HttpApi.Client" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.Account.Web.OpenIddict" Version="$(ABPPackageVersion)" />
+
+        <!-- Volo.Abp Module Packages - AuditLogging -->
+        <PackageVersion Include="Volo.Abp.AuditLogging.Domain" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.AuditLogging.Domain.Shared" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.AuditLogging.EntityFrameworkCore" Version="$(ABPPackageVersion)" />
+
+        <!-- Volo.Abp Module Packages - BackgroundJobs -->
+        <PackageVersion Include="Volo.Abp.BackgroundJobs.Domain" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.BackgroundJobs.Domain.Shared" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.BackgroundJobs.EntityFrameworkCore" Version="$(ABPPackageVersion)" />
+
+        <!-- Volo.Abp Module Packages - BlobStoring -->
+        <PackageVersion Include="Volo.Abp.BlobStoring.Database.Domain" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.BlobStoring.Database.Domain.Shared" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.BlobStoring.Database.EntityFrameworkCore" Version="$(ABPPackageVersion)" />
+
+        <!-- Volo.Abp Module Packages - FeatureManagement -->
+        <PackageVersion Include="Volo.Abp.FeatureManagement.Application" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.FeatureManagement.Application.Contracts" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.FeatureManagement.Domain" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.FeatureManagement.Domain.Shared" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.FeatureManagement.EntityFrameworkCore" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.FeatureManagement.HttpApi" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.FeatureManagement.HttpApi.Client" Version="$(ABPPackageVersion)" />
+
+        <!-- Volo.Abp Module Packages - Identity -->
+        <PackageVersion Include="Volo.Abp.Identity.Application" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.Identity.Application.Contracts" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.Identity.AspNetCore" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.Identity.Domain" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.Identity.Domain.Shared" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.Identity.EntityFrameworkCore" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.Identity.HttpApi" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.Identity.HttpApi.Client" Version="$(ABPPackageVersion)" />
+
+        <!-- Volo.Abp Module Packages - OpenIddict -->
+        <PackageVersion Include="Volo.Abp.OpenIddict.Domain" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.OpenIddict.Domain.Shared" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.OpenIddict.EntityFrameworkCore" Version="$(ABPPackageVersion)" />
+
+        <!-- Volo.Abp Module Packages - PermissionManagement -->
+        <PackageVersion Include="Volo.Abp.PermissionManagement.Application" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.PermissionManagement.Application.Contracts" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.PermissionManagement.Domain.Identity" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.PermissionManagement.Domain.OpenIddict" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.PermissionManagement.Domain.Shared" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.PermissionManagement.EntityFrameworkCore" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.PermissionManagement.HttpApi" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.PermissionManagement.HttpApi.Client" Version="$(ABPPackageVersion)" />
+
+        <!-- Volo.Abp Module Packages - SettingManagement -->
+        <PackageVersion Include="Volo.Abp.SettingManagement.Application" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.SettingManagement.Application.Contracts" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.SettingManagement.Domain" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.SettingManagement.Domain.Shared" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.SettingManagement.EntityFrameworkCore" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.SettingManagement.HttpApi" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.SettingManagement.HttpApi.Client" Version="$(ABPPackageVersion)" />
+
+        <!-- Volo.Abp Module Packages - TenantManagement -->
+        <PackageVersion Include="Volo.Abp.TenantManagement.Application" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.TenantManagement.Application.Contracts" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.TenantManagement.Domain" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.TenantManagement.Domain.Shared" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.TenantManagement.EntityFrameworkCore" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.TenantManagement.HttpApi" Version="$(ABPPackageVersion)" />
+        <PackageVersion Include="Volo.Abp.TenantManagement.HttpApi.Client" Version="$(ABPPackageVersion)" />
+    </ItemGroup>
+</Project>

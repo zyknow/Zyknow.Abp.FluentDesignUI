@@ -169,7 +169,7 @@ public class SimpleBlazorModule : AbpModule
         Configure<AbpBundlingOptions>(options =>
         {
             // Blazor Web App
-            options.Parameters.InteractiveAuto = true;
+            // options.Parameters.InteractiveAuto = true;
 
             // MVC UI
             // options.StyleBundles.Configure(
@@ -298,12 +298,6 @@ public class SimpleBlazorModule : AbpModule
         }
 
         app.UseCorrelationId();
-
-        var configuration = context.GetConfiguration();
-        if (Convert.ToBoolean(configuration["AuthServer:IsOnK8s"]))
-        {
-            app.UseStaticFilesForPatterns("appsettings*.json");
-        }
 
         app.MapAbpStaticAssets();
         app.UseRouting();

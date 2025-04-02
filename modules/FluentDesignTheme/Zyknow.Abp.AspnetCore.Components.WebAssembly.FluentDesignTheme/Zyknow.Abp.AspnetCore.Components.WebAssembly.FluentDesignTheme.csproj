@@ -7,13 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.csproj" />
+        <ProjectReference Include="..\Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="9.0.3" />
-        <PackageReference Include="Volo.Abp.AspNetCore.Components.WebAssembly" Version="9.1.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.3" />
-        <PackageReference Include="Volo.Abp.Http.Client.IdentityModel.WebAssembly" Version="9.1.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication"/>
+        <PackageReference Include="Volo.Abp.AspNetCore.Components.WebAssembly"/>
+        <PackageReference Include="Volo.Abp.Http.Client.IdentityModel.WebAssembly"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly"/>
     </ItemGroup>
 </Project>

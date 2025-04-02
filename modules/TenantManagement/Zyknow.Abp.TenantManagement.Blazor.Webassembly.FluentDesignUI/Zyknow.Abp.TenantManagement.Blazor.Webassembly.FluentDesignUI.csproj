@@ -12,6 +12,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Volo.Abp.TenantManagement.HttpApi.Client" Version="9.1.0" />
+      <PackageReference Include="Volo.Abp.TenantManagement.HttpApi.Client" />
     </ItemGroup>
 </Project>

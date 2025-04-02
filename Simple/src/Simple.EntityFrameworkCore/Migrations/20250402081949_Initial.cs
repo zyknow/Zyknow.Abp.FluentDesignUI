@@ -93,7 +93,6 @@ namespace Simple.Migrations
                     RegexDescription = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true),
                     Description = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     ValueType = table.Column<int>(type: "integer", nullable: false),
-                    CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ExtraProperties = table.Column<string>(type: "text", nullable: false),
                     ConcurrencyStamp = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: false)
                 },
@@ -259,7 +258,6 @@ namespace Simple.Migrations
                     IsStatic = table.Column<bool>(type: "boolean", nullable: false),
                     IsPublic = table.Column<bool>(type: "boolean", nullable: false),
                     EntityVersion = table.Column<int>(type: "integer", nullable: false),
-                    CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ExtraProperties = table.Column<string>(type: "text", nullable: false),
                     ConcurrencyStamp = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: false)
                 },

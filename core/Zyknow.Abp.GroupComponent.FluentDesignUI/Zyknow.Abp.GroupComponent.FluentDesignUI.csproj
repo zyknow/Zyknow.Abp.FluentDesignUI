@@ -6,7 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Volo.Abp.AutoMapper" Version="9.1.0" />
+        <PackageReference Include="Volo.Abp.AutoMapper" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\..\modules\FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.csproj" />
