@@ -7,6 +7,7 @@
     "Warning": "Warning",
     "Error": "Error",
     "Success": "Success",
+    "Confirm": "Confirm",
     "NotSelected": "Not Selected",
     "VisibleColumns": "Visible Columns"
   }
