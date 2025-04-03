@@ -7,7 +7,7 @@
             @foreach (var group in ComponentCreationContext.Groups)
             {
                 <FluentTab Id="@group.Id" Label="@group.DisplayName" LabelStyle="min-width:200px;font-size: 18px;">
-                    <FluentCard>
+                    <FluentCard AreaRestricted="false">
                         <FluentStack Orientation="Orientation.Vertical" VerticalGap="20">
                             <FluentLabel Weight="FontWeight.Bold"
                                          Typo="Typography.H4">@group.DisplayName</FluentLabel>
