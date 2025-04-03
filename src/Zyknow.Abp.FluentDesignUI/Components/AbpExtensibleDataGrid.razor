@@ -3,11 +3,42 @@
 @using Volo.Abp.Data
 @inject IStringLocalizer<AbpUiResource> UL
 @typeparam TItem
+@typeparam TKey
+
 <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch"
              Style="flex:1;min-height: 0;">
+
+    @if (EnableSelected && SelectEntities.Any())
+    {
+        @if (SelectToolbar != null)
+        {
+            @SelectToolbar
+        }
+        else
+        {
+            <FluentToolbar>
+                <FluentLabel Weight="FontWeight.Bold">@UL["Selected"] @SelectEntities.Count</FluentLabel>
+                @if (OnDeleteSelected.HasDelegate)
+                {
+                    <FluentButton Appearance="Appearance.Stealth" Color="red"
+                                  OnClick="OnDeleteSelectedClick">@UL["Delete"]@UL["Selected"]</FluentButton>
+                }
+                @if (SelectToolbarEnd != null)
+                {
+                    @SelectToolbarEnd
+                }
+            </FluentToolbar>
+        }
+    }
+
     <div style="flex:1;overflow-y: auto;min-height: 0;">
-        <FluentDataGrid RefreshItems="OnChange" RowSize="DataGridRowSize.Medium" Items="Entities.AsQueryable()"
-                        GenerateHeader="GenerateHeaderOption.Sticky" Loading="@Loading" Pagination="@Pagination"
+        <FluentDataGrid RefreshItems="OnChange"
+                        RowSize="DataGridRowSize.Medium"
+                        Items="Entities.AsQueryable()"
+                        GenerateHeader="GenerateHeaderOption.Sticky"
+                        Loading="@Loading"
+                        Pagination="@Pagination"
+                        ShowHover="@EnableSelected"
                         TGridItem="TItem">
             <EmptyContent>
                 <FluentStack HorizontalAlignment="HorizontalAlignment.Center"
@@ -17,6 +48,18 @@
             </EmptyContent>
 
             <ChildContent>
+
+                @if (EnableSelected)
+                {
+                    <SelectColumn TGridItem="TItem"
+                                  SelectMode="DataGridSelectMode.Multiple"
+                                  SelectFromEntireRow="true"
+                                  Property="@(dto => SelectEntities.Any(e => e.Id.Equals(dto.Id)))"
+                                  SelectAllChanged="OnSelectAllChanged"
+                                  SelectAll="@SelectedAll"
+                                  OnSelect="OnSelect"/>
+                }
+
                 @if (Columns != null)
                 {
                     foreach (var column in Columns.Where(x => x.Visible))
@@ -125,11 +168,11 @@
     </div>
     <AbpFluentPaginator State="@Pagination">
         <ItemsPerPageStart>
-            <FluentButton id="ToggleColumnPopoverVisibleBtnId" Appearance="Appearance.Outline"
+            <FluentButton id="@ToggleColumnPopoverVisibleBtnId" Appearance="Appearance.Outline"
                           @onclick="() => ToggleColumnPopoverVisible = !ToggleColumnPopoverVisible">
                 @UL["VisibleColumns"]
             </FluentButton>
-            <FluentPopover VerticalThreshold="170" AnchorId="ToggleColumnPopoverVisibleBtnId"
+            <FluentPopover VerticalThreshold="170" AnchorId="@ToggleColumnPopoverVisibleBtnId"
                            @bind-Open="ToggleColumnPopoverVisible">
                 <Header></Header>
                 <Body>
@@ -148,8 +191,3 @@
 
 
 </FluentStack>
-
-@code
-{
-    protected virtual string ToggleColumnPopoverVisibleBtnId { get; set; } = Guid.NewGuid().ToString();
-}

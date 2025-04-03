@@ -185,7 +185,7 @@ public abstract class AbpCrudPageBase<
     protected FluentEntityActionDictionary EntityActions { get; set; } = new();
     protected FluentTableColumnDictionary TableColumns { get; set; } = new();
 
-    public AbpExtensibleDataGrid<TListViewModel> AbpExtensibleDataGridRef { get; set; }
+    public AbpExtensibleDataGrid<TListViewModel, TKey> AbpExtensibleDataGridRef { get; set; }
 
     protected AbpFluentPaginationState Pagination { get; set; } = new();
 
@@ -249,6 +249,41 @@ public abstract class AbpCrudPageBase<
             await InvokeAsync(StateHasChanged);
         }
     }
+
+    protected virtual Task OnDeletingEntitiesAsync(IEnumerable<TGetListOutputDto> entities)
+    {
+        return Task.CompletedTask;
+    }
+
+    protected virtual async Task DeleteEntitiesAsync(IEnumerable<TGetListOutputDto> entities)
+    {
+        try
+        {
+            entities = entities.ToList();
+            var ids = entities.Select(e => e.Id).ToList();
+            await OnDeletingEntitiesAsync(entities);
+            await CheckDeletePolicyAsync();
+
+            foreach (var key in ids)
+            {
+                await AppService.DeleteAsync(key);
+            }
+
+            await OnDeletedEntitiesAsync(entities);
+        }
+        catch (Exception ex)
+        {
+            await HandleErrorAsync(ex);
+        }
+    }
+
+    protected virtual async Task OnDeletedEntitiesAsync(IEnumerable<TGetListOutputDto> entities)
+    {
+        await GetEntitiesAsync();
+        await InvokeAsync(StateHasChanged);
+        await Notify.Success(L["SuccessfullyDeleted"]);
+    }
+
 
     private IReadOnlyList<TListViewModel> MapToListViewModel(IReadOnlyList<TGetListOutputDto> dtos)
     {
@@ -488,7 +523,6 @@ public abstract class AbpCrudPageBase<
     {
         return ValueTask.CompletedTask;
     }
-
 
     protected virtual Task<IDialogReference> ShowDialogAsync(RenderFragment render,
         Action<DialogParameters> paraAction = null)

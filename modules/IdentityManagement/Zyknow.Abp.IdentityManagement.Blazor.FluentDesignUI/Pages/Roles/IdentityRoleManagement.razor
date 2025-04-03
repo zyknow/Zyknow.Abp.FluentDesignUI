@@ -12,6 +12,11 @@
                OnSearch="SearchEntitiesAsync"></AbpSearch>
     <AbpExtensibleDataGrid Loading="@Loading"
                            Entities="Entities"
+                           TKey="Guid"
+                           TItem="IdentityRoleDto"
+                           EnableSelected="true"
+                           OnDeleteSelected="DeleteEntitiesAsync"
+                           DeleteSelectedDisplayPropertyConfirmExpression="@(r => r.Name)"
                            OnChange="@OnDataGridReadAsync"
                            Pagination="@Pagination"
                            Columns="@RoleManagementTableColumns">

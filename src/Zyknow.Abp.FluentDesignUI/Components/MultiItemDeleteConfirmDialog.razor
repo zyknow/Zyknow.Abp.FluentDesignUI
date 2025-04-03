@@ -1,0 +1,79 @@
+﻿@typeparam TItem
+@using Localization.Resources.AbpUi
+@using Microsoft.Extensions.Localization
+@using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
+@implements IDialogContentComponent<MultiItemDeleteConfirmDialogInput<TItem>>
+@inject IStringLocalizer<AbpUiResource> L
+<FluentDialogHeader ShowDismiss="true" ShowDismissTooltip="false">
+    <FluentStack VerticalAlignment="VerticalAlignment.Center">
+        <FluentIcon
+            Value="@(new Size24.QuestionCircle())" Color="Color.Warning"></FluentIcon>
+        <FluentLabel Typo="Typography.H4" Weight="FontWeight.Bold">@L["Confirm"]</FluentLabel>
+    </FluentStack>
+</FluentDialogHeader>
+
+<FluentDialogBody>
+    <FluentStack Orientation="Orientation.Vertical">
+        <FluentLabel>@L["MultiItemWillBeDeletedMessageWithFormat", Content.Items?.Count()]</FluentLabel>
+
+        @if (Content.DeleteSelectedDisplayPropertyConfirmExpression != null && Content.Items.Any() == true)
+        {
+            <FluentOverflow Style="width: 100%; border: 1px solid darkgray; padding: 2px; margin-bottom: 4px;">
+                <ChildContent>
+                    @foreach (var item in Content.Items)
+                    {
+                        <FluentOverflowItem>
+                            <FluentBadge
+                                Appearance="Appearance.Accent">@Content.DeleteSelectedDisplayPropertyConfirmExpression.Invoke(@item)</FluentBadge>
+                        </FluentOverflowItem>
+                    }
+                </ChildContent>
+                <MoreButtonTemplate>
+                    <FluentBadge Style="min-width: 32px; max-width:32px;">
+                        @($"+{context.ItemsOverflow.Count()}")
+                    </FluentBadge>
+                </MoreButtonTemplate>
+                <OverflowTemplate>
+                    <FluentTooltip Anchor="@context.IdMoreButton" UseTooltipService="false">
+                        @foreach (var item in context.ItemsOverflow)
+                        {
+                            <div style="margin: 5px;">@item.Text</div>
+                        }
+                    </FluentTooltip>
+                </OverflowTemplate>
+            </FluentOverflow>
+        }
+
+    </FluentStack>
+</FluentDialogBody>
+
+
+<FluentDialogFooter>
+    <FluentStack HorizontalAlignment="HorizontalAlignment.End" VerticalAlignment="VerticalAlignment.Bottom">
+        <FluentButton Appearance="Appearance.Accent"
+                      OnClick="@OnSubmitBtnClickAsync">@L["Yes"]</FluentButton>
+
+        <FluentButton Appearance="Appearance.Neutral"
+                      OnClick="@OnCancelBtnClickAsync">@L["Cancel"]</FluentButton>
+    </FluentStack>
+</FluentDialogFooter>
+
+
+
+@code {
+
+    [CascadingParameter] protected FluentDialog? Dialog { get; set; }
+
+    [Parameter] public MultiItemDeleteConfirmDialogInput<TItem> Content { get; set; }
+
+    protected virtual async Task OnSubmitBtnClickAsync()
+    {
+        await Dialog.CloseAsync(DialogResult.Ok<object>(null));
+    }
+
+    protected virtual async Task OnCancelBtnClickAsync()
+    {
+        await Dialog.CloseAsync(DialogResult.Cancel());
+    }
+
+}
