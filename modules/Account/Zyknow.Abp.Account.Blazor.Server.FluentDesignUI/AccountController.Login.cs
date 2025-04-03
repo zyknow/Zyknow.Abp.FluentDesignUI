@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Security.Claims;
+using AsyncKeyedLock;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -16,6 +17,8 @@ namespace Zyknow.Abp.Account.Blazor.Server.FluentDesignUI;
 
 public partial class AccountController
 {
+    static AsyncKeyedLocker<string> TicketLoginLocker = new AsyncKeyedLocker<string>();
+
     [HttpGet("api/Account/LoginSucceededRedirect")]
     public async Task<IActionResult> LoginSucceededRedirectAsync(string ticket)
     {
@@ -25,22 +28,26 @@ public partial class AccountController
             return BadRequest("Ticket not found!");
         }
 
-
-        var user = await userManager.FindByIdAsync(ticketCache.UserId.ToString());
-        await signInManager.SignInAsync(user, ticketCache.RememberMe);
-
-        await identitySecurityLogManager.SaveAsync(new IdentitySecurityLogContext()
+        using (await TicketLoginLocker.LockAsync(ticket))
         {
-            Identity = IdentitySecurityLogIdentityConsts.Identity,
-            Action = IdentitySecurityLogActionConsts.LoginSucceeded,
-            UserName = ticketCache.UserNameOrEmailAddress
-        });
+            var user = await userManager.FindByIdAsync(ticketCache.UserId.ToString());
+            await signInManager.SignInAsync(user, ticketCache.RememberMe);
 
-        Debug.Assert(user != null, nameof(user) + " != null");
+            await identitySecurityLogManager.SaveAsync(new IdentitySecurityLogContext()
+            {
+                Identity = IdentitySecurityLogIdentityConsts.Identity,
+                Action = IdentitySecurityLogActionConsts.LoginSucceeded,
+                UserName = ticketCache.UserNameOrEmailAddress
+            });
 
-        await identityDynamicClaimsPrincipalContributorCache.ClearAsync(user.Id, user.TenantId);
+            Debug.Assert(user != null, nameof(user) + " != null");
 
-        return await RedirectSafelyAsync(ticketCache.ReturnUrl, ticketCache.ReturnUrlHash);
+            await identityDynamicClaimsPrincipalContributorCache.ClearAsync(user.Id, user.TenantId);
+
+            await loginTicketCache.RemoveAsync(ticket);
+
+            return await RedirectSafelyAsync(ticketCache.ReturnUrl, ticketCache.ReturnUrlHash);
+        }
     }
 
     [HttpGet("api/Account/ExternalLogin")]
