@@ -16,6 +16,8 @@ public partial class EntityAction<TItem> : ComponentBase
     [Parameter] public string Text { get; set; }
 
     [Parameter] public Icon? Icon { get; set; }
+    
+    [Parameter] public string? Color { get; set; }
 
     [Parameter] public Appearance Appearance { get; set; } = Appearance.Accent;
 

@@ -165,6 +165,7 @@
                 new()
                 {
                     Text = L["Delete"],
+                    Color = "red",
                     Visible = (data) => HasDeletePermission,
                     Clicked = async (data) => await DeleteEntityAsync(data.As<IdentityUserDto>()),
                     ConfirmationMessage = (data) => GetDeleteConfirmationMessage(data.As<IdentityUserDto>())

@@ -8,12 +8,16 @@
         {
             if (!Primary)
             {
-                <FluentMenuItem Disabled="@Disabled" OnClick="ActionClickedAsync">@Text</FluentMenuItem>
+                <FluentMenuItem Disabled="@Disabled" OnClick="ActionClickedAsync">
+                    <FluentLabel Style="@(@$"color:{Color}")">@Text</FluentLabel>
+                </FluentMenuItem>
             }
             else
             {
                 <FluentButton IconStart="@Icon" disabled="@Disabled"
+                              Color="@Color"
                               Appearance="@Appearance"
+                              StopPropagation="true"
                               OnClick="@ActionClickedAsync">
                     @Text
                 </FluentButton>
@@ -21,8 +25,10 @@
         }
         else
         {
-            <FluentButton  IconStart="@Icon" disabled="@Disabled"
+            <FluentButton IconStart="@Icon" disabled="@Disabled"
                           Appearance="@Appearance"
+                          StopPropagation="true"
+                          Color="@Color"
                           OnClick="@ActionClickedAsync">
                 @Text
             </FluentButton>

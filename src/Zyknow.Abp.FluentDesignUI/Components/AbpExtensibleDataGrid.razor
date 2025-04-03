@@ -40,7 +40,6 @@
                         GenerateHeader="GenerateHeaderOption.Sticky"
                         Loading="@Loading"
                         Pagination="@Pagination"
-                        ShowHover="@EnableSelected"
                         TGridItem="TItem">
             <EmptyContent>
                 <FluentStack HorizontalAlignment="HorizontalAlignment.Center"
@@ -55,7 +54,6 @@
                 {
                     <SelectColumn TGridItem="TItem"
                                   SelectMode="DataGridSelectMode.Multiple"
-                                  SelectFromEntireRow="true"
                                   Property="@(dto => SelectEntities.Any(e => e.Id.Equals(dto.Id)))"
                                   SelectAllChanged="OnSelectAllChanged"
                                   SelectAll="@SelectedAll"
@@ -76,6 +74,7 @@
                                     {
                                         <EntityAction ParentActions="@EntityActionsRef"
                                                       TItem="@TItem"
+                                                      Color="@action.Color?.ToString()"
                                                       Clicked="@(async () => await action.Clicked(context))"
                                                       Appearance="@(action.Appearance ?? Appearance.Accent)"
                                                       Icon="@action.Icon"

@@ -121,6 +121,7 @@ public partial class AbpExtensibleDataGrid<TItem, TKey> : ComponentBase where TI
         }
 
         await SelectEntitiesChanged.InvokeAsync(SelectEntities);
+        await InvokeAsync(StateHasChanged);
     }
 
 
@@ -141,6 +142,7 @@ public partial class AbpExtensibleDataGrid<TItem, TKey> : ComponentBase where TI
         }
 
         await SelectEntitiesChanged.InvokeAsync(SelectEntities);
+        await InvokeAsync(StateHasChanged);
     }
 
     protected async Task OnDeleteSelectedClick()
@@ -173,5 +175,6 @@ public partial class AbpExtensibleDataGrid<TItem, TKey> : ComponentBase where TI
         }
         
         SelectEntities.Clear();
+        await InvokeAsync(StateHasChanged);
     }
 }

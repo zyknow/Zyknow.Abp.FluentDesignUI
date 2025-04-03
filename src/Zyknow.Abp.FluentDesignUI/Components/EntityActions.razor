@@ -5,13 +5,15 @@
     {
         if (HasPrimaryAction)
         {
-            <FluentMenuButton Text="@PrimaryAction.Text" OnMenuChanged="async () => await PrimaryAction.ActionClickedAsync()" ButtonAppearance="@PrimaryAction.Appearance">
+            <FluentMenuButton Style="z-index: 10" @ref="ButtonRef" Text="@PrimaryAction.Text"
+                              OnMenuChanged="@(async () => await PrimaryAction.ActionClickedAsync())"
+                              ButtonAppearance="@PrimaryAction.Appearance">
                 @ChildContent
             </FluentMenuButton>
         }
         else
         {
-            <FluentMenuButton Text="@ToggleText">
+            <FluentMenuButton @ref="ButtonRef" Text="@ToggleText">
                 @ChildContent
             </FluentMenuButton>
         }
@@ -22,3 +24,18 @@
     }
 
 </CascadingValue>
+
+@code{
+
+    FluentMenuButton ButtonRef;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            ButtonRef.Button.StopPropagation = true;
+            InvokeAsync(StateHasChanged);
+        }
+    }
+
+}

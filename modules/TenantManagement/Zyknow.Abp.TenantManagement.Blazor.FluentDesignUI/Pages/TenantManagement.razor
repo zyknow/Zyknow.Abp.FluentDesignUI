@@ -110,6 +110,7 @@
                 new FluentEntityAction
                 {
                     Text = L["Delete"],
+                    Color = "red",
                     Visible = (data) => HasDeletePermission,
                     Clicked = async (data) => await DeleteEntityAsync(data.As<TenantDto>()),
                     ConfirmationMessage = (data) => GetDeleteConfirmationMessage(data.As<TenantDto>())
