@@ -173,8 +173,6 @@ public partial class AbpExtensibleDataGrid<TItem, TKey> : ComponentBase where TI
         {
             return;
         }
-        
         SelectEntities.Clear();
-        await InvokeAsync(StateHasChanged);
     }
 }
