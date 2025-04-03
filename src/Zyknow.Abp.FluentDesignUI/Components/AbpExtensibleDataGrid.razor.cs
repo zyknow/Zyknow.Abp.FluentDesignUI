@@ -164,4 +164,14 @@ public partial class AbpExtensibleDataGrid<TItem, TKey> : ComponentBase where TI
             }
         }
     }
+
+    protected async Task OnClearSelectedClick()
+    {
+        if (SelectEntities.IsNullOrEmpty())
+        {
+            return;
+        }
+        
+        SelectEntities.Clear();
+    }
 }
