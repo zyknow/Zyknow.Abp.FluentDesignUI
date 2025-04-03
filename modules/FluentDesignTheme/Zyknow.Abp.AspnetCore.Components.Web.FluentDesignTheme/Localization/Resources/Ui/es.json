@@ -6,6 +6,8 @@
     "Info": "Información",
     "Warning": "Advertencia",
     "Error": "Error",
-    "Success": "Éxito"
+    "Success": "Éxito",
+    "NotSelected": "No seleccionado",
+    "VisibleColumns": "Columnas visibles"
   }
 }

@@ -3,7 +3,8 @@
 @using Volo.Abp.Data
 @inject IStringLocalizer<AbpUiResource> UL
 @typeparam TItem
-<FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch" Style="flex:1;min-height: 0;">
+<FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch"
+             Style="flex:1;min-height: 0;">
     <div style="flex:1;overflow-y: auto;min-height: 0;">
         <FluentDataGrid RefreshItems="OnChange" RowSize="DataGridRowSize.Medium" Items="Entities.AsQueryable()"
                         GenerateHeader="GenerateHeaderOption.Sticky" Loading="@Loading" Pagination="@Pagination"
@@ -18,7 +19,7 @@
             <ChildContent>
                 @if (Columns != null)
                 {
-                    foreach (var column in Columns)
+                    foreach (var column in Columns.Where(x => x.Visible))
                     {
                         if (column.Actions.Any())
                         {
@@ -122,6 +123,33 @@
 
         </FluentDataGrid>
     </div>
-    <AbpFluentPaginator State="@Pagination"/>
+    <AbpFluentPaginator State="@Pagination">
+        <ItemsPerPageStart>
+            <FluentButton id="ToggleColumnPopoverVisibleBtnId" Appearance="Appearance.Outline"
+                          @onclick="() => ToggleColumnPopoverVisible = !ToggleColumnPopoverVisible">
+                @UL["VisibleColumns"]
+            </FluentButton>
+            <FluentPopover VerticalThreshold="170" AnchorId="ToggleColumnPopoverVisibleBtnId"
+                           @bind-Open="ToggleColumnPopoverVisible">
+                <Header></Header>
+                <Body>
+                <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Start">
+                    @foreach (var column in Columns)
+                    {
+                        <FluentCheckbox
+                            Disabled="!column.CanHidden"
+                            @bind-Value="column.Visible"> @column.Title</FluentCheckbox>
+                    }
+                </FluentStack>
+                </Body>
+            </FluentPopover>
+        </ItemsPerPageStart>
+    </AbpFluentPaginator>
+
+
 </FluentStack>
 
+@code
+{
+    protected virtual string ToggleColumnPopoverVisibleBtnId { get; set; } = Guid.NewGuid().ToString();
+}

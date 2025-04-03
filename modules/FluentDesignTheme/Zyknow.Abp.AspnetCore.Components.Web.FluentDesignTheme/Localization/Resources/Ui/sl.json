@@ -3,9 +3,11 @@
   "texts": {
     "Settings": "Nastavitve",
     "Color": "Barva",
-    "Info": "Informacija",
+    "Info": "Informacije",
     "Warning": "Opozorilo",
     "Error": "Napaka",
-    "Success": "Uspeh"
+    "Success": "Uspešno",
+    "NotSelected": "Ni izbrano",
+    "VisibleColumns": "Vidni stolpci"
   }
 }

@@ -25,8 +25,9 @@ public partial class AbpExtensibleDataGrid<TItem> : ComponentBase
     [Parameter] public IReadOnlyList<TItem> Entities { get; set; }
 
 
-
     [Inject] public IStringLocalizerFactory StringLocalizerFactory { get; set; }
+
+    protected bool ToggleColumnPopoverVisible { get; set; }
 
     EntityActions<TItem> EntityActionsRef;
 

@@ -6,6 +6,8 @@
     "Info": "Információ",
     "Warning": "Figyelmeztetés",
     "Error": "Hiba",
-    "Success": "Siker"
+    "Success": "Sikeres",
+    "NotSelected": "Nincs kiválasztva",
+    "VisibleColumns": "Látható oszlopok"
   }
 }

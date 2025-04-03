@@ -3,9 +3,11 @@
   "texts": {
     "Settings": "Einstellungen",
     "Color": "Farbe",
-    "Info": "Info",
+    "Info": "Information",
     "Warning": "Warnung",
     "Error": "Fehler",
-    "Success": "Erfolg"
+    "Success": "Erfolg",
+    "NotSelected": "Nicht ausgewählt",
+    "VisibleColumns": "Sichtbare Spalten"
   }
 }

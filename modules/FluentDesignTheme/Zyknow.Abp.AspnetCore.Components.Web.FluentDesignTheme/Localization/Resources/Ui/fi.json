@@ -6,6 +6,8 @@
     "Info": "Tiedot",
     "Warning": "Varoitus",
     "Error": "Virhe",
-    "Success": "Onnistuminen"
+    "Success": "Onnistui",
+    "NotSelected": "Ei valittu",
+    "VisibleColumns": "Näkyvät sarakkeet"
   }
 }

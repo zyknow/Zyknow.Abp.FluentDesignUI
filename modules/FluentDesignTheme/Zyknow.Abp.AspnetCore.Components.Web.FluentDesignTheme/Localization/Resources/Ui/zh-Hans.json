@@ -7,6 +7,7 @@
     "Warning": "警告",
     "Error": "错误",
     "Success": "成功",
-    "NotSelected" : "未选择"
+    "NotSelected": "未选择",
+    "VisibleColumns": "显示列"
   }
 }

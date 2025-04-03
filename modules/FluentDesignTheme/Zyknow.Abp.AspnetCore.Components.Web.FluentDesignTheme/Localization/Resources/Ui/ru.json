@@ -6,6 +6,8 @@
     "Info": "Информация",
     "Warning": "Предупреждение",
     "Error": "Ошибка",
-    "Success": "Успех"
+    "Success": "Успешно",
+    "NotSelected": "Не выбрано",
+    "VisibleColumns": "Видимые столбцы"
   }
 }

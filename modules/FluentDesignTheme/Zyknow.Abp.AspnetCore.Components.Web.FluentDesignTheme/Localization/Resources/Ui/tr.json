@@ -6,6 +6,8 @@
     "Info": "Bilgi",
     "Warning": "Uyarı",
     "Error": "Hata",
-    "Success": "Başarı"
+    "Success": "Başarılı",
+    "NotSelected": "Seçilmedi",
+    "VisibleColumns": "Görünür Sütunlar"
   }
 }

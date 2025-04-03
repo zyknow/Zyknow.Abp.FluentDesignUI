@@ -3,9 +3,11 @@
   "texts": {
     "Settings": "Nastavenia",
     "Color": "Farba",
-    "Info": "Informácia",
+    "Info": "Informácie",
     "Warning": "Upozornenie",
     "Error": "Chyba",
-    "Success": "Úspech"
+    "Success": "Úspech",
+    "NotSelected": "Nevybrané",
+    "VisibleColumns": "Viditeľné stĺpce"
   }
 }

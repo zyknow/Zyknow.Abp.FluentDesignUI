@@ -15,11 +15,19 @@
                              Weight="FontWeight.Bolder">@UL["Total"]: @State.TotalItemCount</FluentLabel>
                 <FluentStack HorizontalAlignment="HorizontalAlignment.Right"
                              VerticalAlignment="VerticalAlignment.Center">
+                    @if (ItemsPerPageStart != null)
+                    {
+                        @ItemsPerPageStart
+                    }
                     <FluentSelect
-                        OptionText="@(v=> @UL["PagerShowMenuEntries"].Value.Replace("_MENU_", v.ToString()))"
+                        OptionText="@(v => @UL["PagerShowMenuEntries"].Value.Replace("_MENU_", v.ToString()))"
                         Items="@ItemsPerPageList" SelectedOption="@State.ItemsPerPage"
                         TOption="int"
-                        SelectedOptionChanged="@(v=> State.SetItemsPerPageAsync(v))"></FluentSelect>
+                        SelectedOptionChanged="@(v => State.SetItemsPerPageAsync(v))"></FluentSelect>
+                    @if (ItemsPerPageEnd != null)
+                    {
+                        @ItemsPerPageEnd
+                    }
                 </FluentStack>
             </FluentStack>
         </SummaryTemplate>
@@ -30,6 +38,9 @@
     [Parameter] public PaginationState State { get; set; } = new();
 
     [Parameter] public List<int> ItemsPerPageList { get; set; } = [5, 10, 20, 50, 100, 1000];
+
+    [Parameter] public RenderFragment ItemsPerPageStart { get; set; }
+    [Parameter] public RenderFragment ItemsPerPageEnd { get; set; }
 }
 
 <style scoped>

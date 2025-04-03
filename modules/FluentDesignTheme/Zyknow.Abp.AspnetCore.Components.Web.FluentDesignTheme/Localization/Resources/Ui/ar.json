@@ -6,6 +6,8 @@
     "Info": "معلومات",
     "Warning": "تحذير",
     "Error": "خطأ",
-    "Success": "نجاح"
+    "Success": "نجاح",
+    "NotSelected": "غير محدد",
+    "VisibleColumns": "الأعمدة المرئية"
   }
 }

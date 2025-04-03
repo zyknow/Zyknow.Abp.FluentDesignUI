@@ -6,6 +6,8 @@
     "Info": "जानकारी",
     "Warning": "चेतावनी",
     "Error": "त्रुटि",
-    "Success": "सफलता"
+    "Success": "सफल",
+    "NotSelected": "चयनित नहीं",
+    "VisibleColumns": "दृश्य स्तंभ"
   }
 }

@@ -6,6 +6,8 @@
     "Info": "Information",
     "Warning": "Varning",
     "Error": "Fel",
-    "Success": "Framgång"
+    "Success": "Lyckades",
+    "NotSelected": "Inte valt",
+    "VisibleColumns": "Synliga kolumner"
   }
 }
