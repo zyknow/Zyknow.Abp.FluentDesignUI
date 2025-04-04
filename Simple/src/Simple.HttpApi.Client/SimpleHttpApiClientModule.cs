@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using SharpAbp.Abp.Identity;
 using Volo.Abp.Account;
 using Volo.Abp.Modularity;
 using Volo.Abp.PermissionManagement;
@@ -17,7 +18,8 @@ namespace Simple;
     typeof(AbpAccountHttpApiClientModule),
     typeof(AbpIdentityHttpApiClientModule),
     typeof(AbpTenantManagementHttpApiClientModule),
-    typeof(AbpSettingManagementHttpApiClientModule)
+    typeof(AbpSettingManagementHttpApiClientModule),
+    typeof(IdentityHttpApiClientModule)
 )]
 public class SimpleHttpApiClientModule : AbpModule
 {

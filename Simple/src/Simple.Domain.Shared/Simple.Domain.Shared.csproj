@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="SharpAbp.Abp.Identity.Domain.Shared" />
     <PackageReference Include="Volo.Abp.BackgroundJobs.Domain.Shared" />
     <PackageReference Include="Volo.Abp.AuditLogging.Domain.Shared" />
     <PackageReference Include="Volo.Abp.FeatureManagement.Domain.Shared" />

@@ -32,6 +32,7 @@ using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Routing;
 using Zyknow.Abp.IdentityManagement.Blazor.Server.FluentDesignUI;
 using Zyknow.Abp.SettingManagement.Blazor.Server.FluentDesignUI;
 using Zyknow.Abp.TenantManagement.Blazor.FluentDesignUI;
+using Zyknow.SharpAbp.IdentityManagement.Blazor.Server.FluentDesignUI;
 using App = Simple.Blazor.Components.App;
 
 namespace Simple.Blazor;
@@ -49,7 +50,8 @@ namespace Simple.Blazor;
     typeof(AbpTenantManagementBlazorFluentDesignModule),
     typeof(AbpIdentityBlazorServerFluentDesignModule),
     typeof(AbpSettingManagementBlazorServerFluentDesignModule),
-    typeof(AbpAccountBlazorServerFluentDesignModule)
+    typeof(AbpAccountBlazorServerFluentDesignModule),
+    typeof(SharpAbpIdentityBlazorServerFluentDesignModule)
 )]
 public class SimpleBlazorModule : AbpModule
 {

@@ -12,6 +12,7 @@ using Zyknow.Abp.AspnetCore.Components.WebAssembly.FluentDesignTheme;
 using Zyknow.Abp.FeatureManagement.Blazor.WebAssembly.FluentDesignUI;
 using Zyknow.Abp.IdentityManagement.Blazor.WebAssembly.FluentDesignUI;
 using Zyknow.Abp.SettingManagement.Blazor.WebAssembly.FluentDesignUI;
+using Zyknow.SharpAbp.IdentityManagement.Blazor.WebAssembly.FluentDesignUI;
 
 
 namespace Simple.Blazor.Client;
@@ -23,7 +24,8 @@ namespace Simple.Blazor.Client;
     typeof(AbpFeatureManagementBlazorWebAssemblyFluentDesignModule),
     typeof(AbpIdentityBlazorWebAssemblyFluentDesignModule),
     typeof(AbpSettingManagementBlazorWebAssemblyFluentDesignModule),
-    typeof(AbpAccountBlazorWebAssemblyFluentDesignModule)
+    typeof(AbpAccountBlazorWebAssemblyFluentDesignModule),
+    typeof(SharpAbpIdentityBlazorWebAssemblyFluentDesignModule)
 )]
 public class SimpleBlazorClientModule : AbpModule
 {

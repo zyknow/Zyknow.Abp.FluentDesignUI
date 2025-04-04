@@ -14,4 +14,8 @@
     <ItemGroup>
         <ProjectReference Include="..\..\PermissionManagement\Zyknow.Abp.PermissionManagement.Blazor.FluentDesignUI\Zyknow.Abp.PermissionManagement.Blazor.FluentDesignUI.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <UpToDateCheckInput Remove="Pages\SecurityLogs\IdentitySecurityLogManagement.razor" />
+    </ItemGroup>
 </Project>

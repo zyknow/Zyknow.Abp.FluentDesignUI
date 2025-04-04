@@ -1,4 +1,5 @@
 ﻿using Localization.Resources.AbpUi;
+using SharpAbp.Abp.Identity;
 using Simple.Localization;
 using Volo.Abp.Account;
 using Volo.Abp.SettingManagement;
@@ -18,7 +19,8 @@ namespace Simple;
     typeof(AbpAccountHttpApiModule),
     typeof(AbpIdentityHttpApiModule),
     typeof(AbpTenantManagementHttpApiModule),
-    typeof(AbpFeatureManagementHttpApiModule)
+    typeof(AbpFeatureManagementHttpApiModule),
+    typeof(IdentityHttpApiModule)
     )]
 public class SimpleHttpApiModule : AbpModule
 {

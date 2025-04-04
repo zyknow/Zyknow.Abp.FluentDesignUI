@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using SharpAbp.Abp.Identity;
 using Simple.MultiTenancy;
 using Volo.Abp.Localization;
 using Volo.Abp.Modularity;
@@ -32,7 +33,8 @@ namespace Simple;
     typeof(AbpIdentityDomainModule),
     typeof(AbpOpenIddictDomainModule),
     typeof(AbpTenantManagementDomainModule),
-    typeof(BlobStoringDatabaseDomainModule)
+    typeof(BlobStoringDatabaseDomainModule),
+    typeof(IdentityDomainModule)
     )]
 public class SimpleDomainModule : AbpModule
 {
