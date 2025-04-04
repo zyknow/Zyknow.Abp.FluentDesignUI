@@ -8,20 +8,21 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Volo.Abp.Account.Application.Contracts" />
-      <PackageReference Include="Volo.Abp.AutoMapper" />
+        <PackageReference Include="Volo.Abp.Account.Application.Contracts"/>
+        <PackageReference Include="Volo.Abp.AutoMapper"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\core\Zyknow.Abp.GroupComponent.FluentDesignUI\Zyknow.Abp.GroupComponent.FluentDesignUI.csproj" />
-      <ProjectReference Include="..\..\FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.csproj" />
+        <ProjectReference Include="..\..\..\core\Zyknow.Abp.GroupComponent.FluentDesignUI\Zyknow.Abp.GroupComponent.FluentDesignUI.csproj"/>
+        <ProjectReference Include="..\..\FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" />
+        <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded"/>
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Include="Localization\Resources\AbpMultiTenancy\*.json" />
+        <EmbeddedResource Include="Localization\Resources\AbpMultiTenancy\*.json"/>
+        <Content Remove="Localization\Resources\AbpMultiTenancy\*.json"/>
     </ItemGroup>
 </Project>
