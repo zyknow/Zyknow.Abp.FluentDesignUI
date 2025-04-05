@@ -42,6 +42,8 @@ public partial class AbpExtensibleDataGrid<TItem, TKey> : ComponentBase where TI
 
     [Parameter] public Func<TItem, string>? DeleteSelectedDisplayPropertyConfirmExpression { get; set; }
 
+    [Parameter] public bool PrimarySelectedDeletesBtnVisible { get; set; } = false;
+
     [Inject] public IDialogService DialogService { get; set; }
 
 

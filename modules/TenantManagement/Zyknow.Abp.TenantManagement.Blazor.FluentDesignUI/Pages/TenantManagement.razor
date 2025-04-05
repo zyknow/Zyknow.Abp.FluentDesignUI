@@ -17,6 +17,7 @@
                            TKey="Guid"
                            TItem="TenantDto"
                            EnableSelected="true"
+                           PrimarySelectedDeletesBtnVisible="@HasDeletePermission"
                            OnDeleteSelected="DeleteEntitiesAsync"
                            DeleteSelectedDisplayPropertyConfirmExpression="@(r => r.Name)"
                            Entities="Entities"

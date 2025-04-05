@@ -18,6 +18,7 @@
                            EnableSelected="true"
                            OnDeleteSelected="DeleteEntitiesAsync"
                            DeleteSelectedDisplayPropertyConfirmExpression="@(r => r.UserName)"
+                           PrimarySelectedDeletesBtnVisible="@HasDeletePermission"
                            Entities="Entities"
                            OnChange="@OnDataGridReadAsync"
                            Pagination="@Pagination"

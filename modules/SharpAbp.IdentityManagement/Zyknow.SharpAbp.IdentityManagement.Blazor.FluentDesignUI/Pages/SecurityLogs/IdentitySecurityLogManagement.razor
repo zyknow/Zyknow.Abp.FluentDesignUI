@@ -8,6 +8,7 @@
     <AbpPageHeader Title="@L["IdentitySecurityLog"]" BreadcrumbItems="@BreadcrumbItems"/>
     <AbpSearch PrimaryInputVisible="@false"
                Loading="@Loading"
+               ChildrenFilterToggleBtnVisible="true"
                ChildrenFilterVisible="true"
                OnSearch="SearchEntitiesAsync"
                OnResetClick="@(() => GetListInput = new IdentitySecurityLogPagedRequestDto())">

@@ -14,16 +14,18 @@
                   Appearance="Appearance.Accent"
                   OnClick="@(async () => await OnSearch.InvokeAsync())">@L["Search"]</FluentButton>
 
-    <FluentButton IconStart="@(ChildrenFilterVisible? new Size20.ArrowAutofitUp() :new Size20.ArrowAutofitDown())"
-                  OnClick="@(()=> ChildrenFilterVisible = !ChildrenFilterVisible)"></FluentButton>
+    @if (ChildrenFilterToggleBtnVisible)
+    {
+        <FluentButton IconStart="@(ChildrenFilterVisible? new Size20.ArrowAutofitUp() :new Size20.ArrowAutofitDown())"
+                      OnClick="@(()=> ChildrenFilterVisible = !ChildrenFilterVisible)"></FluentButton>
+    }
+ 
 </FluentStack>
 
 @if (@ChildContent != null && ChildrenFilterVisible)
 {
     @ChildContent
 }
-
-
 @code {
 
     [Parameter] public RenderFragment? ChildContent { get; set; }
@@ -39,6 +41,8 @@
     [Parameter] public bool Loading { get; set; }
 
     [Parameter] public bool PrimaryInputVisible { get; set; } = true;
+
+    [Parameter] public bool ChildrenFilterToggleBtnVisible { get; set; } = false;
 
     [Parameter] public EventCallback OnResetClick { get; set; }
 

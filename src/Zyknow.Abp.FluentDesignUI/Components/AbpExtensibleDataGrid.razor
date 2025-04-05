@@ -20,8 +20,12 @@
                 <FluentLabel Weight="FontWeight.Bold">@UL["Selected"] @SelectEntities.Count</FluentLabel>
                 @if (OnDeleteSelected.HasDelegate)
                 {
-                    <FluentButton Appearance="Appearance.Stealth" Color="red"
-                                  OnClick="OnDeleteSelectedClick">@UL["Delete"]@UL["Selected"]</FluentButton>
+                    @if (PrimarySelectedDeletesBtnVisible)
+                    {
+                        <FluentButton Appearance="Appearance.Stealth" Color="red"
+                                      OnClick="OnDeleteSelectedClick">@UL["Delete"]@UL["Selected"]</FluentButton>
+                    }
+         
                     <FluentButton Appearance="Appearance.Stealth"
                                   OnClick="OnClearSelectedClick">@UL["Clear"]@UL["Selected"]</FluentButton>
                 }

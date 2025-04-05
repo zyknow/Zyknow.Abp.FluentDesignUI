@@ -16,6 +16,7 @@
                            TItem="IdentityRoleDto"
                            EnableSelected="true"
                            OnDeleteSelected="DeleteEntitiesAsync"
+                           PrimarySelectedDeletesBtnVisible="@HasDeletePermission"
                            DeleteSelectedDisplayPropertyConfirmExpression="@(r => r.Name)"
                            OnChange="@OnDataGridReadAsync"
                            Pagination="@Pagination"
