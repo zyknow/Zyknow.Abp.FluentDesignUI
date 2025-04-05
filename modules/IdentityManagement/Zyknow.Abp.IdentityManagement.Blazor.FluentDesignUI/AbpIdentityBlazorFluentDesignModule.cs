@@ -8,6 +8,7 @@ using Volo.Abp.ObjectExtending;
 using Volo.Abp.ObjectExtending.Modularity;
 using Volo.Abp.Threading;
 using Volo.Abp.UI.Navigation;
+using Volo.Abp.VirtualFileSystem;
 using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme;
 using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Routing;
 using Zyknow.Abp.FluentDesignUI;
@@ -43,13 +44,6 @@ public class AbpIdentityBlazorFluentDesignModule : AbpModule
         Configure<AbpRouterOptions>(options =>
         {
             options.AdditionalAssemblies.Add(typeof(AbpIdentityBlazorFluentDesignModule).Assembly);
-        });
-
-        Configure<AbpLocalizationOptions>(options =>
-        {
-            options.Resources
-                .Get<IdentityResource>()
-                .AddVirtualJson("/Localization/AbpIdentity");
         });
     }
 

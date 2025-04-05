@@ -4,22 +4,20 @@
         <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\IdentityManagement\Zyknow.Abp.IdentityManagement.Blazor.FluentDesignUI\Zyknow.Abp.IdentityManagement.Blazor.FluentDesignUI.csproj" />
+        <ProjectReference Include="..\..\IdentityManagement\Zyknow.Abp.IdentityManagement.Blazor.FluentDesignUI\Zyknow.Abp.IdentityManagement.Blazor.FluentDesignUI.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="SharpAbp.Abp.Identity.Application.Contracts" />
+        <PackageReference Include="SharpAbp.Abp.Identity.Application.Contracts"/>
+        <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Pages\" />
+        <EmbeddedResource Include="Localization\SharpAbpIdentity\*.json"/>
+        <Content Remove="Localization\SharpAbpIdentity\*.json"/>
     </ItemGroup>
-
-    <ItemGroup>
-      <AdditionalFiles Include="Pages\SecurityLogs\IdentitySecurityLogManagement.razor" />
-    </ItemGroup>
-
 </Project>

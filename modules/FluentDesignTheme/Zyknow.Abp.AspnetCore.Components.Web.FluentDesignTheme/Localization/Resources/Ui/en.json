@@ -9,6 +9,7 @@
     "Success": "Success",
     "Confirm": "Confirm",
     "NotSelected": "Not Selected",
-    "VisibleColumns": "Visible Columns"
+    "VisibleColumns": "Visible Columns",
+    "PageOf": "Page {0} of {1}"
   }
 }

@@ -25,19 +25,19 @@ public class SharpAbpIdentityWebMainMenuContributor : IMenuContributor
 
         identityMenuItem.AddItem(new ApplicationMenuItem(
                 SharpAbpIdentityMenuNames.SecurityLogs,
-                l["Permission:SharpAbpIdentity.IdentitySecurityLogs"],
+                l["IdentitySecurityLogs"],
                 url: "~/identity/security-logs")
             .RequirePermissions(IdentityPermissions.IdentitySecurityLogs.Default));
 
         identityMenuItem.AddItem(new ApplicationMenuItem(
                 SharpAbpIdentityMenuNames.SecurityLogs,
-                l["Permission:SharpAbpIdentity.IdentityClaimTypes"],
+                l["IdentityClaimTypes"],
                 url: "~/identity/claim-types")
             .RequirePermissions(IdentityPermissions.IdentityClaimTypes.Default));
 
         identityMenuItem.AddItem(new ApplicationMenuItem(
                 SharpAbpIdentityMenuNames.OrganizationUnits,
-                l["Permission:SharpAbpIdentity.IdentityOrganizationUnits"],
+                l["IdentityOrganizationUnits"],
                 url: "~/identity/organization-units")
             .RequirePermissions(IdentityPermissions.OrganizationUnits.Default));
 

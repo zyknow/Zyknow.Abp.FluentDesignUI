@@ -9,6 +9,8 @@ using Volo.Abp.ObjectExtending;
 using Volo.Abp.ObjectExtending.Modularity;
 using Volo.Abp.Threading;
 using Volo.Abp.UI.Navigation;
+using Volo.Abp.VirtualFileSystem;
+using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme;
 using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Routing;
 using Zyknow.Abp.IdentityManagement.Blazor.FluentDesignUI;
 
@@ -30,6 +32,11 @@ public class SharpAbpIdentityBlazorFluentDesignModule : AbpModule
         {
             options.AddProfile<SharpAbpIdentityBlazorFluentDesignAutoMapperProfile>(validate: true);
         });
+        
+        Configure<AbpVirtualFileSystemOptions>(options =>
+        {
+            options.FileSets.AddEmbedded<SharpAbpIdentityBlazorFluentDesignModule>();
+        });
 
         Configure<AbpNavigationOptions>(options =>
         {
@@ -45,7 +52,9 @@ public class SharpAbpIdentityBlazorFluentDesignModule : AbpModule
         {
             options.Resources
                 .Get<IdentityResource>()
-                .AddBaseTypes([typeof(global::SharpAbp.Abp.Identity.Localization.IdentityResource)]);
+                .AddVirtualJson("/Localization/SharpAbpIdentity");
+
+            options.Resources.Remove("SharpAbpIdentity");
         });
     }
 
