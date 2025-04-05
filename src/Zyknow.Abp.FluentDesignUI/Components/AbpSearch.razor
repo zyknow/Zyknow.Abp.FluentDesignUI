@@ -3,29 +3,24 @@
 @using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
 @inject IStringLocalizer<AbpUiResource> L
 
-@if (ChildContent == null)
+
+<FluentStack VerticalAlignment="VerticalAlignment.Center">
+    @if (PrimaryInputVisible)
+    {
+        <FluentTextField Value="@PrimarySearchValue" ValueChanged="@PrimarySearchValueChanged"
+                         Placeholder="@L["Search"]"></FluentTextField>
+    }
+    <FluentButton StopPropagation="true" Loading="@Loading" IconStart="@(new Size16.Search())"
+                  Appearance="Appearance.Accent"
+                  OnClick="@(async () => await OnSearch.InvokeAsync())">@L["Search"]</FluentButton>
+
+    <FluentButton IconStart="@(ChildrenFilterVisible? new Size20.ArrowAutofitUp() :new Size20.ArrowAutofitDown())"
+                  OnClick="@(()=> ChildrenFilterVisible = !ChildrenFilterVisible)"></FluentButton>
+</FluentStack>
+
+@if (@ChildContent != null && ChildrenFilterVisible)
 {
-    <FluentStack VerticalAlignment="VerticalAlignment.Center">
-        <FluentTextField Value="@PrimarySearchValue" ValueChanged="@PrimarySearchValueChanged" Placeholder="@L["Search"]"></FluentTextField>
-        <FluentButton Loading="@Loading" IconStart="@(new Size16.Search())" Appearance="Appearance.Accent" OnClick="@(async ()=> await OnSearch.InvokeAsync())">@L["Search"]</FluentButton>
-    </FluentStack>
-}
-else
-{
-    <FluentAccordion>
-        <FluentAccordionItem>
-            <HeadingTemplate>
-                <FluentStack VerticalAlignment="VerticalAlignment.Center">
-                    <FluentTextField Value="@PrimarySearchValue" ValueChanged="@PrimarySearchValueChanged" Placeholder="@L["Search"]"></FluentTextField>
-                    <FluentButton Loading="@Loading" IconStart="@(new Size16.Search())" OnClick="@(async ()=> await OnSearch.InvokeAsync())">@L["Search"]</FluentButton>
-                    <FluentButton IconStart="@(new Size16.Broom())">@L["Clear"]</FluentButton>
-                </FluentStack>
-            </HeadingTemplate>
-            <ChildContent>
-                @ChildContent
-            </ChildContent>
-        </FluentAccordionItem>
-    </FluentAccordion>
+    @ChildContent
 }
 
 
@@ -42,4 +37,13 @@ else
     [Parameter] public EventCallback OnClear { get; set; }
 
     [Parameter] public bool Loading { get; set; }
+
+    [Parameter] public bool PrimaryInputVisible { get; set; } = true;
+
+    [Parameter] public EventCallback OnResetClick { get; set; }
+
+    [Parameter] public bool ChildrenFilterVisible { get; set; }
+
+    [Parameter] public EventCallback<bool> ChildrenFilterVisibleChanged { get; set; }
+
 }
