@@ -30,6 +30,19 @@
     "Permission:SharpAbpIdentity.OrganizationUnits.Update": "Update Organization Unit",
     "Permission:SharpAbpIdentity.OrganizationUnits.Delete": "Delete Organization Unit",
     "Permission:SharpAbpIdentity.Settings": "Identity Settings",
-    "Permission:SharpAbpIdentity.Settings.Update": "Update Identity Settings"
+    "Permission:SharpAbpIdentity.Settings.Update": "Update Identity Settings",
+    "IdentityClaimType": "Claim Type",
+    "IdentityClaimTypes": "Claim Types",
+    "IdentityClaimType:Name": "Name",
+    "IdentityClaimType:Required": "Required",
+    "IdentityClaimType:IsStatic": "Is Static",
+    "IdentityClaimType:Regex": "Regex",
+    "IdentityClaimType:RegexDescription": "Regex Description",
+    "IdentityClaimType:Description": "Description",
+    "IdentityClaimType:ValueType": "Value Type",
+    "IdentityClaimType:ValueTypeValidator": "Value Type Validator",
+    "CreateIdentityClaimType": "Create Claim Type",
+    "EditIdentityClaimType": "Edit Claim Type",
+    "IdentityClaimTypeDeletionConfirmationMessage": "Are you sure to delete this claim type?"
   }
 } 

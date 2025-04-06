@@ -30,6 +30,19 @@
     "Permission:SharpAbpIdentity.OrganizationUnits.Update": "更新",
     "Permission:SharpAbpIdentity.OrganizationUnits.Delete": "删除",
     "Permission:SharpAbpIdentity.Settings": "设置",
-    "Permission:SharpAbpIdentity.Settings.Update": "更新"
+    "Permission:SharpAbpIdentity.Settings.Update": "更新",
+    "IdentityClaimType": "声明类型",
+    "IdentityClaimTypes": "声明类型",
+    "IdentityClaimType:Name": "名称",
+    "IdentityClaimType:Required": "必填",
+    "IdentityClaimType:IsStatic": "静态",
+    "IdentityClaimType:Regex": "正则表达式",
+    "IdentityClaimType:RegexDescription": "正则表达式描述",
+    "IdentityClaimType:Description": "描述",
+    "IdentityClaimType:ValueType": "值类型",
+    "IdentityClaimType:ValueTypeValidator": "值类型验证器",
+    "CreateIdentityClaimType": "创建声明类型",
+    "EditIdentityClaimType": "编辑声明类型",
+    "IdentityClaimTypeDeletionConfirmationMessage": "确定要删除此声明类型吗？"
   }
 } 
