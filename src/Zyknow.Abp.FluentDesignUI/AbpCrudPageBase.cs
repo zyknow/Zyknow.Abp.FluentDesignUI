@@ -175,6 +175,12 @@ public abstract class AbpCrudPageBase<
     where TCreateViewModel : class, new()
     where TUpdateViewModel : class, new()
 {
+    protected override async Task<IPagedResult<TGetListOutputDto>> AppServiceGetListAsync(TGetListInput input)
+    {
+        var res = await AppService.GetListAsync(input);
+        return res;
+    }
+
     protected override Task<TGetOutputDto> AppServiceGetAsync(TKey id) =>
         AppService.GetAsync(id);
 
