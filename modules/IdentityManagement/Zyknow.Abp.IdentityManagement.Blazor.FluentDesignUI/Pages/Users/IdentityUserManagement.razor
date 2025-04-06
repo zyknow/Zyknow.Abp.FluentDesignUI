@@ -206,14 +206,16 @@
                     Title = L["DisplayName:IsActive"],
                     Sortable = true,
                     Data = nameof(IdentityUserDto.IsActive),
-                    PropertyName = nameof(IdentityUserDto.IsActive)
+                    PropertyName = nameof(IdentityUserDto.IsActive),
+                    IsCheckIcon = true,
                 },
                 new FluentTableColumn
                 {
                     Title = L["DisplayName:LockoutEnabled"],
                     Sortable = true,
                     Data = nameof(IdentityUserDto.LockoutEnabled),
-                    PropertyName = nameof(IdentityUserDto.LockoutEnabled)
+                    PropertyName = nameof(IdentityUserDto.LockoutEnabled),
+                    IsCheckIcon = true,
                 }
             ]);
 

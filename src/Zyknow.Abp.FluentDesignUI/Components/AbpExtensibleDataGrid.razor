@@ -1,5 +1,6 @@
 ﻿@using Localization.Resources.AbpUi
 @using Microsoft.Extensions.Localization
+@using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
 @using Volo.Abp.Data
 @inject IStringLocalizer<AbpUiResource> UL
 @typeparam TItem
@@ -98,6 +99,21 @@
                                 <TemplateColumn Title="@column.Title" Sortable="@column.Sortable"
                                                 SortBy="@(new ColumnKeyGridSort<TItem>(column.PropertyName))">
                                     @RenderCustomTableColumnComponent(column.Component, context)
+                                </TemplateColumn>
+                            }
+                            else if (column.IsCheckIcon)
+                            {
+                                <TemplateColumn Sortable="@column.Sortable"
+                                                SortBy="@(new ColumnKeyGridSort<TItem>(column.PropertyName))"
+                                                Title="@column.Title">
+                                    @if ((GetColumnValue(context, column.Data) as bool?) == true)
+                                    {
+                                        <FluentIcon Value="@(new Size20.Checkmark())" Color="Color.Success"></FluentIcon>
+                                    }
+                                    else
+                                    {
+                                        <FluentIcon Value="@(new Size20.Dismiss())" Color="Color.Error"></FluentIcon>
+                                    }
                                 </TemplateColumn>
                             }
                             else
