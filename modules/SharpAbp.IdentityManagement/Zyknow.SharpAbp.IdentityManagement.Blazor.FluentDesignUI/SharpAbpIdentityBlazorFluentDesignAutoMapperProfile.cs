@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using SharpAbp.Abp.Identity;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.Identity;
 
@@ -8,6 +9,6 @@ public class SharpAbpIdentityBlazorFluentDesignAutoMapperProfile : Profile
 {
     public SharpAbpIdentityBlazorFluentDesignAutoMapperProfile()
     {
-
+        CreateMap<IdentityClaimTypeDto, UpdateIdentityClaimTypeDto>();
     }
 }

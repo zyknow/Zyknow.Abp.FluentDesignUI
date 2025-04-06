@@ -32,6 +32,8 @@
     protected PageToolbar Toolbar { get; } = new();
     protected List<FluentTableColumn> ClaimTypeManagementTableColumns => TableColumns.Get<ClaimTypeManagement>();
 
+    protected string EditName { get; set; }
+    
     public ClaimTypeManagement()
     {
         LocalizationResource = typeof(IdentityResource);
@@ -139,9 +141,13 @@
         => ShowDialogAsync(@<ClaimTypeCreateDialog Content="@NewEntity" SubmitClick="CreateEntityAsync"/>);
 
     protected override Task ShowEditDialogAsync()
-        => ShowDialogAsync(@<ClaimTypeEditDialog Content="@EditingEntity" SubmitClick="UpdateEntityAsync"/>);
+        => ShowDialogAsync(@<ClaimTypeEditDialog EditName="@EditName" Content="@EditingEntity" SubmitClick="UpdateEntityAsync"/>);
 
-
+    protected override UpdateIdentityClaimTypeDto MapToEditingEntity(IdentityClaimTypeDto entityDto)
+    {
+        EditName = entityDto.Name;
+        return base.MapToEditingEntity(entityDto);
+    }
 
     protected override async Task<IPagedResult<IdentityClaimTypeDto>> AppServiceGetListAsync(IdentityClaimTypePagedRequestDto input)
     {

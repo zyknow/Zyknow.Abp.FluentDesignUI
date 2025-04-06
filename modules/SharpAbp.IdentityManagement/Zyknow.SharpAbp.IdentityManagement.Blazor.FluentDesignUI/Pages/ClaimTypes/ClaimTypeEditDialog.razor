@@ -1,15 +1,14 @@
+@using Microsoft.FluentUI.AspNetCore.Components.Extensions
 @using TInput = global::SharpAbp.Abp.Identity.UpdateIdentityClaimTypeDto
 @using TResource = Volo.Abp.Identity.Localization.IdentityResource
 @inherits AbpDialogFormBase<TInput,TResource>
 
-<AbpFluentForm HeaderText="@($@"{L["Edit"]} - {Content.Name}")"
+<AbpFluentForm HeaderText="@($@"{L["Edit"]} - {EditName}")"
                IsConstHeader="true"
                Content="@Content"
                SubmitValidClick="SubmitClick"
                CancelClick="CancelClick"
                Localize="@LH.Localize">
-    <FluentTextField Style="width: 100%" Label="@L["IdentityClaimType:Name"]" @bind-Value="@Content.Name" />
-    <FluentValidationMessage For="@(() => Content.Name)" />
 
     <FluentTextField Style="width: 100%" Label="@L["IdentityClaimType:Regex"]" @bind-Value="@Content.Regex" />
     <FluentValidationMessage For="@(() => Content.Regex)" />
@@ -20,16 +19,18 @@
     <FluentTextField Style="width: 100%" Label="@L["IdentityClaimType:Description"]" @bind-Value="@Content.Description" />
     <FluentValidationMessage For="@(() => Content.Description)" />
 
-    <FluentCombobox Style="width: 100%" Label="@L["IdentityClaimType:ValueType"]" @bind-Value="@Content.ValueType">
-        <FluentOption Value="@("String")">String</FluentOption>
-        <FluentOption Value="@("Int")">Int</FluentOption>
-        <FluentOption Value="@("Boolean")">Boolean</FluentOption>
-    </FluentCombobox>
-    <FluentValidationMessage For="@(() => Content.ValueType)" />
+    @* <FluentSelect Items="@Enum.GetValues<IdentityClaimValueType>()" OptionText="type=> type.GetDisplayName()" *@
+    @*               Style="width: 100%" Label="@L["IdentityClaimType:ValueType"]" *@
+    @*               @bind-SelectedOption="Content."> *@
+    @* </FluentSelect> *@
+    @* <FluentValidationMessage For="@(() => Content.ValueType)" /> *@
 
     <FluentCheckbox Label="@L["IdentityClaimType:Required"]" @bind-Value="@Content.Required" />
     <FluentValidationMessage For="@(() => Content.Required)" />
 
-    <ExtensionProperties TEntityType="TInput" TResourceType="TResource"
-                         Entity="@Content" LH="@LH" />
 </AbpFluentForm> 
+
+@code
+{
+    [Parameter] public string EditName { get; set; }
+}
