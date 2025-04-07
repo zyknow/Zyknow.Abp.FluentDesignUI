@@ -3,7 +3,8 @@
 @using IdentityPermissions = global::SharpAbp.Abp.Identity.IdentityPermissions
 @attribute [Authorize(IdentityPermissions.OrganizationUnits.Default)]
 @using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
-
+@using Volo.Abp.Application.Dtos
+@inherits AbpCustomCrudMethodPageBase<IOrganizationUnitAppService, OrganizationUnitDto, Guid, OrganizationUnitPagedRequestDto, CreateOrganizationUnitDto, UpdateOrganizationUnitDto>
 <AbpAdaptiveDataGridLayout>
     <AbpPageHeader Title="@L["OrganizationUnits"]" BreadcrumbItems="@BreadcrumbItems" Toolbar="@Toolbar"/>
 
@@ -17,84 +18,85 @@
                     @if (HasCreatePermission)
                     {
                         <FluentButton Appearance="Appearance.Accent"
-                                      IconStart="@(new Size20.Add())">@L["CreateOrganizationUnit"]</FluentButton>
+                                      IconStart="@(new Size20.Add())"
+                                      OnClick="@ShowCreateDialogAsync">@L["CreateOrganizationUnit"]</FluentButton>
                     }
                 </FluentStack>
 
             </FluentStack>
 
-            <FluentTreeView>
-
+            <FluentTreeView Items="@TreeViewItems">
             </FluentTreeView>
 
         </div>
         <div class="fluent-card">
             <FluentStack>
-
+   
             </FluentStack>
         </div>
     </FluentStack>
 
 </AbpAdaptiveDataGridLayout>
 
-
-
-
 @code {
     protected PageToolbar Toolbar { get; } = new();
 
-    protected List<AbpBreadcrumbItem> BreadcrumbItems = new();
-
-    [Inject] protected IStringLocalizer<IdentityResource> L { get; set; }
-    [Inject] protected IAuthorizationService AuthorizationService { get; set; }
-    [Inject] protected IOrganizationUnitAppService OrganizationUnitAppService { get; set; }
-
+    protected OrganizationUnitDto SelectedOrganizationUnit { get; set; }
+    protected List<OrganizationUnitDto> ParentOrganizationUnits { get; set; } = new();
+    
     protected IEnumerable<ITreeViewItem> TreeViewItems { get; set; } = new List<ITreeViewItem>();
 
-    protected string CreatePolicyName = IdentityPermissions.IdentityClaimTypes.Create;
-
-    protected string UpdatePolicyName = IdentityPermissions.IdentityClaimTypes.Update;
-    protected string DeletePolicyName = IdentityPermissions.IdentityClaimTypes.Delete;
-
-    protected bool HasDeletePermission;
-    protected bool HasUpdatePermission;
-    protected bool HasCreatePermission;
+    protected CreateOrganizationUnitDto NewOrganizationUnit { get; set; } = new();
+    protected UpdateOrganizationUnitDto EditOrganizationUnit { get; set; } = new();
 
 
+    
+    public OrganizationUnitManagement()
+    {
+        LocalizationResource = typeof(IdentityResource);
+        CreatePolicyName = IdentityPermissions.OrganizationUnits.Create;
+        UpdatePolicyName = IdentityPermissions.OrganizationUnits.Update;
+        DeletePolicyName = IdentityPermissions.OrganizationUnits.Delete;
+    }
+    
     protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await LoadOrganizationUnitsAsync();
+    }
+
+    protected override ValueTask SetBreadcrumbItemsAsync()
     {
         BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Menu:IdentityManagement"]));
         BreadcrumbItems.Add(new AbpBreadcrumbItem(L["OrganizationUnits"]));
 
-        HasDeletePermission = await AuthorizationService.IsGrantedAsync(DeletePolicyName);
-        HasUpdatePermission = await AuthorizationService.IsGrantedAsync(UpdatePolicyName);
-        HasCreatePermission = await AuthorizationService.IsGrantedAsync(CreatePolicyName);
+        return base.SetBreadcrumbItemsAsync();
+    }
 
-        var root = await OrganizationUnitAppService.GetChildrenAsync(null);
 
-        foreach (var organizationUnitDto in root)
+    protected async Task LoadOrganizationUnitsAsync()
+    {
+        var root = await AppService.GetChildrenAsync(null);
+        TreeViewItems = root.Select(x => new TreeViewItem
         {
-            var treeViewItem = new TreeViewItem
+            Id = x.Id.ToString(),
+            Text = x.DisplayName,
+            Items = new List<ITreeViewItem>(),
+            OnExpandedAsync = async (item) =>
             {
-                Id = organizationUnitDto.Id.ToString(),
-                Text = organizationUnitDto.DisplayName,
-                Items = new List<ITreeViewItem>(),
-                OnExpandedAsync = async (item) =>
+                if (!item.CurrentItem.Items.Any())
                 {
-                    if (!item.CurrentItem.Items.Any())
-                    {
-                        await GetChildEntitiesAsync(item.CurrentItem);
-                    }
+                    await GetChildEntitiesAsync(item.CurrentItem);
                 }
-            };
+            }
+        }).ToList();
 
-            TreeViewItems = TreeViewItems.Append(treeViewItem);
-        }
+        ParentOrganizationUnits = await AppService.GetAllAsync();
     }
 
     protected virtual async Task GetChildEntitiesAsync(ITreeViewItem parentTreeView)
     {
-        var children = await OrganizationUnitAppService.GetChildrenAsync(Guid.Parse(parentTreeView.Id));
+        var children = await AppService.GetChildrenAsync(Guid.Parse(parentTreeView.Id));
         parentTreeView.Items = children.Select(x => new TreeViewItem
         {
             Id = x.Id.ToString(),
@@ -110,11 +112,30 @@
         }).ToList();
     }
 
-    protected async Task ShowCreateDialogAsync()
+
+    protected override async Task<IPagedResult<OrganizationUnitDto>> AppServiceGetListAsync(OrganizationUnitPagedRequestDto input)
+    {
+        var result = await AppService.GetPagedListAsync(input);
+        return result;
+    }
+
+    protected override Task<OrganizationUnitDto> AppServiceGetAsync(Guid id)
+        => AppService.GetAsync(id);
+
+    protected override Task AppServiceCreateAsync(CreateOrganizationUnitDto input)
+        => AppService.CreateAsync(input);
+
+    protected override Task AppServiceUpdateAsync(Guid id, UpdateOrganizationUnitDto input)
+        => AppService.UpdateAsync(id, input);
+
+    protected override Task AppServiceDeleteAsync(Guid id)
+        => AppService.DeleteAsync(id);
+
+    protected override async Task ShowCreateDialogAsync()
     {
     }
 
-    protected async Task ShowEditDialogAsync()
+    protected override async Task ShowEditDialogAsync()
     {
     }
 
