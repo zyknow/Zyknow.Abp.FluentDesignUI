@@ -37,7 +37,7 @@ public class SharpAbpIdentityWebMainMenuContributor : IMenuContributor
 
         identityMenuItem.AddItem(new ApplicationMenuItem(
                 SharpAbpIdentityMenuNames.OrganizationUnits,
-                l["IdentityOrganizationUnits"],
+                l["OrganizationUnits"],
                 url: "~/identity/organization-units")
             .RequirePermissions(IdentityPermissions.OrganizationUnits.Default));
 

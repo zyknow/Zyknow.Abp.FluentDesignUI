@@ -1,5 +1,121 @@
 ﻿@page "/identity/organization-units"
+@using global::SharpAbp.Abp.Identity
+@using IdentityPermissions = global::SharpAbp.Abp.Identity.IdentityPermissions
+@attribute [Authorize(IdentityPermissions.OrganizationUnits.Default)]
+@using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
+
+<AbpAdaptiveDataGridLayout>
+    <AbpPageHeader Title="@L["OrganizationUnits"]" BreadcrumbItems="@BreadcrumbItems" Toolbar="@Toolbar"/>
+
+    <FluentStack VerticalAlignment="VerticalAlignment.Stretch" HorizontalAlignment="HorizontalAlignment.Stretch">
+        <div class="fluent-card" style="width: 100%">
+            <FluentStack Orientation="Orientation.Vertical">
+                <FluentStack HorizontalAlignment="HorizontalAlignment.SpaceBetween"
+                             VerticalAlignment="VerticalAlignment.Center">
+                    <FluentLabel Weight="FontWeight.Bold"
+                                 Typo="Typography.Subject">@L["OrganizationUnits"]</FluentLabel>
+                    @if (HasCreatePermission)
+                    {
+                        <FluentButton Appearance="Appearance.Accent"
+                                      IconStart="@(new Size20.Add())">@L["CreateOrganizationUnit"]</FluentButton>
+                    }
+                </FluentStack>
+
+            </FluentStack>
+
+            <FluentTreeView>
+
+            </FluentTreeView>
+
+        </div>
+        <div class="fluent-card">
+            <FluentStack>
+
+            </FluentStack>
+        </div>
+    </FluentStack>
+
+</AbpAdaptiveDataGridLayout>
+
+
+
 
 @code {
-    
+    protected PageToolbar Toolbar { get; } = new();
+
+    protected List<AbpBreadcrumbItem> BreadcrumbItems = new();
+
+    [Inject] protected IStringLocalizer<IdentityResource> L { get; set; }
+    [Inject] protected IAuthorizationService AuthorizationService { get; set; }
+    [Inject] protected IOrganizationUnitAppService OrganizationUnitAppService { get; set; }
+
+    protected IEnumerable<ITreeViewItem> TreeViewItems { get; set; } = new List<ITreeViewItem>();
+
+    protected string CreatePolicyName = IdentityPermissions.IdentityClaimTypes.Create;
+
+    protected string UpdatePolicyName = IdentityPermissions.IdentityClaimTypes.Update;
+    protected string DeletePolicyName = IdentityPermissions.IdentityClaimTypes.Delete;
+
+    protected bool HasDeletePermission;
+    protected bool HasUpdatePermission;
+    protected bool HasCreatePermission;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Menu:IdentityManagement"]));
+        BreadcrumbItems.Add(new AbpBreadcrumbItem(L["OrganizationUnits"]));
+
+        HasDeletePermission = await AuthorizationService.IsGrantedAsync(DeletePolicyName);
+        HasUpdatePermission = await AuthorizationService.IsGrantedAsync(UpdatePolicyName);
+        HasCreatePermission = await AuthorizationService.IsGrantedAsync(CreatePolicyName);
+
+        var root = await OrganizationUnitAppService.GetChildrenAsync(null);
+
+        foreach (var organizationUnitDto in root)
+        {
+            var treeViewItem = new TreeViewItem
+            {
+                Id = organizationUnitDto.Id.ToString(),
+                Text = organizationUnitDto.DisplayName,
+                Items = new List<ITreeViewItem>(),
+                OnExpandedAsync = async (item) =>
+                {
+                    if (!item.CurrentItem.Items.Any())
+                    {
+                        await GetChildEntitiesAsync(item.CurrentItem);
+                    }
+                }
+            };
+
+            TreeViewItems = TreeViewItems.Append(treeViewItem);
+        }
+    }
+
+    protected virtual async Task GetChildEntitiesAsync(ITreeViewItem parentTreeView)
+    {
+        var children = await OrganizationUnitAppService.GetChildrenAsync(Guid.Parse(parentTreeView.Id));
+        parentTreeView.Items = children.Select(x => new TreeViewItem
+        {
+            Id = x.Id.ToString(),
+            Text = x.DisplayName,
+            Items = new List<ITreeViewItem>(),
+            OnExpandedAsync = async (item) =>
+            {
+                if (!item.CurrentItem.Items.Any())
+                {
+                    await GetChildEntitiesAsync(item.CurrentItem);
+                }
+            }
+        }).ToList();
+    }
+
+    protected async Task ShowCreateDialogAsync()
+    {
+    }
+
+    protected async Task ShowEditDialogAsync()
+    {
+    }
+
 }
