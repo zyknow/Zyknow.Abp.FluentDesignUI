@@ -8,6 +8,7 @@
     "Error": "Error",
     "Success": "Success",
     "Confirm": "Confirm",
+    "SuccessfullyDeleted": "Successfully Deleted",
     "NotSelected": "Not Selected",
     "VisibleColumns": "Visible Columns",
     "PageOf": "Page {0} of {1}"

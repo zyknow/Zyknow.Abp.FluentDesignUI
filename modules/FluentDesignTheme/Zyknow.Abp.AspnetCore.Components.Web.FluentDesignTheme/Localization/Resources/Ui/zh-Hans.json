@@ -8,6 +8,7 @@
     "Error": "错误",
     "Success": "成功",
     "Confirm": "确认",
+    "SuccessfullyDeleted": "删除成功",
     "NotSelected": "未选择",
     "VisibleColumns": "显示列",
     "MultiItemWillBeDeletedMessageWithFormat": "{0} 个数据将被删除!",
