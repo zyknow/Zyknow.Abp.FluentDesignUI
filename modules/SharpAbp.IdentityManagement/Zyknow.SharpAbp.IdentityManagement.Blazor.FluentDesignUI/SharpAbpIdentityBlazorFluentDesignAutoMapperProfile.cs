@@ -10,5 +10,6 @@ public class SharpAbpIdentityBlazorFluentDesignAutoMapperProfile : Profile
     public SharpAbpIdentityBlazorFluentDesignAutoMapperProfile()
     {
         CreateMap<IdentityClaimTypeDto, UpdateIdentityClaimTypeDto>();
+        CreateMap<OrganizationUnitDto, UpdateOrganizationUnitDto>();
     }
 }

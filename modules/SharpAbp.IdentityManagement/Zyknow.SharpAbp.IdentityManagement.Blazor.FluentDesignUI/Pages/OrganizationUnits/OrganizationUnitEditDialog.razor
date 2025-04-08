@@ -1,0 +1,20 @@
+@using global::SharpAbp.Abp.Identity
+@using Microsoft.FluentUI.AspNetCore.Components.Extensions
+@using TInput = global::SharpAbp.Abp.Identity.UpdateOrganizationUnitDto
+@using TResource = Volo.Abp.Identity.Localization.IdentityResource
+@inherits AbpDialogFormBase<TInput, TResource>
+
+<AbpFluentForm HeaderText="@($@"{L["Edit"]} - {EditName}")"
+               IsConstHeader="true"
+               Content="@Content"
+               SubmitValidClick="SubmitClick"
+               CancelClick="CancelClick"
+               Localize="@LH.Localize">
+    <FluentTextField Style="width: 100%" Label="@L["OrganizationUnit:DisplayName"]" @bind-Value="@Content.DisplayName"/>
+    <FluentValidationMessage For="@(() => Content.DisplayName)"/>
+</AbpFluentForm>
+
+@code {
+    [Parameter] public string EditName { get; set; }
+    [Parameter] public OrganizationUnitDto? Parent { get; set; }
+} 
