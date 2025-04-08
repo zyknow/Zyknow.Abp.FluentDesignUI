@@ -16,16 +16,24 @@
 
     @if (ChildrenFilterToggleBtnVisible)
     {
-        <FluentButton IconStart="@(ChildrenFilterVisible? new Size20.ArrowAutofitUp() :new Size20.ArrowAutofitDown())"
-                      OnClick="@(()=> ChildrenFilterVisible = !ChildrenFilterVisible)"></FluentButton>
+        <FluentButton IconStart="@(ChildrenFilterVisible ? new Size20.ArrowAutofitUp() : new Size20.ArrowAutofitDown())"
+                      OnClick="@(() => ChildrenFilterVisible = !ChildrenFilterVisible)"></FluentButton>
     }
- 
+    
+    @if (ClearBtnVisible)
+    {
+        <FluentButton IconStart="@(new Size20.TextClearFormattingEn())" OnClick="@(() => ClearClick.InvokeAsync())"
+                      StopPropagation="true"></FluentButton>
+    }
+
+
 </FluentStack>
 
 @if (@ChildContent != null && ChildrenFilterVisible)
 {
     @ChildContent
 }
+
 @code {
 
     [Parameter] public RenderFragment? ChildContent { get; set; }
@@ -36,15 +44,15 @@
 
     [Parameter] public EventCallback OnSearch { get; set; }
 
-    [Parameter] public EventCallback OnClear { get; set; }
-
     [Parameter] public bool Loading { get; set; }
 
     [Parameter] public bool PrimaryInputVisible { get; set; } = true;
 
     [Parameter] public bool ChildrenFilterToggleBtnVisible { get; set; } = false;
 
-    [Parameter] public EventCallback OnResetClick { get; set; }
+    [Parameter] public EventCallback ClearClick { get; set; }
+
+    [Parameter] public bool ClearBtnVisible { get; set; } = false;
 
     [Parameter] public bool ChildrenFilterVisible { get; set; }
 
