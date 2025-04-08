@@ -20,6 +20,9 @@ public partial class EntityActions<TItem> : ComponentBase
     [Parameter] public Appearance ToggleAppearance { get; set; } = Appearance.Accent;
 
     [Parameter] public string ToggleText { get; set; }
+    
+    [Parameter] public Icon? Icon { get; set; }
+    [Parameter] public bool OnlyIcon { get; set; }
 
     [Parameter] public RenderFragment ChildContent { get; set; }
 

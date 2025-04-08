@@ -17,6 +17,8 @@ public partial class AbpExtensibleDataGrid<TItem, TKey> : ComponentBase where TI
 
     protected Dictionary<string, TableEntityActionsColumn<TItem>> ActionColumns = new();
 
+    [Parameter] public ActionType ActionType { get; set; } = ActionType.Dropdown;
+
     [Parameter] public AbpFluentPaginationState Pagination { get; set; } = new();
 
     [Parameter] public IEnumerable<FluentTableColumn>? Columns { get; set; }
@@ -31,7 +33,7 @@ public partial class AbpExtensibleDataGrid<TItem, TKey> : ComponentBase where TI
     [Parameter] public List<TItem> SelectEntities { get; set; } = [];
 
 
-    [Parameter] public EventCallback<IEnumerable<TItem>> SelectEntitiesChanged { get; set; }
+    [Parameter] public EventCallback<List<TItem>> SelectEntitiesChanged { get; set; }
 
     [Parameter] public RenderFragment? SelectToolbar { get; set; }
     [Parameter] public RenderFragment? SelectToolbarEnd { get; set; }
@@ -75,7 +77,7 @@ public partial class AbpExtensibleDataGrid<TItem, TKey> : ComponentBase where TI
         }
     }
 
-    EntityActions<TItem> EntityActionsRef;
+    protected  EntityActions<TItem> EntityActionsRef;
 
     protected virtual RenderFragment RenderCustomTableColumnComponent(Type type, object data)
     {
@@ -175,6 +177,18 @@ public partial class AbpExtensibleDataGrid<TItem, TKey> : ComponentBase where TI
         {
             return;
         }
+
         SelectEntities.Clear();
+    }
+
+    protected Task RefreshItemsAsync(GridItemsProviderRequest<TItem> request)
+    {
+        var res = OnChange.Invoke(request);
+        if (res != null && res is Task task)
+        {
+            return task;
+        }
+        
+        return Task.CompletedTask;
     }
 }

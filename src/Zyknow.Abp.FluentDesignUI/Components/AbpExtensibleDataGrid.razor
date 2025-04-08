@@ -39,7 +39,7 @@
     }
 
     <div style="flex:1;overflow-y: auto;min-height: 0;">
-        <FluentDataGrid RefreshItems="OnChange"
+        <FluentDataGrid RefreshItems="RefreshItemsAsync"
                         RowSize="DataGridRowSize.Medium"
                         Items="Entities.AsQueryable()"
                         GenerateHeader="GenerateHeaderOption.Sticky"
@@ -72,9 +72,9 @@
                         if (column.Actions.Any())
                         {
                             <TemplateColumn TGridItem="TItem" Title="@column.Title"
-                                            Width="@(column.Width.IsNullOrWhiteSpace() && EntityActionsRef?.Type == ActionType.Dropdown ? "120px" : column.Width)"
+                                            Width="@(column.Width.IsNullOrWhiteSpace() && ActionType == ActionType.Dropdown ? "120px" : column.Width)"
                                             Align="Align.Center">
-                                <EntityActions @ref="EntityActionsRef" TItem="@TItem">
+                                <EntityActions @ref="EntityActionsRef" TItem="@TItem" Type="@ActionType">
                                     @foreach (var action in column.Actions)
                                     {
                                         <EntityAction ParentActions="@EntityActionsRef"

@@ -448,7 +448,7 @@ public abstract class AbpCustomCrudMethodPageBase<
     {
         await GetEntitiesAsync();
         await InvokeAsync(StateHasChanged);
-        await Notify.Success(L["SuccessfullyDeleted"]);
+        await Message.Success(L["SuccessfullyDeleted"]);
     }
 
     protected virtual string GetDeleteConfirmationMessage(TListViewModel entity)

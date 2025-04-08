@@ -1,19 +1,28 @@
-﻿@typeparam TItem
+﻿@using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
+@typeparam TItem
 
 <CascadingValue Value="this" IsFixed="true">
     @if (Type == ActionType.Dropdown)
     {
         if (HasPrimaryAction)
         {
-            <FluentMenuButton Style="z-index: 10" @ref="ButtonRef" Text="@PrimaryAction.Text"
+            <FluentMenuButton IconStart="@Icon" Style="z-index: 10" @ref="ButtonRef" Text="@PrimaryAction.Text"
                               OnMenuChanged="@(async () => await PrimaryAction.ActionClickedAsync())"
                               ButtonAppearance="@PrimaryAction.Appearance">
                 @ChildContent
             </FluentMenuButton>
         }
+        else if (OnlyIcon != null)
+        {
+            <FluentIcon Id="@IconId" Value="@(new Size20.TextBulletListTree())"
+                        OnClick="@(() => IconMenuOpen = !IconMenuOpen)"></FluentIcon>
+            <FluentMenu Anchor="@IconId" @bind-Open="IconMenuOpen">
+                @ChildContent
+            </FluentMenu>
+        }
         else
         {
-            <FluentMenuButton @ref="ButtonRef" Text="@ToggleText">
+            <FluentMenuButton IconStart="@Icon" @ref="ButtonRef" Text="@ToggleText" ButtonAppearance="ToggleAppearance">
                 @ChildContent
             </FluentMenuButton>
         }
@@ -29,11 +38,17 @@
 
     FluentMenuButton ButtonRef;
 
+    protected bool IconMenuOpen = false;
+
+    protected string IconId = Guid.NewGuid().ToString();
+
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            ButtonRef.Button.StopPropagation = true;
+            if (ButtonRef?.Button != null)
+                ButtonRef.Button.StopPropagation = true;
             InvokeAsync(StateHasChanged);
         }
     }
