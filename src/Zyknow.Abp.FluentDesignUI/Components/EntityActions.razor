@@ -12,7 +12,7 @@
                 @ChildContent
             </FluentMenuButton>
         }
-        else if (OnlyIcon != null)
+        else if (OnlyIcon)
         {
             <FluentIcon Id="@IconId" Value="@(new Size20.TextBulletListTree())"
                         OnClick="@(() => IconMenuOpen = !IconMenuOpen)"></FluentIcon>
