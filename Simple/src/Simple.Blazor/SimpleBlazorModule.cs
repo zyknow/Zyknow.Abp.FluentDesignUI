@@ -227,6 +227,9 @@ public class SimpleBlazorModule : AbpModule
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "Simple API", Version = "v1" });
                 options.DocInclusionPredicate((docName, description) => true);
                 options.CustomSchemaIds(type => type.FullName);
+                // TODO: how to compatible with Abp and SharpAbp
+                // fix sharpabp swagger
+                options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
             }
         );
     }

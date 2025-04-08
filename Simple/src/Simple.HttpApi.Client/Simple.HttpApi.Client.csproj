@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Volo.Abp.Identity.HttpApi.Client" />
+<!--    <PackageReference Include="Volo.Abp.Identity.HttpApi.Client" />-->
     <PackageReference Include="Volo.Abp.Account.HttpApi.Client" />
     <PackageReference Include="Volo.Abp.TenantManagement.HttpApi.Client" />
   </ItemGroup>

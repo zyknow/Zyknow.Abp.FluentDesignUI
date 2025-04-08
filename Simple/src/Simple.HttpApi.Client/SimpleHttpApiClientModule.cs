@@ -16,7 +16,7 @@ namespace Simple;
     typeof(AbpPermissionManagementHttpApiClientModule),
     typeof(AbpFeatureManagementHttpApiClientModule),
     typeof(AbpAccountHttpApiClientModule),
-    typeof(AbpIdentityHttpApiClientModule),
+    // typeof(AbpIdentityHttpApiClientModule),
     typeof(AbpTenantManagementHttpApiClientModule),
     typeof(AbpSettingManagementHttpApiClientModule),
     typeof(IdentityHttpApiClientModule)

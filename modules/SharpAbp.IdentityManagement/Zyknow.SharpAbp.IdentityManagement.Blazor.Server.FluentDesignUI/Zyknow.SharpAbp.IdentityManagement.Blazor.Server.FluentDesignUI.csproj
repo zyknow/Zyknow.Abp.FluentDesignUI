@@ -7,11 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <_ContentIncludedByDefault Remove="wwwroot\background.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\exampleJsInterop.js" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\..\IdentityManagement\Zyknow.Abp.IdentityManagement.Blazor.Server.FluentDesignUI\Zyknow.Abp.IdentityManagement.Blazor.Server.FluentDesignUI.csproj" />
       <ProjectReference Include="..\Zyknow.SharpAbp.IdentityManagement.Blazor.FluentDesignUI\Zyknow.SharpAbp.IdentityManagement.Blazor.FluentDesignUI.csproj" />
     </ItemGroup>

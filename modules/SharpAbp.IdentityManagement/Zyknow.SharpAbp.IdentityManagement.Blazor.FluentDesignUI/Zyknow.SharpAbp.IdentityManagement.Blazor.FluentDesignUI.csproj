@@ -20,8 +20,4 @@
         <EmbeddedResource Include="Localization\SharpAbpIdentity\*.json"/>
         <Content Remove="Localization\SharpAbpIdentity\*.json"/>
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Pages\ClaimTypes\" />
-    </ItemGroup>
 </Project>

@@ -15,7 +15,7 @@ namespace Simple;
     typeof(SimpleApplicationContractsModule),
     typeof(AbpPermissionManagementApplicationModule),
     typeof(AbpFeatureManagementApplicationModule),
-    typeof(AbpIdentityApplicationModule),
+    // typeof(AbpIdentityApplicationModule),
     typeof(AbpAccountApplicationModule),
     typeof(AbpTenantManagementApplicationModule),
     typeof(AbpSettingManagementApplicationModule),
