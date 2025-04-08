@@ -21,7 +21,7 @@
                         {
                             <FluentButton Appearance="Appearance.Accent"
                                           IconStart="@(new Size20.Add())"
-                                          OnClick="@OpenCreateDialogAsync">@L["CreateOrganizationUnit"]</FluentButton>
+                                          OnClick="@OpenCreateDialogAsync">@L["OrganizationUnit:CreateOrganizationUnit"]</FluentButton>
                         }
                     </FluentStack>
 
@@ -115,7 +115,7 @@
             .AddRange([
                 new()
                 {
-                    Text = L["CreateChildrenOrganizationUnit"],
+                    Text = L["OrganizationUnit:CreateChildrenOrganizationUnit"],
                     Visible = (data) => HasCreatePermission,
                     Clicked = async (data) =>
                     {

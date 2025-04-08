@@ -4,7 +4,7 @@
 @using TResource = Volo.Abp.Identity.Localization.IdentityResource
 @inherits AbpDialogFormBase<TInput, TResource>
 
-<AbpFluentForm HeaderText="@L["CreateOrganizationUnit"]"
+<AbpFluentForm HeaderText="@L["OrganizationUnit:CreateOrganizationUnit"]"
                Content="@Content"
                SubmitValidClick="SubmitClick"
                CancelClick="CancelClick"
@@ -12,7 +12,7 @@
 
     @if (Parent != null)
     {
-        <FluentLabel Weight="FontWeight.Bold">@L["ParentOrganizationUnit"] : @Parent?.DisplayName</FluentLabel>
+        <FluentLabel Weight="FontWeight.Bold">@L["OrganizationUnit:Parent"] : @Parent?.DisplayName</FluentLabel>
     }
 
     <FluentTextField Style="width: 100%" Label="@L["OrganizationUnit:DisplayName"]" @bind-Value="@Content.DisplayName"/>

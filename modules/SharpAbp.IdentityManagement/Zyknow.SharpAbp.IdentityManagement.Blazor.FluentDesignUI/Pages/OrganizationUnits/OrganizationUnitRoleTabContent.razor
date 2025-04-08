@@ -114,7 +114,7 @@
                     Appearance = Appearance.Neutral,
                     Visible = (data) => HasDeletePermission,
                     Clicked = async (data) => await RemoveOrganizationUnitRoleAsync(data.As<IdentityRoleDto>().Id),
-                    ConfirmationMessage = (data) => L["OrganizationUnitRoleRemoveConfirmationMessage"]
+                    ConfirmationMessage = (data) => L["OrganizationUnit:RemoveRoleConfirmationMessage"]
                 }
             ]);
 

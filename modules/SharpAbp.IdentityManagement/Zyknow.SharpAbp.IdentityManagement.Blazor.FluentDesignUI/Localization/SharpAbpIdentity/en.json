@@ -47,19 +47,20 @@
     "Menu:OrganizationUnits": "Organization Units",
     "OrganizationUnit": "Organization Unit",
     "OrganizationUnits": "Organization Units",
+    "Members": "Members",
+    "AddMember": "Add Member",
+    "AddRole": "Add Role",
     "OrganizationUnitDeletionConfirmationMessage": "Are you sure to delete this organization unit?",
     "CreateOrganizationUnit": "Create Organization Unit",
     "EditOrganizationUnit": "Edit Organization Unit",
     "OrganizationUnit:DisplayName": "Display Name",
     "OrganizationUnit:Code": "Code",
     "OrganizationUnit:Parent": "Parent Organization",
-    "OrganizationUnit:Members": "Members",
     "OrganizationUnit:Roles": "Roles",
-    "OrganizationUnit:AddMember": "Add Member",
-    "OrganizationUnit:AddRole": "Add Role",
     "OrganizationUnit:SelectMember": "Select Member",
     "OrganizationUnit:SelectRole": "Select Role",
     "OrganizationUnit:RemoveMemberConfirmationMessage": "Are you sure to remove this member?",
-    "OrganizationUnit:RemoveRoleConfirmationMessage": "Are you sure to remove this role?"
+    "OrganizationUnit:RemoveRoleConfirmationMessage": "Are you sure to remove this role?",
+    "OrganizationUnit:CreateChildrenOrganizationUnit": "Create Child Organization"
   }
 } 
