@@ -11,7 +11,8 @@
                ChildrenFilterToggleBtnVisible="true"
                ChildrenFilterVisible="true"
                OnSearch="SearchEntitiesAsync"
-               OnResetClick="@(() => GetListInput = new IdentitySecurityLogPagedRequestDto())">
+               ClearBtnVisible="true"
+               ClearClick="@(() => GetListInput = new IdentitySecurityLogPagedRequestDto())">
         <FluentStack Wrap="true">
             <div>
                 <FluentTextField Label="@L["IdentitySecurityLog:ApplicationName"]"

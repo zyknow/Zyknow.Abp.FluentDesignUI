@@ -1,0 +1,200 @@
+@using global::SharpAbp.Abp.Identity
+@using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
+@using Volo.Abp.Application.Dtos
+@using IdentityPermissions = global::SharpAbp.Abp.Identity.IdentityPermissions
+@inherits Zyknow.Abp.FluentDesignUI.AbpCustomCrudMethodPageBase<Volo.Abp.Identity.IIdentityRoleAppService, IdentityRoleDto, Guid, OrganizationUnitRolePagedRequestDto, IdentityRoleCreateDto, IdentityRoleUpdateDto>
+
+<FluentTab Label="@($@"{L["Roles"]}({Pagination.TotalItemCount})")" Id="Roles">
+    <AbpAdaptiveDataGridLayout>
+        <FluentStack HorizontalAlignment="HorizontalAlignment.End">
+            <FluentButton IconStart="@(new Size20.Add())" Appearance="Appearance.Accent"
+                          OnClick="ShowAddRoleDialogAsync">@L["AddRole"]</FluentButton>
+        </FluentStack>
+        <AbpSearch Loading="@Loading" PrimaryInputVisible="false"
+                   OnSearch="SearchEntitiesAsync"></AbpSearch>
+        <AbpExtensibleDataGrid Loading="@Loading"
+                               TItem="IdentityRoleDto"
+                               TKey="Guid"
+                               EnableSelected="true"
+                               OnDeleteSelected="DeleteEntitiesAsync"
+                               DeleteSelectedDisplayPropertyConfirmExpression="@(r => r.Name)"
+                               PrimarySelectedDeletesBtnVisible="@HasDeletePermission"
+                               Entities="Entities"
+                               OnChange="@OnDataGridReadAsync"
+                               Pagination="@Pagination"
+                               ActionType="ActionType.Button"
+                               Columns="@RoleManagementTableColumns">
+        </AbpExtensibleDataGrid>
+    </AbpAdaptiveDataGridLayout>
+</FluentTab>
+
+@code {
+    [Parameter] public EventCallback OnChanged { get; set; }
+
+    OrganizationUnitDto? organizationUnit;
+
+    [Parameter]
+    public OrganizationUnitDto? OrganizationUnit
+    {
+        get => organizationUnit;
+        set
+        {
+            organizationUnit = value;
+            if (organizationUnit != null)
+            {
+                Pagination.SetCurrentPageIndexAsync(0);
+            }
+        }
+    }
+
+    protected List<FluentTableColumn> RoleManagementTableColumns => TableColumns.Get<OrganizationUnitRoleTabContent>();
+
+    [Inject] protected IOrganizationUnitAppService OrganizationUnitAppService { get; set; }
+
+    public OrganizationUnitRoleTabContent()
+    {
+        LocalizationResource = typeof(IdentityResource);
+        CreatePolicyName = IdentityPermissions.OrganizationUnits.Create;
+        UpdatePolicyName = IdentityPermissions.OrganizationUnits.Update;
+        DeletePolicyName = IdentityPermissions.OrganizationUnits.Delete;
+    }
+
+    protected override ValueTask SetTableColumnsAsync()
+    {
+        RoleManagementTableColumns
+            .AddRange([
+                new FluentTableColumn
+                {
+                    Title = L["DisplayName:Name"],
+                    Sortable = true,
+                    Data = nameof(IdentityRoleDto.Name),
+                    PropertyName = nameof(IdentityRoleDto.Name)
+                },
+                new FluentTableColumn
+                {
+                    Title = L["DisplayName:IsDefault"],
+                    Sortable = true,
+                    Data = nameof(IdentityRoleDto.IsDefault),
+                    PropertyName = nameof(IdentityRoleDto.IsDefault),
+                    IsCheckIcon = true,
+                    Visible = true
+                },
+                new FluentTableColumn
+                {
+                    Title = L["DisplayName:IsPublic"],
+                    Sortable = true,
+                    Data = nameof(IdentityRoleDto.IsPublic),
+                    PropertyName = nameof(IdentityRoleDto.IsPublic),
+                    IsCheckIcon = true,
+                    Visible = true
+                }
+            ]);
+
+        RoleManagementTableColumns.AddRange(GetExtensionTableColumns(IdentityModuleExtensionConsts.ModuleName,
+            IdentityModuleExtensionConsts.EntityNames.Role));
+
+        RoleManagementTableColumns.Add(new FluentTableColumn
+        {
+            Title = L["Actions"],
+            Actions = EntityActions.Get<OrganizationUnitRoleTabContent>()
+        });
+
+        return base.SetTableColumnsAsync();
+    }
+
+    protected override ValueTask SetEntityActionsAsync()
+    {
+        EntityActions
+            .Get<OrganizationUnitRoleTabContent>()
+            .AddRange([
+                new()
+                {
+                    Text = L["Delete"],
+                    Color = "red",
+                    Appearance = Appearance.Neutral,
+                    Visible = (data) => HasDeletePermission,
+                    Clicked = async (data) => await RemoveOrganizationUnitRoleAsync(data.As<IdentityRoleDto>().Id),
+                    ConfirmationMessage = (data) => L["OrganizationUnitRoleRemoveConfirmationMessage"]
+                }
+            ]);
+
+        return base.SetEntityActionsAsync();
+    }
+
+    protected virtual async Task RemoveOrganizationUnitRoleAsync(Guid roleId)
+    {
+        try
+        {
+            await OrganizationUnitAppService.RemoveRoleFromOrganizationUnitAsync(OrganizationUnit.Id, roleId);
+            await GetEntitiesAsync();
+            await OnChanged.InvokeAsync();
+        }
+        catch (Exception e)
+        {
+            await HandleErrorAsync(e);
+        }
+    }
+
+    protected virtual async Task ShowAddRoleDialogAsync()
+    {
+        await ShowDialogAsync(@<OrganizationUnitAddRoleDialog OrganizationUnit="@OrganizationUnit"
+                                                                SubmitClick="AddRolesAsync"/>, opt =>
+        {
+            opt.Width = "90%";
+            opt.Height = "90%";
+        });
+    }
+
+    protected virtual async Task<DialogResult> AddRolesAsync(List<Guid> guids)
+    {
+        await OrganizationUnitAppService.AddRoleToOrganizationUnitAsync(OrganizationUnit.Id, new AddRoleToOrganizationUnitDto()
+        {
+            RoleIds = guids
+        });
+
+        await GetEntitiesAsync();
+
+        return DialogResult.Ok<object>(null);
+    }
+
+    protected override async Task<IPagedResult<IdentityRoleDto>> AppServiceGetListAsync(OrganizationUnitRolePagedRequestDto input)
+    {
+        var res = await OrganizationUnitAppService.GetRolesPagedListAsync(OrganizationUnit.Id, input);
+        return res;
+    }
+
+    protected override async Task AppServiceDeleteAsync(Guid id)
+    {
+        await OrganizationUnitAppService.RemoveRoleFromOrganizationUnitAsync(OrganizationUnit.Id, id);
+    }
+
+    public async Task RefreshAsync()
+    {
+        GetListInput = new OrganizationUnitRolePagedRequestDto();
+        await Pagination.SetCurrentPageIndexAsync(0);
+        await GetEntitiesAsync();
+    }
+
+    protected override Task<IdentityRoleDto> AppServiceGetAsync(Guid id)
+    {
+        throw new NotImplementedException();
+    }
+
+    protected override Task AppServiceCreateAsync(IdentityRoleCreateDto input)
+    {
+        throw new NotImplementedException();
+    }
+
+    protected override Task AppServiceUpdateAsync(Guid id, IdentityRoleUpdateDto input)
+    {
+        throw new NotImplementedException();
+    }
+
+    protected override async Task ShowCreateDialogAsync()
+    {
+    }
+
+    protected override async Task ShowEditDialogAsync()
+    {
+    }
+} 

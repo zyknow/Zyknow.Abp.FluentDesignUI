@@ -18,10 +18,7 @@
                                TItem="IdentityUserDto"
                                TKey="Guid"
                                EnableSelected="true"
-                               OnDeleteSelected="DeleteEntitiesAsync"
-                               @bind-SelectEntities="SelectedUsers"
-                               DeleteSelectedDisplayPropertyConfirmExpression="@(r => r.UserName)"
-                               PrimarySelectedDeletesBtnVisible="@HasDeletePermission"
+                               @bind-SelectEntities="SelectedEntities"
                                Entities="Entities"
                                OnChange="@OnDataGridReadAsync"
                                Pagination="@Pagination"
@@ -45,7 +42,7 @@
 
     [Parameter] public Func<List<Guid>, Task<DialogResult>> SubmitClick { get; set; }
 
-    [Parameter] public List<IdentityUserDto> SelectedUsers { get; set; } = [];
+    [Parameter] public List<IdentityUserDto> SelectedEntities { get; set; } = [];
 
     protected List<FluentTableColumn> UserManagementTableColumns => TableColumns.Get<OrganizationUnitAddMemberDialog>();
 
@@ -120,12 +117,12 @@
 
     private async Task OnSubmitBtnClickAsync()
     {
-        if (!SelectedUsers.Any())
+        if (!SelectedEntities.Any())
             return;
 
         if (SubmitClick != null)
         {
-            var res = await SubmitClick.Invoke(SelectedUsers.Select(x => x.Id).ToList());
+            var res = await SubmitClick.Invoke(SelectedEntities.Select(x => x.Id).ToList());
             if (res != null)
             {
                 DialogRef.CloseAsync(res);

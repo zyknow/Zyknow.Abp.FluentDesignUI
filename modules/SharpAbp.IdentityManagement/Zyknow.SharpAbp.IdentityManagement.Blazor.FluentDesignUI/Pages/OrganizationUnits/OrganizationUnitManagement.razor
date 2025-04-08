@@ -72,6 +72,9 @@
                     <OrganizationUnitMemberTabContent
                         OrganizationUnit="@SelectedOrganizationUnit"
                         @ref="OrganizationUnitMemberTabContentRef"></OrganizationUnitMemberTabContent>
+                    <OrganizationUnitRoleTabContent
+                        OrganizationUnit="@SelectedOrganizationUnit"
+                        @ref="OrganizationUnitRoleTabContentRef"></OrganizationUnitRoleTabContent>
                 </FluentTabs>
             }
         </FluentGridItem>
@@ -89,6 +92,7 @@
         TreeViewSelectedItem?.As<TreeViewItem<OrganizationUnitDto>>()?.Data;
 
     protected OrganizationUnitMemberTabContent OrganizationUnitMemberTabContentRef { get; set; }
+    protected OrganizationUnitRoleTabContent OrganizationUnitRoleTabContentRef { get; set; }
 
     protected EntityActions<TreeViewItem<OrganizationUnitDto>> EntityActionsRef { get; set; }
 
@@ -272,14 +276,9 @@
         if (SelectedOrganizationUnit == null)
             return;
 
-        if (SelectedTabId == "Members")
-        {
-            await OrganizationUnitMemberTabContentRef.RefreshAsync();
-        }
-        else if (SelectedTabId == "Roles")
-        {
-            // TODO: 
-        }
+        
+        await OrganizationUnitRoleTabContentRef.RefreshAsync();
+        await OrganizationUnitMemberTabContentRef.RefreshAsync();
     }
 
     protected virtual async Task HandleOnTabChange(FluentTab arg)
