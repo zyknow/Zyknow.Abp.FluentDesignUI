@@ -43,7 +43,6 @@
                         ValueChanged="@OnSelectedDateAsync"
                         DaysTemplate="@DaysTemplate"
                         PickerMonthChanged="@PickerMonthChanged"/>
-        <FluentTimePicker Style="width: 100%" Value="@Value"
-                          ValueChanged="@OnSelectedDateAsync"></FluentTimePicker>
+        <FluentTimePicker Style="width: 100%" @bind-Value="@Value"></FluentTimePicker>
     </FluentAnchoredRegion>
 }

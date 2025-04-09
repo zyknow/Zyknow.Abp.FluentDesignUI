@@ -106,13 +106,13 @@ public partial class FluentDateTimePicker : FluentCalendarBase
     {
         DateTime? updatedValue = value;
 
-        // if (Value is not null && value is not null)
-        // {
-        //     updatedValue = Value?.TimeOfDay != TimeSpan.Zero
-        //     ? value?.Date + Value?.TimeOfDay
-        //     : value;
-        // }
-        Opened = false;
+        if (Value is not null && value is not null)
+        {
+            updatedValue = Value?.TimeOfDay != TimeSpan.Zero
+            ? value?.Date + Value?.TimeOfDay
+            : value;
+        }
+        // Opened = false;
         await OnSelectedDateHandlerAsync(updatedValue);
     }
 
