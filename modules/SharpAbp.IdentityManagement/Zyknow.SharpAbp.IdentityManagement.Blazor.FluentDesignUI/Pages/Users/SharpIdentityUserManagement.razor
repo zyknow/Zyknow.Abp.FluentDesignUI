@@ -1,0 +1,104 @@
+﻿@inherits Zyknow.Abp.IdentityManagement.Blazor.FluentDesignUI.Pages.Users.IdentityUserManagement
+@attribute [ExposeServices(typeof(IdentityUserManagement))]
+@attribute [Dependency(ReplaceServices = true)]
+@using global::SharpAbp.Abp.Identity
+@using Volo.Abp.DependencyInjection
+@using Zyknow.Abp.IdentityManagement.Blazor.FluentDesignUI.Pages.Users
+@using IIdentityUserAppService = global::SharpAbp.Abp.Identity.IIdentityUserAppService
+@using IdentityPermissions = global::SharpAbp.Abp.Identity.IdentityPermissions
+
+<AbpAdaptiveDataGridLayout>
+    <AbpPageHeader Title="@L["Users"]" BreadcrumbItems="@BreadcrumbItems" Toolbar="@Toolbar"/>
+
+    <AbpSearch Loading="@Loading" @bind-PrimarySearchValue="GetListInput.Filter"
+               OnSearch="SearchEntitiesAsync"></AbpSearch>
+
+    <AbpExtensibleDataGrid Loading="@Loading"
+                           TItem="IdentityUserDto"
+                           TKey="Guid"
+                           EnableSelected="true"
+                           OnDeleteSelected="DeleteEntitiesAsync"
+                           DeleteSelectedDisplayPropertyConfirmExpression="@(r => r.UserName)"
+                           PrimarySelectedDeletesBtnVisible="@HasDeletePermission"
+                           Entities="Entities"
+                           OnChange="@OnDataGridReadAsync"
+                           Pagination="@Pagination"
+                           Columns="@UserManagementTableColumns">
+    </AbpExtensibleDataGrid>
+</AbpAdaptiveDataGridLayout>
+
+@code
+{
+
+    public SharpIdentityUserManagement() : base()
+    {
+    }
+
+    [Inject] protected IIdentityUserAppService SharpIdentityUserAppService { get; set; } = default!;
+
+    protected override async ValueTask SetEntityActionsAsync()
+    {
+        EntityActions
+            .Get<IdentityUserManagement>()
+            .AddRange([
+                new()
+                {
+                    Text = L["Edit"],
+                    Visible = (data) => HasUpdatePermission,
+                    Clicked = async (data) => { await OpenEditDialogAsync(data.As<IdentityUserDto>()); }
+                },
+                new()
+                {
+                    Text = L["Permission:SharpAbpIdentity.IdentityClaimTypes"],
+                    Visible = (data) => HasUpdatePermission,
+                    Clicked = async (data) =>
+                    {
+                        var user = data.As<IdentityUserDto>();
+
+                        // TODO: show claim dialog
+                        await ShowClaimDialogAsync(user);
+                        await InvokeAsync(StateHasChanged);
+                    }
+                },
+                new()
+                {
+                    Text = L["Permissions"],
+                    Visible = (data) => HasManagePermissionsPermission,
+                    Clicked = async (data) =>
+                    {
+                        var user = data.As<IdentityUserDto>();
+                        await ShowPermissionDialogAsync(new PermissionManagementDialogInput(PermissionProviderName, user.Id.ToString(), user.UserName));
+                        await InvokeAsync(StateHasChanged);
+                    }
+                },
+                new()
+                {
+                    Text = L["Delete"],
+                    Color = "red",
+                    Visible = (data) => HasDeletePermission,
+                    Clicked = async (data) => await DeleteEntityAsync(data.As<IdentityUserDto>()),
+                    ConfirmationMessage = (data) => GetDeleteConfirmationMessage(data.As<IdentityUserDto>())
+                }
+            ]);
+    }
+
+    protected virtual async Task ShowClaimDialogAsync(IdentityUserDto user)
+    {
+        await ShowDialogAsync(@<IdentityUserClaimTypeManagementDialog User="@user"
+                                                                      SubmitClick="@((v) => UpdateClaimAsync(user, v))"/>);
+    }
+
+    protected virtual async Task<DialogResult?> UpdateClaimAsync(IdentityUserDto user, List<CreateOrUpdateIdentityUserClaimDto> claims)
+    {
+        try
+        {
+            await SharpIdentityUserAppService.UpdateClaimsAsync(user.Id, claims);
+            return DialogResult.Ok<object>(null);
+        }
+        catch (Exception e)
+        {
+            await HandleErrorAsync(e);
+            return null;
+        }
+    }
+}

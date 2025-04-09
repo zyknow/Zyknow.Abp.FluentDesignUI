@@ -19,14 +19,11 @@
     <FluentTextField Style="width: 100%" Label="@L["IdentityClaimType:Description"]" @bind-Value="@Content.Description" />
     <FluentValidationMessage For="@(() => Content.Description)" />
 
-    @* <FluentSelect Items="@Enum.GetValues<IdentityClaimValueType>()" OptionText="type=> type.GetDisplayName()" *@
-    @*               Style="width: 100%" Label="@L["IdentityClaimType:ValueType"]" *@
-    @*               @bind-SelectedOption="Content."> *@
-    @* </FluentSelect> *@
-    @* <FluentValidationMessage For="@(() => Content.ValueType)" /> *@
+    <FluentStack Style="margin-top: 20px;">
+        <FluentCheckbox Label="@L["IdentityClaimType:Required"]" @bind-Value="@Content.Required" />
 
-    <FluentCheckbox Label="@L["IdentityClaimType:Required"]" @bind-Value="@Content.Required" />
-    <FluentValidationMessage For="@(() => Content.Required)" />
+        <FluentCheckbox Label="@L["IdentityClaimType:IsStatic"]" @bind-Value="@Content.IsStatic"/>
+    </FluentStack>
 
 </AbpFluentForm> 
 

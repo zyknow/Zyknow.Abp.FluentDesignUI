@@ -48,13 +48,15 @@
 
         </FluentStack>
     </AbpSearch>
-    <AbpExtensibleDataGrid Loading="@Loading"
-                           Entities="Entities"
-                           TKey="Guid"
-                           TItem="IdentitySecurityLogDto"
-                           OnChange="@OnDataGridReadAsync"
-                           Pagination="@Pagination"
-                           Columns="@SecurityLogTableColumns">
+    <AbpExtensibleDataGrid
+        @ref="AbpDataGridRef"
+        Loading="@Loading"
+        Entities="Entities"
+        TKey="Guid"
+        TItem="IdentitySecurityLogDto"
+        OnChange="@OnDataGridReadAsync"
+        Pagination="@Pagination"
+        Columns="@SecurityLogTableColumns">
     </AbpExtensibleDataGrid>
 </AbpAdaptiveDataGridLayout>
 
@@ -72,6 +74,8 @@
     protected IReadOnlyList<IdentitySecurityLogDto> Entities { get; set; } = [];
     protected AbpFluentPaginationState Pagination { get; set; } = new();
 
+    protected AbpExtensibleDataGrid<IdentitySecurityLogDto, Guid> AbpDataGridRef { get; set; } = default!;
+
     public IdentitySecurityLogManagement()
     {
         LocalizationResource = typeof(IdentityResource);
@@ -81,6 +85,15 @@
     {
         await SetBreadcrumbItemsAsync();
         await SetTableColumnsAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // AbpDataGridRef.FluentDataGridRef.MultiLine = true;
+            InvokeAsync(StateHasChanged);
+        }
     }
 
     protected ValueTask SetBreadcrumbItemsAsync()
