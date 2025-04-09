@@ -90,37 +90,38 @@
                         await GetEntitiesAsync();
                     }
                 },
-                new()
-                {
-                    Text = L["TwoFactor"],
-                    Visible = (data) => HasUpdatePermission,
-                    Clicked = async (data) =>
-                    {
-                        try
-                        {
-                            var user = data.As<IdentityUserDto>();
-                            var userTowFactorIsEnabled = await SharpIdentityUserAppService.TwoFactorEnableAsync(user.Id);
-                            var dialogRef = await ShowDialogAsync(@<FluentCheckbox @bind-Value="@userTowFactorIsEnabled"
-                                                                                   Label="@L["EnableTwoFactor"]"></FluentCheckbox>
-                                , opt =>
-                                {
-                                    opt.Height = null;
-                                    opt.Title = $@"{L["EnableTwoFactor"]} - {user.UserName}";
-                                    opt.PrimaryAction = L["Submit"];
-                                    opt.SecondaryAction = L["Cancel"];
-                                });
-                            var res = await dialogRef.Result;
-                            if (!res.Cancelled)
-                            {
-                                await SharpIdentityUserAppService.SetTwoFactorAsync(user.Id, userTowFactorIsEnabled);
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrorAsync(e);
-                        }
-                    }
-                }
+                // TODO: should check system has config for two factor
+                @* new() *@
+                @* { *@
+                @*     Text = L["TwoFactor"], *@
+                @*     Visible = (data) => HasUpdatePermission, *@
+                @*     Clicked = async (data) => *@
+                @*     { *@
+                @*         try *@
+                @*         { *@
+                @*             var user = data.As<IdentityUserDto>(); *@
+                @*             var userTowFactorIsEnabled = await SharpIdentityUserAppService.TwoFactorEnableAsync(user.Id); *@
+                @*             var dialogRef = await ShowDialogAsync(@<FluentCheckbox @bind-Value="@userTowFactorIsEnabled" *@
+                @*                                                                    Label="@L["EnableTwoFactor"]"></FluentCheckbox> *@
+                @*                 , opt => *@
+                @*                 { *@
+                @*                     opt.Height = null; *@
+                @*                     opt.Title = $@"{L["EnableTwoFactor"]} - {user.UserName}"; *@
+                @*                     opt.PrimaryAction = L["Submit"]; *@
+                @*                     opt.SecondaryAction = L["Cancel"]; *@
+                @*                 }); *@
+                @*             var res = await dialogRef.Result; *@
+                @*             if (!res.Cancelled) *@
+                @*             { *@
+                @*                 await SharpIdentityUserAppService.SetTwoFactorAsync(user.Id, userTowFactorIsEnabled); *@
+                @*             } *@
+                @*         } *@
+                @*         catch (Exception e) *@
+                @*         { *@
+                @*             await HandleErrorAsync(e); *@
+                @*         } *@
+                @*     } *@
+                @* } *@
             ]);
     }
 
