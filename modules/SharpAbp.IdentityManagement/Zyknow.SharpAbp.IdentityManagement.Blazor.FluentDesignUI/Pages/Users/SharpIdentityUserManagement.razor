@@ -101,7 +101,14 @@
                             var user = data.As<IdentityUserDto>();
                             var userTowFactorIsEnabled = await SharpIdentityUserAppService.TwoFactorEnableAsync(user.Id);
                             var dialogRef = await ShowDialogAsync(@<FluentCheckbox @bind-Value="@userTowFactorIsEnabled"
-                                                                                   Label="@L["EnableTowFactor"]"></FluentCheckbox>, opt => opt.Height = "300px");
+                                                                                   Label="@L["EnableTwoFactor"]"></FluentCheckbox>
+                                , opt =>
+                                {
+                                    opt.Height = null;
+                                    opt.Title = $@"{L["EnableTwoFactor"]} - {user.UserName}";
+                                    opt.PrimaryAction = L["Submit"];
+                                    opt.SecondaryAction = L["Cancel"];
+                                });
                             var res = await dialogRef.Result;
                             if (!res.Cancelled)
                             {
@@ -141,7 +148,7 @@
     {
         await ShowDialogAsync(@<IdentityUserChangePasswordDialog User="@user"
                                                                  Content="@(new SetPasswordDto())"
-                                                                 SubmitClick="@((input) => ChangePasswordAsync(user, input))"/>, opt => opt.Height = "300px");
+                                                                 SubmitClick="@((input) => ChangePasswordAsync(user, input))"/>, opt => opt.Height = null);
     }
 
     protected virtual async Task<DialogResult?> ChangePasswordAsync(IdentityUserDto user, SetPasswordDto input)
@@ -161,7 +168,7 @@
     protected virtual async Task ShowLockDialogAsync(IdentityUserDto user)
     {
         await ShowDialogAsync(@<IdentityUserLockDialog User="@user"
-                                                       SubmitClick="@((input) => LockUserAsync(user, input))"/>, opt => opt.Height = "300px");
+                                                       SubmitClick="@((input) => LockUserAsync(user, input))"/>, opt => opt.Height = null);
     }
 
     protected virtual async Task<DialogResult?> LockUserAsync(IdentityUserDto user, int seconds)

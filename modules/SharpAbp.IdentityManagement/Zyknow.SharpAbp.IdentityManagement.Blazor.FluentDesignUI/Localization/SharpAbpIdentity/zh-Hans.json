@@ -64,8 +64,10 @@
     "OrganizationUnit:RemoveMemberConfirmationMessage": "确定要移除此成员吗？",
     "OrganizationUnit:RemoveRoleConfirmationMessage": "确定要移除此角色吗？",
     "OrganizationUnit:CreateChildrenOrganizationUnit": "创建子组织",
-    "DisplayName:LockUser": "锁定用户",
-    "DisplayName:UnLockUser": "解锁用户",
-    "DisplayName:LockEndDateTime": "锁定结束时间"
+    "LockUser": "锁定用户",
+    "UnLockUser": "解锁用户",
+    "LockEndDateTime": "锁定结束时间",
+    "TwoFactor": "双因素认证",
+    "EnableTwoFactor": "启用双因素认证"
   }
 } 

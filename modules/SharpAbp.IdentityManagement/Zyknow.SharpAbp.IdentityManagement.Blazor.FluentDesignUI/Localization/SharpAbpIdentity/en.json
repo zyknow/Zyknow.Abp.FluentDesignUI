@@ -64,8 +64,10 @@
     "OrganizationUnit:RemoveMemberConfirmationMessage": "Are you sure to remove this member?",
     "OrganizationUnit:RemoveRoleConfirmationMessage": "Are you sure to remove this role?",
     "OrganizationUnit:CreateChildrenOrganizationUnit": "Create Child Organization",
-    "DisplayName:LockUser": "Lock User",
-    "DisplayName:UnLockUser": "Unlock User",
-    "DisplayName:LockEndDateTime": "Lock End DateTime"
+    "LockUser": "Lock User",
+    "UnLockUser": "Unlock User",
+    "LockEndDateTime": "Lock End DateTime",
+    "TwoFactor": "Two Factor",
+    "EnableTwoFactor": "Enable Two Factor"
   }
 } 
