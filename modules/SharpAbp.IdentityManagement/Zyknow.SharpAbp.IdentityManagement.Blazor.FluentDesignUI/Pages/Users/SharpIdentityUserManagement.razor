@@ -38,15 +38,11 @@
 
     protected override async ValueTask SetEntityActionsAsync()
     {
+        await base.SetEntityActionsAsync();
+
         EntityActions
             .Get<IdentityUserManagement>()
-            .AddRange([
-                new()
-                {
-                    Text = L["Edit"],
-                    Visible = (data) => HasUpdatePermission,
-                    Clicked = async (data) => { await OpenEditDialogAsync(data.As<IdentityUserDto>()); }
-                },
+            .InsertRange(0, [
                 new()
                 {
                     Text = L["Permission:SharpAbpIdentity.IdentityClaimTypes"],
@@ -60,25 +56,13 @@
                         await InvokeAsync(StateHasChanged);
                     }
                 },
-                new()
-                {
-                    Text = L["Permissions"],
-                    Visible = (data) => HasManagePermissionsPermission,
-                    Clicked = async (data) =>
-                    {
-                        var user = data.As<IdentityUserDto>();
-                        await ShowPermissionDialogAsync(new PermissionManagementDialogInput(PermissionProviderName, user.Id.ToString(), user.UserName));
-                        await InvokeAsync(StateHasChanged);
-                    }
-                },
-                new()
-                {
-                    Text = L["Delete"],
-                    Color = "red",
-                    Visible = (data) => HasDeletePermission,
-                    Clicked = async (data) => await DeleteEntityAsync(data.As<IdentityUserDto>()),
-                    ConfirmationMessage = (data) => GetDeleteConfirmationMessage(data.As<IdentityUserDto>())
-                }
+                // TODO: add Change Password dialog
+                
+                // TODO: add lock dialog
+                
+                // TODO: add unlock dialog
+                
+                // TODO: add two factor dialog
             ]);
     }
 
