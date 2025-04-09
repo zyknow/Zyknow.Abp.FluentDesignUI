@@ -52,6 +52,8 @@ public partial class AbpExtensibleDataGrid<TItem, TKey> : ComponentBase where TI
     [Inject] public IStringLocalizerFactory StringLocalizerFactory { get; set; }
 
     [Inject] public IUiMessageService UiMessageService { get; set; }
+    
+    public FluentDataGrid<TItem> FluentDataGridRef { get; set; }
 
     protected bool ToggleColumnPopoverVisible { get; set; }
 
