@@ -49,7 +49,6 @@
                     Clicked = async (data) =>
                     {
                         var user = data.As<IdentityUserDto>();
-
                         await ShowClaimDialogAsync(user);
                         await InvokeAsync(StateHasChanged);
                     }
@@ -65,8 +64,17 @@
                         await InvokeAsync(StateHasChanged);
                     }
                 },
-                // TODO: add lock dialog
-
+                new()
+                {
+                    Text = L["LockUser"],
+                    Visible = (data) => HasUpdatePermission,
+                    Clicked = async (data) =>
+                    {
+                        var user = data.As<IdentityUserDto>();
+                        await ShowLockDialogAsync(user);
+                        await InvokeAsync(StateHasChanged);
+                    }
+                },
                 // TODO: add unlock dialog
 
                 // TODO: add two factor dialog
@@ -105,6 +113,30 @@
         try
         {
             await SharpIdentityUserAppService.SetPasswordAsync(user.Id, input);
+            return DialogResult.Ok<object>(null);
+        }
+        catch (Exception e)
+        {
+            await HandleErrorAsync(e);
+            return null;
+        }
+    }
+
+    protected virtual async Task ShowLockDialogAsync(IdentityUserDto user)
+    {
+        await ShowDialogAsync(@<IdentityUserLockDialog User="@user"
+                                                       SubmitClick="@((input) => LockUserAsync(user, input))"/>,opt => opt.Height = "300px");
+    }
+
+    protected virtual async Task<DialogResult?> LockUserAsync(IdentityUserDto user, int seconds)
+    {
+        if (seconds <= 0)
+            return DialogResult.Ok<object>(null);
+
+        try
+        {
+            await SharpIdentityUserAppService.LockAsync(user.Id, seconds);
+            await GetEntitiesAsync();
             return DialogResult.Ok<object>(null);
         }
         catch (Exception e)

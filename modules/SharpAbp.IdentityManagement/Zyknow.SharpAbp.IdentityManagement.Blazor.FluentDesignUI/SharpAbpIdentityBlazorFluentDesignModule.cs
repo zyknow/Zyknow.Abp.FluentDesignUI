@@ -32,11 +32,6 @@ public class SharpAbpIdentityBlazorFluentDesignModule : AbpModule
         {
             options.AddProfile<SharpAbpIdentityBlazorFluentDesignAutoMapperProfile>(validate: true);
         });
-        
-        Configure<AbpVirtualFileSystemOptions>(options =>
-        {
-            options.FileSets.AddEmbedded<SharpAbpIdentityBlazorFluentDesignModule>();
-        });
 
         Configure<AbpNavigationOptions>(options =>
         {
@@ -46,6 +41,11 @@ public class SharpAbpIdentityBlazorFluentDesignModule : AbpModule
         Configure<AbpRouterOptions>(options =>
         {
             options.AdditionalAssemblies.Add(typeof(SharpAbpIdentityBlazorFluentDesignModule).Assembly);
+        });
+        
+        Configure<AbpVirtualFileSystemOptions>(options =>
+        {
+            options.FileSets.AddEmbedded<SharpAbpIdentityBlazorFluentDesignModule>();
         });
 
         Configure<AbpLocalizationOptions>(options =>

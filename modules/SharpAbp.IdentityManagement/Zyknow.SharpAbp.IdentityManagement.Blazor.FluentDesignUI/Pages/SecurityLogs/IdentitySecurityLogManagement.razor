@@ -19,10 +19,11 @@
                                  @bind-Value="GetListInput.ApplicationName"></FluentTextField>
             </div>
             <div>
-                <FluentDatePicker Label="@L["IdentitySecurityLog:StartTime"]" @bind-Value="@GetListInput.StartTime"/>
+                <FluentDateTimePicker Label="@L["IdentitySecurityLog:StartTime"]"
+                                      @bind-Value="@GetListInput.StartTime"/>
             </div>
             <div>
-                <FluentDatePicker Label="@L["IdentitySecurityLog:EndTime"]" @bind-Value="@GetListInput.EndTime"/>
+                <FluentDateTimePicker Label="@L["IdentitySecurityLog:EndTime"]" @bind-Value="@GetListInput.EndTime"/>
             </div>
             <div>
                 <FluentTextField Label="@L["IdentitySecurityLog:UserName"]"

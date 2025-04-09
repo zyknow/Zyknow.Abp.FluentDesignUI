@@ -184,8 +184,9 @@
                 {
                     Title = L["DisplayName:UserName"],
                     Sortable = true,
-                    Data = nameof(IdentityUserDto.Name),
-                    PropertyName = nameof(IdentityUserDto.Name)
+                    Data = nameof(IdentityUserDto.UserName),
+                    PropertyName = nameof(IdentityUserDto.UserName),
+                    Component = typeof(IdentityUserNameColumn)
                 },
                 new FluentTableColumn
                 {
@@ -200,6 +201,36 @@
                     Sortable = true,
                     Data = nameof(IdentityUserDto.PhoneNumber),
                     PropertyName = nameof(IdentityUserDto.PhoneNumber)
+                },
+                new FluentTableColumn
+                {
+                    Title = L["DisplayName:AccessFailedCount"],
+                    Sortable = true,
+                    Data = nameof(IdentityUserDto.AccessFailedCount),
+                    PropertyName = nameof(IdentityUserDto.AccessFailedCount)
+                },
+                new FluentTableColumn
+                {
+                    Title = L["DisplayName:LockoutEnd"],
+                    Sortable = true,
+                    Data = nameof(IdentityUserDto.LockoutEnd),
+                    PropertyName = nameof(IdentityUserDto.LockoutEnd)
+                },
+                new FluentTableColumn
+                {
+                    Title = L["DisplayName:LastPasswordChangeTime"],
+                    Sortable = true,
+                    Data = nameof(IdentityUserDto.LastPasswordChangeTime),
+                    PropertyName = nameof(IdentityUserDto.LastPasswordChangeTime),
+                    IsCheckIcon = true
+                },
+                new FluentTableColumn
+                {
+                    Title = L["DisplayName:EmailConfirmed"],
+                    Sortable = true,
+                    Data = nameof(IdentityUserDto.EmailConfirmed),
+                    PropertyName = nameof(IdentityUserDto.EmailConfirmed),
+                    IsCheckIcon = true
                 },
                 new FluentTableColumn
                 {

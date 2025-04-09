@@ -45,6 +45,18 @@ public class AbpIdentityBlazorFluentDesignModule : AbpModule
         {
             options.AdditionalAssemblies.Add(typeof(AbpIdentityBlazorFluentDesignModule).Assembly);
         });
+        
+        Configure<AbpVirtualFileSystemOptions>(options =>
+        {
+            options.FileSets.AddEmbedded<AbpIdentityBlazorFluentDesignModule>();
+        });
+
+        Configure<AbpLocalizationOptions>(options =>
+        {
+            options.Resources
+                .Get<IdentityResource>()
+                .AddVirtualJson("/Localization/AbpIdentity");
+        });
     }
 
     public override void PostConfigureServices(ServiceConfigurationContext context)

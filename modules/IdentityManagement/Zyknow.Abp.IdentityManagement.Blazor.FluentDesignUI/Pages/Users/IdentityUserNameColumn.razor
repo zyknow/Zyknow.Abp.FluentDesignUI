@@ -1,0 +1,13 @@
+﻿@using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
+<FluentStack VerticalAlignment="VerticalAlignment.Center">
+    <FluentLabel>@User.UserName</FluentLabel>
+    @if (User.LockoutEnabled && User.LockoutEnd >= DateTimeOffset.Now)
+    {
+        <FluentIcon Value="@(new Size20.LockClosed())" Color="Color.Error"/>
+    }
+</FluentStack>
+
+@code {
+    [Parameter] public object Data { get; set; }
+    public IdentityUserDto User => Data as IdentityUserDto;
+}

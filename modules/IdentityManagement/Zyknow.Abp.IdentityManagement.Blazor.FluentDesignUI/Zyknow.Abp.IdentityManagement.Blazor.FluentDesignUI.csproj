@@ -4,11 +4,13 @@
         <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Volo.Abp.AutoMapper"/>
         <PackageReference Include="Volo.Abp.Identity.Application.Contracts"/>
+        <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -17,5 +19,10 @@
 
     <ItemGroup>
         <UpToDateCheckInput Remove="Pages\SecurityLogs\IdentitySecurityLogManagement.razor"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="Localization\AbpIdentity\*.json"/>
+        <Content Remove="Localization\AbpIdentity\*.json"/>
     </ItemGroup>
 </Project>
