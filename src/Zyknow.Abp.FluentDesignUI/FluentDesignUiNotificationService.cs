@@ -11,27 +11,27 @@ namespace Zyknow.Abp.FluentDesignUI;
 public class FluentDesignUiNotificationService(IStringLocalizer<AbpUiResource> localizer)
     : IUiNotificationService, IScopedDependency
 {
-    [Inject] public IDialogService DialogService { get; set; }
+    [Inject] public IToastService ToastService { get; set; }
 
     private readonly IStringLocalizer<AbpUiResource> _localizer = localizer;
 
     public async Task Info(string message, string title = null, Action<UiNotificationOptions> options = null)
     {
-        DialogService.ShowInfo(message, title ?? localizer["Info"]);
+        ToastService.ShowInfo(message);
     }
 
     public async Task Success(string message, string title = null, Action<UiNotificationOptions> options = null)
     {
-        DialogService.ShowSuccess(message, title ?? localizer["Success"]);
+        ToastService.ShowSuccess(message);
     }
 
     public async Task Warn(string message, string title = null, Action<UiNotificationOptions> options = null)
     {
-        DialogService.ShowWarning(message, title ?? localizer["Warn"]);
+        ToastService.ShowWarning(message);
     }
 
     public async Task Error(string message, string title = null, Action<UiNotificationOptions> options = null)
     {
-        DialogService.ShowError(message, title ?? localizer["Error"]);
+        ToastService.ShowError(message);
     }
 }
