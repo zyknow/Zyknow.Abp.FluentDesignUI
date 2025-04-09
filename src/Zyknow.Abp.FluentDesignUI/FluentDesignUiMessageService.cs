@@ -15,22 +15,22 @@ public class FluentDesignUiMessageService(IStringLocalizer<AbpUiResource> locali
 
     public async Task Info(string message, string title = null, Action<UiMessageOptions> options = null)
     {
-        DialogService.ShowInfo(message, title ?? localizer["Info"]);
+        DialogService.ShowInfo(message, title ?? localizer["Info"], localizer["Confirm"]);
     }
 
     public async Task Success(string message, string title = null, Action<UiMessageOptions> options = null)
     {
-        DialogService.ShowSuccess(message, title ?? localizer["Success"]);
+        DialogService.ShowSuccess(message, title ?? localizer["Success"], localizer["Confirm"]);
     }
 
     public async Task Warn(string message, string title = null, Action<UiMessageOptions> options = null)
     {
-        DialogService.ShowWarning(message, title ?? localizer["Warn"]);
+        DialogService.ShowWarning(message, title ?? localizer["Warn"], localizer["Confirm"]);
     }
 
     public async Task Error(string message, string title = null, Action<UiMessageOptions> options = null)
     {
-        DialogService.ShowError(message, title ?? localizer["Error"]);
+        DialogService.ShowError(message, title ?? localizer["Error"], localizer["Confirm"]);
     }
 
     public async Task<bool> Confirm(string message, string title = null, Action<UiMessageOptions> options = null)
