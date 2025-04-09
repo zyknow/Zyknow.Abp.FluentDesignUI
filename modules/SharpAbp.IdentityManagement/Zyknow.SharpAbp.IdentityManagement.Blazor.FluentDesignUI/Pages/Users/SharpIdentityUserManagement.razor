@@ -39,7 +39,6 @@
     protected override async ValueTask SetEntityActionsAsync()
     {
         await base.SetEntityActionsAsync();
-
         EntityActions
             .Get<IdentityUserManagement>()
             .InsertRange(0, [
@@ -51,17 +50,25 @@
                     {
                         var user = data.As<IdentityUserDto>();
 
-                        // TODO: show claim dialog
                         await ShowClaimDialogAsync(user);
                         await InvokeAsync(StateHasChanged);
                     }
                 },
-                // TODO: add Change Password dialog
-                
+                new()
+                {
+                    Text = L["ChangePassword"],
+                    Visible = (data) => HasUpdatePermission,
+                    Clicked = async (data) =>
+                    {
+                        var user = data.As<IdentityUserDto>();
+                        await ShowChangePasswordDialogAsync(user);
+                        await InvokeAsync(StateHasChanged);
+                    }
+                },
                 // TODO: add lock dialog
-                
+
                 // TODO: add unlock dialog
-                
+
                 // TODO: add two factor dialog
             ]);
     }
@@ -77,6 +84,27 @@
         try
         {
             await SharpIdentityUserAppService.UpdateClaimsAsync(user.Id, claims);
+            return DialogResult.Ok<object>(null);
+        }
+        catch (Exception e)
+        {
+            await HandleErrorAsync(e);
+            return null;
+        }
+    }
+
+    protected virtual async Task ShowChangePasswordDialogAsync(IdentityUserDto user)
+    {
+        await ShowDialogAsync(@<IdentityUserChangePasswordDialog User="@user"
+                                                                 Content="@(new SetPasswordDto())"
+                                                                 SubmitClick="@((input) => ChangePasswordAsync(user, input))"/>);
+    }
+
+    protected virtual async Task<DialogResult?> ChangePasswordAsync(IdentityUserDto user, SetPasswordDto input)
+    {
+        try
+        {
+            await SharpIdentityUserAppService.SetPasswordAsync(user.Id, input);
             return DialogResult.Ok<object>(null);
         }
         catch (Exception e)
