@@ -75,8 +75,21 @@
                         await InvokeAsync(StateHasChanged);
                     }
                 },
-                // TODO: add unlock dialog
-
+                new()
+                {
+                    Text = L["UnLockUser"],
+                    Visible = (data) =>
+                    {
+                        var user = data.As<IdentityUserDto>();
+                        return HasUpdatePermission && user.LockoutEnabled && user.LockoutEnd >= DateTimeOffset.Now;
+                    },
+                    Clicked = async (data) =>
+                    {
+                        var user = data.As<IdentityUserDto>();
+                        await SharpIdentityUserAppService.UnLockAsync(user.Id);
+                        await GetEntitiesAsync();
+                    }
+                }
                 // TODO: add two factor dialog
             ]);
     }
@@ -105,7 +118,7 @@
     {
         await ShowDialogAsync(@<IdentityUserChangePasswordDialog User="@user"
                                                                  Content="@(new SetPasswordDto())"
-                                                                 SubmitClick="@((input) => ChangePasswordAsync(user, input))"/>);
+                                                                 SubmitClick="@((input) => ChangePasswordAsync(user, input))"/>, opt => opt.Height = "300px");
     }
 
     protected virtual async Task<DialogResult?> ChangePasswordAsync(IdentityUserDto user, SetPasswordDto input)
@@ -125,7 +138,7 @@
     protected virtual async Task ShowLockDialogAsync(IdentityUserDto user)
     {
         await ShowDialogAsync(@<IdentityUserLockDialog User="@user"
-                                                       SubmitClick="@((input) => LockUserAsync(user, input))"/>,opt => opt.Height = "300px");
+                                                       SubmitClick="@((input) => LockUserAsync(user, input))"/>, opt => opt.Height = "300px");
     }
 
     protected virtual async Task<DialogResult?> LockUserAsync(IdentityUserDto user, int seconds)
