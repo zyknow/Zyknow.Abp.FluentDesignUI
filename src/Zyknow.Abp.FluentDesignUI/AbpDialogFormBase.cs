@@ -20,7 +20,7 @@ public class AbpDialogOnlyFormBase<TInput, TResource> : AbpComponentBase, IDialo
     [Inject] protected AbpBlazorMessageLocalizerHelper<TResource> LH { get; set; }
 
     [Parameter] public TInput Content { get; set; }
-    
+
     [Parameter] public EventCallback<TInput> ContentChanged { get; set; }
 }
 
@@ -36,7 +36,22 @@ public class AbpDialogFormBase<TInput, TResource> : AbpDialogOnlyFormBase<TInput
         LocalizationResource = typeof(TResource);
     }
 
-    [Parameter] public Func<Task<DialogResult?>> SubmitClick { get; set; }
+    [Parameter] public virtual Func<Task<DialogResult?>> SubmitClick { get; set; }
+
+    [Parameter] public EventCallback CancelClick { get; set; }
+
+    [CascadingParameter] public FluentDialog? DialogRef { get; set; }
+}
+
+public class AbpDialogFormBase<TResult, TInput, TResource> : AbpDialogOnlyFormBase<TInput, TResource>,
+    IDialogContentComponent<TInput>
+{
+    public AbpDialogFormBase()
+    {
+        LocalizationResource = typeof(TResource);
+    }
+
+    [Parameter] public new Func<TResult, Task<DialogResult?>> SubmitClick { get; set; }
 
     [Parameter] public EventCallback CancelClick { get; set; }
 
