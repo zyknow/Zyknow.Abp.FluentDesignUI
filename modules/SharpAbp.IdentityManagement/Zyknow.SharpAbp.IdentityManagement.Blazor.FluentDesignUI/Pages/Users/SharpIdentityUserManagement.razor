@@ -89,8 +89,31 @@
                         await SharpIdentityUserAppService.UnLockAsync(user.Id);
                         await GetEntitiesAsync();
                     }
+                },
+                new()
+                {
+                    Text = L["TwoFactor"],
+                    Visible = (data) => HasUpdatePermission,
+                    Clicked = async (data) =>
+                    {
+                        try
+                        {
+                            var user = data.As<IdentityUserDto>();
+                            var userTowFactorIsEnabled = await SharpIdentityUserAppService.TwoFactorEnableAsync(user.Id);
+                            var dialogRef = await ShowDialogAsync(@<FluentCheckbox @bind-Value="@userTowFactorIsEnabled"
+                                                                                   Label="@L["EnableTowFactor"]"></FluentCheckbox>, opt => opt.Height = "300px");
+                            var res = await dialogRef.Result;
+                            if (!res.Cancelled)
+                            {
+                                await SharpIdentityUserAppService.SetTwoFactorAsync(user.Id, userTowFactorIsEnabled);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrorAsync(e);
+                        }
+                    }
                 }
-                // TODO: add two factor dialog
             ]);
     }
 
