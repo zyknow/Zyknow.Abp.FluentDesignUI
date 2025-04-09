@@ -1,6 +1,11 @@
 {
   "culture": "zh-Hans",
   "texts": {
-
+    "DisplayName:AccessFailedCount": "登录失败次数",
+    "DisplayName:LockoutEnd": "锁定结束时间",
+    "DisplayName:LastPasswordChangeTime": "最后密码修改时间",
+    "DisplayName:EmailConfirmed": "邮箱已确认",
+    "DisplayName:LockoutEnabled": "启用锁定",
+    "DisplayName:EntityVersion": "版本号"
   }
 } 

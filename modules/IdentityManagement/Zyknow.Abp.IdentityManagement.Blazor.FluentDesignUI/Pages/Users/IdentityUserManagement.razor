@@ -207,14 +207,16 @@
                     Title = L["DisplayName:AccessFailedCount"],
                     Sortable = true,
                     Data = nameof(IdentityUserDto.AccessFailedCount),
-                    PropertyName = nameof(IdentityUserDto.AccessFailedCount)
+                    PropertyName = nameof(IdentityUserDto.AccessFailedCount),
+                    Visible = false,
                 },
                 new FluentTableColumn
                 {
                     Title = L["DisplayName:LockoutEnd"],
                     Sortable = true,
                     Data = nameof(IdentityUserDto.LockoutEnd),
-                    PropertyName = nameof(IdentityUserDto.LockoutEnd)
+                    PropertyName = nameof(IdentityUserDto.LockoutEnd),
+                    Visible = false,
                 },
                 new FluentTableColumn
                 {
@@ -222,7 +224,8 @@
                     Sortable = true,
                     Data = nameof(IdentityUserDto.LastPasswordChangeTime),
                     PropertyName = nameof(IdentityUserDto.LastPasswordChangeTime),
-                    IsCheckIcon = true
+                    IsCheckIcon = true,
+                    Visible = false,
                 },
                 new FluentTableColumn
                 {
@@ -230,7 +233,8 @@
                     Sortable = true,
                     Data = nameof(IdentityUserDto.EmailConfirmed),
                     PropertyName = nameof(IdentityUserDto.EmailConfirmed),
-                    IsCheckIcon = true
+                    IsCheckIcon = true,
+                    Visible = false,
                 },
                 new FluentTableColumn
                 {
@@ -247,6 +251,15 @@
                     Data = nameof(IdentityUserDto.LockoutEnabled),
                     PropertyName = nameof(IdentityUserDto.LockoutEnabled),
                     IsCheckIcon = true,
+                    Visible = false,
+                },
+                new FluentTableColumn
+                {
+                    Title = L["DisplayName:EntityVersion"],
+                    Sortable = true,
+                    Data = nameof(IdentityUserDto.EntityVersion),
+                    PropertyName = nameof(IdentityUserDto.EntityVersion),
+                    Visible = false,
                 }
             ]);
 
@@ -258,7 +271,6 @@
             Title = L["Actions"],
             Actions = EntityActions.Get<IdentityUserManagement>()
         });
-
         return base.SetTableColumnsAsync();
     }
 

@@ -1,6 +1,11 @@
 {
   "culture": "en",
   "texts": {
-
+    "DisplayName:AccessFailedCount": "Access Failed Count",
+    "DisplayName:LockoutEnd": "Lockout End",
+    "DisplayName:LastPasswordChangeTime": "Last Password Change Time",
+    "DisplayName:EmailConfirmed": "Email Confirmed",
+    "DisplayName:LockoutEnabled": "Lockout Enabled",
+    "DisplayName:EntityVersion": "Version"
   }
 } 
