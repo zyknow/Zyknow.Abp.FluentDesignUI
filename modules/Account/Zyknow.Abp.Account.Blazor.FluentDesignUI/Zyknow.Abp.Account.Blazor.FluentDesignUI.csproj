@@ -25,4 +25,8 @@
         <EmbeddedResource Include="Localization\Resources\AbpMultiTenancy\*.json"/>
         <Content Remove="Localization\Resources\AbpMultiTenancy\*.json"/>
     </ItemGroup>
+
+    <ItemGroup>
+      <UpToDateCheckInput Remove="Themes\FluentDesignTheme\AccountLayout.razor" />
+    </ItemGroup>
 </Project>
