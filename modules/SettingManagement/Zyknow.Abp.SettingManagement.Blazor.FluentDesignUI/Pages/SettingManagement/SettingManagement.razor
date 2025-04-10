@@ -8,8 +8,10 @@
 @using Volo.Abp.SettingManagement.Localization
 @using Zyknow.Abp.FluentDesignUI
 @using Zyknow.Abp.GroupComponent.FluentDesignUI.Components
+@using Zyknow.Abp.FluentDesignUI.Components
 @attribute [Authorize]
 @attribute [RequiresFeature(SettingManagementFeatures.Enable)]
+<FluentAdaptiveCard>
     <FluentStack Orientation="Orientation.Vertical" VerticalGap="20" HorizontalAlignment="HorizontalAlignment.Stretch">
         <AbpPageHeader Title="@L["Settings"]" BreadcrumbItems="@BreadcrumbItems"/>
         <FluentDivider></FluentDivider>
@@ -19,6 +21,7 @@
             </AbpFluentDesignGroupManagement>
         </div>
     </FluentStack>
+</FluentAdaptiveCard>
 
 @code
 {
