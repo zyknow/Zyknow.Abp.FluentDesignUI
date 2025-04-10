@@ -5,7 +5,7 @@
 @inherits Zyknow.Abp.FluentDesignUI.AbpCustomCrudMethodPageBase<Volo.Abp.Identity.IIdentityUserAppService, IdentityUserDto, Guid, OrganizationUnitMemberPagedRequestDto, IdentityUserCreateDto, IdentityUserUpdateDto>
 
 <FluentTab Label="@($@"{L["Members"]}({Pagination.TotalItemCount})")" Id="Members">
-    <AbpAdaptiveDataGridLayout>
+    <FluentAdaptiveCard>
         <FluentStack HorizontalAlignment="HorizontalAlignment.End">
             <FluentButton IconStart="@(new Size20.Add())" Appearance="Appearance.Accent"
                           OnClick="ShowAddMemberDialogAsync">@L["AddMember"]</FluentButton>
@@ -25,7 +25,7 @@
                                ActionType="ActionType.Button"
                                Columns="@UserManagementTableColumns">
         </AbpExtensibleDataGrid>
-    </AbpAdaptiveDataGridLayout>
+    </FluentAdaptiveCard>
 </FluentTab>
 
 @code {

@@ -7,7 +7,7 @@
 @using IIdentityUserAppService = global::SharpAbp.Abp.Identity.IIdentityUserAppService
 @using IdentityPermissions = global::SharpAbp.Abp.Identity.IdentityPermissions
 
-<AbpAdaptiveDataGridLayout>
+<FluentAdaptiveCard>
     <AbpPageHeader Title="@L["Users"]" BreadcrumbItems="@BreadcrumbItems" Toolbar="@Toolbar"/>
 
     <AbpSearch Loading="@Loading" @bind-PrimarySearchValue="GetListInput.Filter"
@@ -25,7 +25,7 @@
                            Pagination="@Pagination"
                            Columns="@UserManagementTableColumns">
     </AbpExtensibleDataGrid>
-</AbpAdaptiveDataGridLayout>
+</FluentAdaptiveCard>
 
 @code
 {

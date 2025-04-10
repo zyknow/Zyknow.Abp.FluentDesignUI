@@ -4,7 +4,7 @@
 @using Volo.Abp.Application.Dtos
 @inherits Volo.Abp.AspNetCore.Components.AbpComponentBase
 
-<AbpAdaptiveDataGridLayout>
+<FluentAdaptiveCard>
     <AbpPageHeader Title="@L["IdentitySecurityLog"]" BreadcrumbItems="@BreadcrumbItems"/>
     <AbpSearch PrimaryInputVisible="@false"
                Loading="@Loading"
@@ -59,7 +59,7 @@
         Pagination="@Pagination"
         Columns="@SecurityLogTableColumns">
     </AbpExtensibleDataGrid>
-</AbpAdaptiveDataGridLayout>
+</FluentAdaptiveCard>
 
 @code
 {

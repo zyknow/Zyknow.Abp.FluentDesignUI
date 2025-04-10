@@ -10,7 +10,7 @@
 </FluentDialogHeader>
 
 <FluentDialogBody>
-    <AbpAdaptiveDataGridLayout>
+    <FluentAdaptiveCard>
         <AbpSearch Loading="@Loading" @bind-PrimarySearchValue="GetListInput.Filter"
                    OnSearch="SearchEntitiesAsync"></AbpSearch>
         <AbpExtensibleDataGrid Loading="@Loading"
@@ -24,7 +24,7 @@
                                ActionType="ActionType.Button"
                                Columns="@RoleManagementTableColumns">
         </AbpExtensibleDataGrid>
-    </AbpAdaptiveDataGridLayout>
+    </FluentAdaptiveCard>
 </FluentDialogBody>
 
 <FluentDialogFooter>

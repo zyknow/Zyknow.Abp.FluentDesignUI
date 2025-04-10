@@ -5,7 +5,7 @@
 @inherits Zyknow.Abp.FluentDesignUI.AbpCustomCrudMethodPageBase<Volo.Abp.Identity.IIdentityRoleAppService, IdentityRoleDto, Guid, OrganizationUnitRolePagedRequestDto, IdentityRoleCreateDto, IdentityRoleUpdateDto>
 
 <FluentTab Label="@($@"{L["Roles"]}({Pagination.TotalItemCount})")" Id="Roles">
-    <AbpAdaptiveDataGridLayout>
+    <FluentAdaptiveCard>
         <FluentStack HorizontalAlignment="HorizontalAlignment.End">
             <FluentButton IconStart="@(new Size20.Add())" Appearance="Appearance.Accent"
                           OnClick="ShowAddRoleDialogAsync">@L["AddRole"]</FluentButton>
@@ -25,7 +25,7 @@
                                ActionType="ActionType.Button"
                                Columns="@RoleManagementTableColumns">
         </AbpExtensibleDataGrid>
-    </AbpAdaptiveDataGridLayout>
+    </FluentAdaptiveCard>
 </FluentTab>
 
 @code {

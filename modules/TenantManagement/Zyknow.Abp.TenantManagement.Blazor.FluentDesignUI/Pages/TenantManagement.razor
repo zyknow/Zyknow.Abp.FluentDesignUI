@@ -7,7 +7,7 @@
 @using Zyknow.Abp.FeatureManagement.Blazor.FluentDesignUI.Components
 @inherits AbpCrudPageBase<ITenantAppService, TenantDto, Guid, GetTenantsInput, TenantCreateDto, TenantUpdateDto>
 
-<AbpAdaptiveDataGridLayout>
+<FluentAdaptiveCard>
     <AbpPageHeader Title="@L["Tenants"]" BreadcrumbItems="@BreadcrumbItems" Toolbar="@Toolbar"/>
 
     <AbpSearch Loading="@Loading" @bind-PrimarySearchValue="GetListInput.Filter"
@@ -25,7 +25,7 @@
                            Pagination="@Pagination"
                            Columns="@TenantManagementTableColumns">
     </AbpExtensibleDataGrid>
-</AbpAdaptiveDataGridLayout>
+</FluentAdaptiveCard>
 
 @code
 {

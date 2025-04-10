@@ -8,7 +8,7 @@
 @using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.PageToolbars
 @inherits AbpCustomCrudMethodPageBase<IIdentityClaimTypeAppService, IdentityClaimTypeDto, Guid, IdentityClaimTypePagedRequestDto, CreateIdentityClaimTypeDto, UpdateIdentityClaimTypeDto>
 
-<AbpAdaptiveDataGridLayout>
+<FluentAdaptiveCard>
     <AbpPageHeader Title="@L["IdentityClaimTypes"]" BreadcrumbItems="@BreadcrumbItems" Toolbar="@Toolbar"/>
 
     <AbpSearch Loading="@Loading" @bind-PrimarySearchValue="GetListInput.Filter"
@@ -26,7 +26,7 @@
                            Pagination="@Pagination"
                            Columns="@ClaimTypeManagementTableColumns">
     </AbpExtensibleDataGrid>
-</AbpAdaptiveDataGridLayout>
+</FluentAdaptiveCard>
 
 @code {
     protected PageToolbar Toolbar { get; } = new();

@@ -6,10 +6,10 @@
 @using Volo.Abp.Application.Dtos
 @inherits AbpCustomCrudMethodPageBase<IOrganizationUnitAppService, OrganizationUnitDto, Guid, OrganizationUnitPagedRequestDto, CreateOrganizationUnitDto, UpdateOrganizationUnitDto>
 
-<AbpAdaptiveDataGridLayout>
+<FluentAdaptiveCard>
     <AbpPageHeader Title="@L["OrganizationUnits"]" BreadcrumbItems="@BreadcrumbItems" Toolbar="@Toolbar"/>
     <FluentGrid>
-        <FluentGridItem xs="5" Class="fluent-card">
+        <FluentGridItem xs="4" Class="fluent-card" Justify="JustifyContent.SpaceEvenly">
             <FluentStack VerticalGap="20" Orientation="Orientation.Vertical"
                          HorizontalAlignment="HorizontalAlignment.Stretch">
                 <FluentStack Orientation="Orientation.Vertical">
@@ -65,7 +65,7 @@
             </FluentStack>
 
         </FluentGridItem>
-        <FluentGridItem xs="7" Class="fluent-card">
+        <FluentGridItem xs="8" Class="fluent-card" Style="height: 100%">
             @if (SelectedOrganizationUnit != null)
             {
                 <FluentTabs OnTabChange="HandleOnTabChange" @bind-ActiveTabId="@SelectedTabId">
@@ -79,7 +79,7 @@
             }
         </FluentGridItem>
     </FluentGrid>
-</AbpAdaptiveDataGridLayout>
+</FluentAdaptiveCard>
 
 @code {
     protected PageToolbar Toolbar { get; } = new();
@@ -276,7 +276,7 @@
         if (SelectedOrganizationUnit == null)
             return;
 
-        
+
         await OrganizationUnitRoleTabContentRef.RefreshAsync();
         await OrganizationUnitMemberTabContentRef.RefreshAsync();
     }
@@ -285,6 +285,5 @@
     {
         SelectedTabId = arg.Id;
     }
-
 
 }
