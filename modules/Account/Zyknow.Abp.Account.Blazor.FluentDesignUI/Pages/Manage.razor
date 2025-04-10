@@ -4,6 +4,10 @@
 @using Zyknow.Abp.GroupComponent.FluentDesignUI.Components
 @inherits AccountBlazorFluentDesignComponentBase
 @attribute [Authorize]
-<AbpFluentDesignGroupManagement TResource="AccountResource"
-                                GroupKey="@AccountManageGroupComponentContributorBase.AccountGroupKey">
-</AbpFluentDesignGroupManagement>
+
+<FluentAdaptiveCard>
+    <AbpFluentDesignGroupManagement TResource="AccountResource"
+                                    GroupKey="@AccountManageGroupComponentContributorBase.AccountGroupKey">
+    </AbpFluentDesignGroupManagement>
+</FluentAdaptiveCard>
+
