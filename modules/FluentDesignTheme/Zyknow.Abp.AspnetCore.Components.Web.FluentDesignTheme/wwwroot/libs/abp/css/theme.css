@@ -21,14 +21,14 @@ body {
 
 .fluent-design-body-content {
     overflow-y: auto;
-    padding: 1rem 1rem 1rem 0.2rem;
+    padding: 1rem 1rem 1rem 1rem;
     border-right: 1px solid var(--neutral-stroke-divider-rest);
 }
 
 .fluent-design-navmenu-card {
     background-color: var(--neutral-fill-layer-rest);
     border-radius: 0.5rem;
-    margin: 1rem 0.2rem 1rem 1rem;
+    margin: 1rem 0 1rem 1rem;
     padding: 0;
     padding-right: 10px;
 }
