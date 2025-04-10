@@ -15,8 +15,6 @@ public partial class MainMenu : IDisposable
 
     [Inject] protected ApplicationConfigurationChangedService ApplicationConfigurationChangedService { get; set; }
 
-    [Parameter] public MenuPlacement Placement { get; set; }
-
     [Parameter] public bool Collapsed { get; set; }
 
     protected override async Task OnInitializedAsync()

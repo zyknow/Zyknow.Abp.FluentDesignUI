@@ -1,15 +1,14 @@
 ﻿@using Localization.Resources.AbpUi
 @using Microsoft.Extensions.Localization
 @using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
-@using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Settings
+@implements IDisposable
 @inject IDialogService DialogService
 @inject IStringLocalizer<AbpUiResource> L
-@inject IFluentDesignSettingsProvider SettingsProvider
-<FluentDesignTheme @bind-Mode="@SettingsProvider.Theme.ThemeMode"
-                   OfficeColor="@SettingsProvider.Theme.Color"
+@inject IThemeStore ThemeStore
+<FluentDesignTheme @bind-Mode="@ThemeStore.ThemeMode"
+                   OfficeColor="@ThemeStore.Color"
                    StorageName="theme"/>
 <FluentIcon Value="@(new Size20.Settings())" OnClick="ShowPanelAsync"/>
-
 
 @code {
 
@@ -23,7 +22,24 @@
             PrimaryAction = null,
             SecondaryAction = null,
         });
+    }
 
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            ThemeStore.ThemeModeChanged += ThemeStoreOnThemeModeChanged;
+        }
+    }
+
+    private async void ThemeStoreOnThemeModeChanged(object? sender, EventArgs e)
+    {
         InvokeAsync(StateHasChanged);
     }
+
+    public void Dispose()
+    {
+        ThemeStore.ThemeModeChanged -= ThemeStoreOnThemeModeChanged;
+    }
+
 }

@@ -2,23 +2,19 @@
 @using Microsoft.Extensions.Localization
 @using Microsoft.FluentUI.AspNetCore.Components.Extensions
 @using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
-@using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Settings
-@implements IDialogContentComponent<object>
+@implements IDialogContentComponent
 @inject IStringLocalizer<AbpUiResource> L
-@inject IFluentDesignSettingsProvider SettingsProvider
-<FluentDesignTheme @bind-Mode="@SettingsProvider.Theme.ThemeMode"
-                   OfficeColor="@SettingsProvider.Theme.Color"
-                   StorageName="theme"/>
+@inject IThemeStore ThemeStore
 <FluentStack VerticalGap="10" Orientation="Orientation.Vertical">
     <FluentSelect Label="@L["Theme"]"
                   Width="250px"
                   Items="@(Enum.GetValues<DesignThemeModes>())"
-                  @bind-SelectedOption="@SettingsProvider.Theme.ThemeMode"/>
+                  @bind-SelectedOption="@ThemeStore.ThemeMode"/>
     <FluentSelect Label="@L["Color"]"
                   Items="@(Enum.GetValues<OfficeColor>().Select(i => i))"
                   Height="200px"
                   Width="250px"
-                  @bind-SelectedOption="@SettingsProvider.Theme.Color">
+                  @bind-SelectedOption="@ThemeStore.Color">
         <OptionTemplate>
             <FluentStack>
                 <FluentIcon Value="@(new Size20.RectangleLandscape())"
@@ -29,9 +25,3 @@
         </OptionTemplate>
     </FluentSelect>
 </FluentStack>
-
-@code {
-    public object Content { get; set; }
-    
-    
-}
