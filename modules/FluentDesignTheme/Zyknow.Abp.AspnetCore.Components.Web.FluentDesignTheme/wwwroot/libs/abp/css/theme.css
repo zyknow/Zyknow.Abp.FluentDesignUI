@@ -8,12 +8,12 @@ body {
     line-height: var(--type-ramp-base-line-height);
     font-weight: var(--font-weight);
     color: var(--neutral-foreground-rest);
-    background: var(--neutral-fill-layer-rest);
+    background: var(--neutral-layer-4);
 }
 
 .fluent-design-layout {
     header {
-        background-color: var(--neutral-layer-4) !important;
+        background-color: var(--neutral-fill-layer-rest) !important;
         border-bottom: calc(var(--stroke-width) * 2px) solid var(--accent-fill-rest);
         margin-bottom: 0 !important;
     }
@@ -24,8 +24,18 @@ body {
     padding: 1.3rem 1rem 1rem 1rem;
     border-right: 1px solid var(--neutral-stroke-divider-rest);
 }
+
+.fluent-design-navmenu-card {
+    background-color: var(--neutral-fill-layer-rest);
+    border-radius: 0.5rem;
+    margin: 20px;
+    padding: 0;
+    margin-right: 0;
+    padding-right: 10px
+}
+
 .fluent-design-navmenu {
-    display: flex; 
+    display: flex;
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
@@ -61,4 +71,5 @@ body {
 .fluent-card {
     background-color: var(--neutral-fill-layer-rest);
     padding: 2rem;
+    border-radius: 0.5rem;
 }
