@@ -1,13 +1,14 @@
-﻿<div class="fluent-design-navmenu">
-    <FluentNavMenu Width="300" Expanded="@Collapsed" CollapsedChildNavigation>
-        @if (Menu != null)
-        {
-            @foreach (var menu in Menu.Items)
+﻿<div class="fluent-design-navmenu-card">
+    <div class="fluent-design-navmenu">
+        <FluentNavMenu Width="250" Expanded="@Collapsed" CollapsedChildNavigation>
+            @if (Menu != null)
             {
-                <MainMenuItem Menu="@menu" FirstLevel></MainMenuItem>
+                @foreach (var menu in Menu.Items)
+                {
+                    <MainMenuItem Menu="@menu" FirstLevel></MainMenuItem>
+                }
             }
-        }
-
-    </FluentNavMenu>
+        </FluentNavMenu>
+    </div>
 </div>
 
