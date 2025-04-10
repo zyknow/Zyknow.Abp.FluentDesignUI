@@ -5,7 +5,7 @@
             {
                 @foreach (var menu in Menu.Items)
                 {
-                    <MainMenuItem Menu="@menu" FirstLevel></MainMenuItem>
+                    <MainMenuItem Menu="@menu" FirstLevel OnExpandParent="@StateHasChanged"></MainMenuItem>
                 }
             }
         </FluentNavMenu>

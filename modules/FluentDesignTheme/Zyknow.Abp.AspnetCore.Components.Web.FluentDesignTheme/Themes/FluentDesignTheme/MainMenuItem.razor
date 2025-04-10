@@ -1,27 +1,29 @@
 ﻿@using Volo.Abp.UI.Navigation
 @using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Extensions
-
+@implements IDisposable
 @if (Menu != null)
 {
     var url = Menu.Url == null ? "#" : Menu.Url.TrimStart('/', '~');
 
     if (Menu.IsLeaf && Menu.Url != null)
     {
-        <FluentNavLink @ref="navLink" Icon="GetIcon()" Match="NavLinkMatch.All" Href="@url" Disabled="@Menu.IsDisabled">
+        <FluentNavLink Icon="GetIcon()" Match="NavLinkMatch.All" Href="@url" Disabled="@Menu.IsDisabled">
             <FluentLabel>@Menu.DisplayName</FluentLabel>
         </FluentNavLink>
     }
     else
     {
         // TODO: Set Icon
-        <FluentNavGroup Icon="@GetIcon()">
+        <FluentNavGroup Icon="@GetIcon()" Expanded="@(Menu.GetExpanded())"
+                        ExpandedChanged="@(v => Menu.SetExpanded(v))">
             <TitleTemplate>
                 <FluentLabel>@Menu.DisplayName</FluentLabel>
             </TitleTemplate>
             <ChildContent>
                 @foreach (var menuItem in Menu.Items)
                 {
-                    <MainMenuItem Menu="@menuItem"></MainMenuItem>
+                    menuItem.SetParent(Menu);
+                    <MainMenuItem Menu="@menuItem" OnExpandParent="@OnExpandParent"></MainMenuItem>
                 }
             </ChildContent>
         </FluentNavGroup>
@@ -33,40 +35,56 @@
     [Parameter] public ApplicationMenuItem Menu { get; set; }
     [Parameter] public bool FirstLevel { get; set; }
     [Inject] protected NavigationManager NavigationManager { get; set; }
+    [Parameter] public EventCallback OnExpandParent { get; set; }
 
-    FluentNavLink? navLink;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override void OnInitialized()
     {
-        if (firstRender)
+        if (Menu.IsLeaf && Menu.Url != null)
         {
-            // TODO: how to expand NavGroup
-            
-            // is nav group
-            // if (Menu.IsLeaf && Menu.Url != null)
-            // {
-            //     var url = Menu.Url.TrimStart('/', '~');
-            //
-            //     if (url.IsNullOrWhiteSpace())
-            //         return;
-            //     
-            //     if (NavigationManager.Uri.Replace(NavigationManager.BaseUri,"").StartsWith(url))
-            //     {
-            //         ExpandParentNavLink();
-            //     }
-            // }
+            NavigationManager.LocationChanged += NavigationManagerOnLocationChanged;
+        }
+
+        NavigationManagerOnLocationChanged(null, null);
+    }
+
+    private void NavigationManagerOnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        var url = Menu.Url?.TrimStart('/', '~');
+
+        if (url.IsNullOrWhiteSpace())
+            return;
+
+        if (NavigationManager.Uri.Replace(NavigationManager.BaseUri, "").StartsWith(url))
+        {
+            ExpandParentNavLink(Menu.GetParent());
         }
     }
-    
-    private async Task ExpandParentNavLink()
+
+    private async Task ExpandParentNavLink(ApplicationMenuItem? parent)
     {
-    
+        if (parent != null)
+        {
+            parent.SetExpanded(true);
+            if (parent.GetParent() != null)
+            {
+                await ExpandParentNavLink(parent.GetParent());
+            }
+            await OnExpandParent.InvokeAsync();
+
+        }
     }
-    
+
 
     Icon? GetIcon()
     {
         return Menu.GetFluentIcon();
     }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= NavigationManagerOnLocationChanged;
+    }
+
 
 }

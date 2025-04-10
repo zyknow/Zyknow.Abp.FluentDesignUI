@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Routing;
 using Volo.Abp.AspNetCore.Components.Web.Security;
 using Volo.Abp.UI.Navigation;
 
@@ -7,19 +8,16 @@ namespace Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Themes.FluentDe
 public partial class MainMenu : IDisposable
 {
     protected ApplicationMenu Menu { get; set; }
-    
-    [Inject]
-    protected IMenuManager MenuManager { get; set; }
-    
-    [Inject]
-    protected ApplicationConfigurationChangedService ApplicationConfigurationChangedService { get; set; }
-    
-    [Parameter]
-    public MenuPlacement Placement { get; set; }
+
+    [Inject] protected IMenuManager MenuManager { get; set; }
+
+    [Inject] NavigationManager NavigationManager { get; set; }
+
+    [Inject] protected ApplicationConfigurationChangedService ApplicationConfigurationChangedService { get; set; }
+
+    [Parameter] public MenuPlacement Placement { get; set; }
 
     [Parameter] public bool Collapsed { get; set; }
-    
-
 
     protected override async Task OnInitializedAsync()
     {
