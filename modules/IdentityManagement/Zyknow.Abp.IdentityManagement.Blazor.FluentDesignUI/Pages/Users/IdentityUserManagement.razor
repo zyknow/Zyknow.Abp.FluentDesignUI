@@ -1,6 +1,6 @@
 ﻿@page "/identity/users"
 @attribute [Authorize(IdentityPermissions.Users.Default)]
-@using Microsoft.FluentUI.AspNetCore.Components.Icons.Filled
+@using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
 @using Volo.Abp.ObjectExtending
 @using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.PageToolbars
 @using Zyknow.Abp.PermissionManagement.Blazor.FluentDesignUI.Components
@@ -113,7 +113,7 @@
 
     protected override ValueTask SetBreadcrumbItemsAsync()
     {
-        BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Menu:IdentityManagement"]));
+        BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Menu:IdentityManagement"], icon: new Size16.People()));
         BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Users"]));
 
         return base.SetBreadcrumbItemsAsync();

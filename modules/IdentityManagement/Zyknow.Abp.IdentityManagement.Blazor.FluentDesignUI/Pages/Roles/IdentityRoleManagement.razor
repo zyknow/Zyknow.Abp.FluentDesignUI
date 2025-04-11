@@ -4,6 +4,7 @@
 @using Volo.Abp.ObjectExtending
 @using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.PageToolbars
 @using Zyknow.Abp.PermissionManagement.Blazor.FluentDesignUI.Components
+@using Size16 = Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16
 @inherits Zyknow.Abp.FluentDesignUI.AbpCrudPageBase<IIdentityRoleAppService, IdentityRoleDto, Guid, GetIdentityRolesInput, IdentityRoleCreateDto, IdentityRoleUpdateDto>
 
 <FluentAdaptiveCard>
@@ -49,7 +50,7 @@
 
     protected override ValueTask SetBreadcrumbItemsAsync()
     {
-        BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Menu:IdentityManagement"]));
+        BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Menu:IdentityManagement"], icon: new Size16.People()));
         BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Roles"]));
 
         return base.SetBreadcrumbItemsAsync();

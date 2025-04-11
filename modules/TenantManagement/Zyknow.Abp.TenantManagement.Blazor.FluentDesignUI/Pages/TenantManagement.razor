@@ -56,7 +56,7 @@
 
     protected override ValueTask SetBreadcrumbItemsAsync()
     {
-        BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Menu:TenantManagement"]));
+        BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Menu:TenantManagement"], icon: new Size16.PeopleTeam()));
         BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Tenants"]));
 
         return base.SetBreadcrumbItemsAsync();
