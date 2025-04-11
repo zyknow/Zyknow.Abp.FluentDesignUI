@@ -59,7 +59,14 @@ internal class AbpDataAnnotationsEventSubscriptions : IDisposable
         _messages.Clear();
         _editContext.OnFieldChanged -= OnFieldChanged;
         _editContext.OnValidationRequested -= OnValidationRequested;
-        _editContext.NotifyValidationStateChanged();
+        try
+        {
+            _editContext.NotifyValidationStateChanged();
+        }
+        catch (Exception e)
+        {
+            // ignored
+        }
 
         if (MetadataUpdater.IsSupported)
         {
