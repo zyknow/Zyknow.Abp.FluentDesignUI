@@ -41,9 +41,11 @@
 @code {
     [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
 
-    private IComponentRenderMode DefaultRenderMode = new InteractiveWebAssemblyRenderMode();
+    // you can change DefaultRenderMode
+    private IComponentRenderMode DefaultRenderMode = new InteractiveAutoRenderMode();
 
     private IComponentRenderMode? PageRenderMode =>
+        // account/* must be handled by the server
         HttpContext.Request.Path.StartsWithSegments("/Account")
             ? new InteractiveServerRenderMode()
             : (HttpContext.AcceptsInteractiveRouting()
