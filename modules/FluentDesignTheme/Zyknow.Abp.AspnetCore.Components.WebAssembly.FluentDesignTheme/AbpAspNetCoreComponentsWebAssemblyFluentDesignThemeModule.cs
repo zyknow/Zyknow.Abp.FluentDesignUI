@@ -20,20 +20,16 @@ public class AbpAspNetCoreComponentsWebAssemblyFluentDesignThemeModule : AbpModu
     {
         Configure<AbpRouterOptions>(options =>
         {
-            options.AdditionalAssemblies.Add(typeof(AbpAspNetCoreComponentsWebAssemblyFluentDesignThemeModule).Assembly);
+            options.AdditionalAssemblies.Add(typeof(AbpAspNetCoreComponentsWebAssemblyFluentDesignThemeModule)
+                .Assembly);
         });
 
-        Configure<AbpToolbarOptions>(options =>
-        {
-            options.Contributors.Add(new FluentDesignThemeToolbarContributor());
-        });
-        
-        if (context.Services.ExecutePreConfiguredActions<AbpAspNetCoreComponentsWebOptions>().IsBlazorWebApp)
+        if (!context.Services.ExecutePreConfiguredActions<AbpAspNetCoreComponentsWebOptions>().IsBlazorWebApp)
         {
             Configure<AuthenticationOptions>(options =>
             {
-                options.LoginUrl = "Account/Login";
-                options.LogoutUrl = "Account/Logout";
+                options.LoginUrl = "authentication/login";
+                options.LogoutUrl = "authentication/logout";
             });
         }
     }

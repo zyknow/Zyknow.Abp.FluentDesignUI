@@ -1,0 +1,85 @@
+﻿@using System.Collections.Immutable
+@using Volo.Abp.Localization
+@using System.Globalization
+@using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
+@inject ILanguageProvider LanguageProvider
+@inject IJSRuntime JsRuntime
+@inject NavigationManager NavigationManager
+@inject IServiceProvider ServiceProvider
+
+@if (_otherLanguages != null && _otherLanguages.Any() && _currentLanguage != null)
+{
+    <FluentMenuButton
+        IconStart="@(new Size20.Globe())"
+        ButtonAppearance="@Appearance.Stealth"
+        Text="@_currentLanguage.DisplayName"
+        Items="@_menuItems"
+        OnMenuChanged="args => ChangeLanguageAsync(_otherLanguages.First(x => x.CultureName == args.Id))">
+    </FluentMenuButton>
+}
+
+@code {
+    private IReadOnlyList<LanguageInfo>? _otherLanguages;
+    private LanguageInfo? _currentLanguage;
+    Dictionary<string, string> _menuItems = [];
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var selectedLanguageName = await JsRuntime.InvokeAsync<string>(
+                "localStorage.getItem",
+                "Abp.SelectedLanguage"
+            );
+
+            _otherLanguages = await LanguageProvider.GetLanguagesAsync();
+
+            if (!_otherLanguages.Any())
+            {
+                return;
+            }
+
+            if (!selectedLanguageName.IsNullOrWhiteSpace())
+            {
+                _currentLanguage = _otherLanguages.FirstOrDefault(l => l.UiCultureName == selectedLanguageName);
+            }
+
+            if (_currentLanguage == null)
+            {
+                _currentLanguage = _otherLanguages.FirstOrDefault(l => l.UiCultureName == CultureInfo.CurrentUICulture.Name);
+            }
+
+            if (_currentLanguage == null)
+            {
+                _currentLanguage = _otherLanguages.FirstOrDefault();
+            }
+
+            _otherLanguages = _otherLanguages.Where(l => l != _currentLanguage).ToImmutableList();
+            _menuItems = _otherLanguages.ToDictionary(l => l.CultureName, l => l.DisplayName);
+
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    protected virtual async Task ChangeLanguageAsync(LanguageInfo language)
+    {
+        await JsRuntime.InvokeVoidAsync(
+            "localStorage.setItem",
+            "Abp.SelectedLanguage", language.UiCultureName
+        );
+
+        await JsRuntime.InvokeVoidAsync(
+            "localStorage.setItem",
+            "Abp.IsRtl", CultureInfo.GetCultureInfo(language.UiCultureName).TextInfo.IsRightToLeft
+        );
+
+        var relativeUrl = NavigationManager.Uri.RemovePreFix(NavigationManager.BaseUri).EnsureStartsWith('/').EnsureStartsWith('~');
+
+        NavigationManager.NavigateTo(
+            $"Abp/Languages/Switch?culture={language.CultureName}&uiCulture={language.UiCultureName}&returnUrl={relativeUrl}",
+            forceLoad: true
+        );
+    }
+
+}

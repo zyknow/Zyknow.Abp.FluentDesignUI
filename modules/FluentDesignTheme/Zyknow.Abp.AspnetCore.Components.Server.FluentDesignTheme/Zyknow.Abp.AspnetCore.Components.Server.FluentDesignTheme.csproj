@@ -17,4 +17,9 @@
         <ProjectReference Include="..\Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <UpToDateCheckInput Remove="Themes\FluentDesignTheme\LoginDisplay.razor" />
+      <UpToDateCheckInput Remove="Themes\FluentDesignTheme\_Imports.razor" />
+    </ItemGroup>
+
 </Project>

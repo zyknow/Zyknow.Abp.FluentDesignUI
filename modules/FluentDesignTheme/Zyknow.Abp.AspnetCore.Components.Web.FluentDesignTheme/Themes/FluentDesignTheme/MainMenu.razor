@@ -1,4 +1,7 @@
-﻿<div class="fluent-design-navmenu-card">
+﻿@using Volo.Abp.AspNetCore.Components.Web.Security
+@using Volo.Abp.UI.Navigation
+@implements IDisposable
+<div class="fluent-design-navmenu-card">
     <div class="fluent-design-navmenu">
         <FluentNavMenu Width="250" Expanded="@Collapsed" CollapsedChildNavigation>
             @if (Menu != null)
@@ -11,4 +14,37 @@
         </FluentNavMenu>
     </div>
 </div>
+@code
+{
+    protected ApplicationMenu Menu { get; set; }
 
+    [Inject] protected IMenuManager MenuManager { get; set; }
+
+    [Inject] NavigationManager NavigationManager { get; set; }
+
+    [Inject] protected ApplicationConfigurationChangedService ApplicationConfigurationChangedService { get; set; }
+
+    [Parameter] public bool Collapsed { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetMenuAsync();
+        ApplicationConfigurationChangedService.Changed += ApplicationConfigurationChanged;
+    }
+
+    private async Task GetMenuAsync()
+    {
+        Menu = await MenuManager.GetMainMenuAsync();
+    }
+
+    private async void ApplicationConfigurationChanged()
+    {
+        await GetMenuAsync();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        ApplicationConfigurationChangedService.Changed -= ApplicationConfigurationChanged;
+    }
+}

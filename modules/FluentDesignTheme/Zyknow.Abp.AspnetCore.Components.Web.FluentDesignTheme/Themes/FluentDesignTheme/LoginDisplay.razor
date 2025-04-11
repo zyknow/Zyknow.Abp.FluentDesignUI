@@ -2,14 +2,14 @@
 @using Volo.Abp.MultiTenancy
 @using Microsoft.Extensions.Localization
 @using global::Localization.Resources.AbpUi
+@using Microsoft.Extensions.Options
 @using Volo.Abp.Ui.Branding
+@using Volo.Abp.UI.Navigation
 @inject ICurrentUser CurrentUser
 @inject ICurrentTenant CurrentTenant
-@inject IJSRuntime JsRuntime
-@inject NavigationManager Navigation
 @inject IStringLocalizer<AbpUiResource> L
-@inject IBrandingProvider BrandingProvider
 @inject NavigationManager NavigationManager
+@implements IDisposable
 <AuthorizeView>
     <Authorized>
         <FluentProfileMenu
@@ -19,7 +19,7 @@
             FullName="@CurrentUser.UserName"
             HeaderButton="@(L["Logout"])"
             EMail="@CurrentUser.Email"
-            OnHeaderButtonClick="Logout"
+            OnHeaderButtonClick="LogoutAsync"
             PopoverStyle="min-width: 330px;">
             <FooterTemplate>
                 @if (Menu != null)
@@ -27,8 +27,8 @@
                     <FluentStack Wrap="true">
                         @foreach (var menuItem in Menu.Items.Where(x => x.DisplayName != L["Logout"]))
                         {
-                            <a target="@menuItem.Target"
-                               href="@menuItem.Url?.TrimStart('/', '~')">@menuItem.DisplayName</a>
+                            <FluentButton Appearance="Appearance.Stealth"
+                                          OnClick="@(() => NavigateToAsync(menuItem.Url, menuItem.Target))">@menuItem.DisplayName</FluentButton>
                         }
                     </FluentStack>
                 }
@@ -48,14 +48,36 @@
         </FluentProfileMenu>
     </Authorized>
     <NotAuthorized>
-        <a class="nav-link" href="Account/Login" style="text-decoration: none">
-            <FluentLabel Color="Color.Neutral" Typo="Typography.Body">@L["Login"]</FluentLabel>
-        </a>
+        <FluentButton Appearance="Appearance.Stealth"
+                      OnClick="LoginAsync">@L["Login"]</FluentButton>
     </NotAuthorized>
 </AuthorizeView>
 
 @code
 {
+    [Inject] protected IMenuManager MenuManager { get; set; }
+    [Inject] protected IJSRuntime JsRuntime { get; set; }
+    [Inject] protected IOptions<AuthenticationOptions> AuthenticationOptions { get; set; }
+
+    protected ApplicationMenu Menu { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Menu = await MenuManager.GetAsync(StandardMenus.User);
+
+        NavigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    protected virtual void OnLocationChanged(object sender, LocationChangedEventArgs e)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+
     string GetProfileFullName()
     {
         @if (CurrentTenant.Name != null)
@@ -68,11 +90,26 @@
         }
     }
 
-    void Logout()
+    async Task LogoutAsync()
     {
-        NavigationManager.NavigateTo(
-            $"/Account/logout",
-            forceLoad: true
-        );
+        NavigationManager.NavigateTo(AuthenticationOptions.Value.LogoutUrl, forceLoad: true);
+    }
+
+    async Task LoginAsync()
+    {
+        NavigationManager.NavigateTo(AuthenticationOptions.Value.LoginUrl, forceLoad: true);
+    }
+
+    private async Task NavigateToAsync(string uri, string target = null)
+    {
+        uri = uri?.TrimStart('/', '~');
+        if (target == "_blank")
+        {
+            await JsRuntime.InvokeVoidAsync("open", uri, target);
+        }
+        else
+        {
+            NavigationManager.NavigateTo(uri);
+        }
     }
 }

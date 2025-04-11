@@ -52,10 +52,5 @@ public class AbpAspNetCoreComponentsServerFluentDesignThemeModule : AbpModule
                         .AddContributors(typeof(BlazorFluentDesignThemeScriptContributor));
                 });
         });
-        
-        Configure<AbpToolbarOptions>(options =>
-        {
-            options.Contributors.Add(new FluentDesignThemeToolbarContributor());
-        });
     }
 }
