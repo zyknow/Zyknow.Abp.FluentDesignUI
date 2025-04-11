@@ -11,37 +11,43 @@
 <!DOCTYPE html>
 <html lang="@CultureInfo.CurrentCulture.Name" dir="@rtl">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Simple</title>
-    <base href="/" />
-    <AbpStyles BundleName="@BlazorFluentDesignThemeBundles.Styles.Global" />
-
-    <HeadOutlet @rendermode="InteractiveServer" />
-
-
+    <base href="/"/>
+    <AbpStyles BundleName="@BlazorFluentDesignThemeBundles.Styles.Global"/>
+    <HeadOutlet @rendermode="@PageRenderMode"/>
 </head>
 <body class="abp-application-layout @rtl">
-    @* close server prerender  *@
-    <Routes @rendermode="new InteractiveServerRenderMode(prerender:false)" />
+<Routes @rendermode="@PageRenderMode"/>
+<div id="blazor-error-ui">
+    @if (Env.IsDevelopment())
+    {
+        <text>An unhandled exception has occurred. See browser dev tools for details.</text>
+    }
+    else if (Env.IsStaging() || Env.IsProduction())
+    {
+        <text>An error has occurred. This application may no longer respond until reloaded.</text>
+    }
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>
+<AbpScripts BundleName="@BlazorFluentDesignThemeBundles.Scripts.Global"/>
 
-    <div id="blazor-error-ui">
-        @if (Env.IsDevelopment())
-        {
-            <text>An unhandled exception has occurred. See browser dev tools for details.</text>
-        }
-        else if (Env.IsStaging() || Env.IsProduction())
-        {
-            <text>An error has occurred. This application may no longer respond until reloaded.</text>
-        }
-        <a href="" class="reload">Reload</a>
-        <a class="dismiss">🗙</a>
-    </div>
-    <AbpScripts BundleName="@BlazorFluentDesignThemeBundles.Scripts.Global" />
-    @* <script src="_framework/blazor.web.js"></script> *@
+<script src="_framework/blazor.web.js"></script>
 </body>
 </html>
 
 @code {
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+
+    private IComponentRenderMode DefaultRenderMode = new InteractiveWebAssemblyRenderMode();
+
+    private IComponentRenderMode? PageRenderMode =>
+        HttpContext.Request.Path.StartsWithSegments("/Account")
+            ? new InteractiveServerRenderMode()
+            : (HttpContext.AcceptsInteractiveRouting()
+                ? DefaultRenderMode
+                : null);
 
 }

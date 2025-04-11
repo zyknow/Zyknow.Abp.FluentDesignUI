@@ -1,4 +1,3 @@
-using SharpAbp.Abp.Identity;
 using Simple.Localization;
 using Volo.Abp.AuditLogging;
 using Volo.Abp.BackgroundJobs;
@@ -26,8 +25,7 @@ namespace Simple;
     typeof(AbpIdentityDomainSharedModule),
     typeof(AbpOpenIddictDomainSharedModule),
     typeof(AbpTenantManagementDomainSharedModule),
-    typeof(BlobStoringDatabaseDomainSharedModule),
-    typeof(IdentityDomainSharedModule)
+    typeof(BlobStoringDatabaseDomainSharedModule)
     )]
 public class SimpleDomainSharedModule : AbpModule
 {

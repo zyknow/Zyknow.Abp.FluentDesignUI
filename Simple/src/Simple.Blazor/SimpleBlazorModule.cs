@@ -15,8 +15,6 @@ using Volo.Abp.AspNetCore.Serilog;
 using Volo.Abp.Autofac;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.Security.Claims;
-// using Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic;
-// using Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic.Bundling;
 using Volo.Abp.Modularity;
 using Volo.Abp.Swashbuckle;
 using Volo.Abp.UI.Navigation;
@@ -32,7 +30,6 @@ using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Routing;
 using Zyknow.Abp.IdentityManagement.Blazor.Server.FluentDesignUI;
 using Zyknow.Abp.SettingManagement.Blazor.Server.FluentDesignUI;
 using Zyknow.Abp.TenantManagement.Blazor.FluentDesignUI;
-using Zyknow.SharpAbp.IdentityManagement.Blazor.Server.FluentDesignUI;
 using App = Simple.Blazor.Components.App;
 
 namespace Simple.Blazor;
@@ -42,7 +39,6 @@ namespace Simple.Blazor;
     typeof(SimpleEntityFrameworkCoreModule),
     typeof(SimpleHttpApiModule),
     typeof(AbpAutofacModule),
-    // typeof(AbpAspNetCoreMvcUiBasicThemeModule),
     typeof(AbpSwashbuckleModule),
     typeof(AbpAccountWebOpenIddictModule),
     typeof(AbpAspNetCoreSerilogModule),
@@ -50,8 +46,7 @@ namespace Simple.Blazor;
     typeof(AbpTenantManagementBlazorFluentDesignModule),
     typeof(AbpIdentityBlazorServerFluentDesignModule),
     typeof(AbpSettingManagementBlazorServerFluentDesignModule),
-    typeof(AbpAccountBlazorServerFluentDesignModule),
-    typeof(SharpAbpIdentityBlazorServerFluentDesignModule)
+    typeof(AbpAccountBlazorServerFluentDesignModule)
 )]
 public class SimpleBlazorModule : AbpModule
 {
@@ -227,9 +222,9 @@ public class SimpleBlazorModule : AbpModule
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "Simple API", Version = "v1" });
                 options.DocInclusionPredicate((docName, description) => true);
                 options.CustomSchemaIds(type => type.FullName);
-                // TODO: how to compatible with Abp and SharpAbp
-                // fix sharpabp swagger
-                options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+                // // TODO: how to compatible with Abp and SharpAbp
+                // // fix sharpabp swagger
+                // options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
             }
         );
     }

@@ -1,5 +1,4 @@
-﻿using SharpAbp.Abp.Identity;
-using Volo.Abp.Account;
+﻿using Volo.Abp.Account;
 using Volo.Abp.Modularity;
 using Volo.Abp.PermissionManagement;
 using Volo.Abp.SettingManagement;
@@ -13,11 +12,10 @@ namespace Simple;
     typeof(SimpleDomainSharedModule),
     typeof(AbpFeatureManagementApplicationContractsModule),
     typeof(AbpSettingManagementApplicationContractsModule),
-    // typeof(AbpIdentityApplicationContractsModule),
+    typeof(AbpIdentityApplicationContractsModule),
     typeof(AbpAccountApplicationContractsModule),
     typeof(AbpTenantManagementApplicationContractsModule),
-    typeof(AbpPermissionManagementApplicationContractsModule),
-    typeof(IdentityApplicationContractsModule)
+    typeof(AbpPermissionManagementApplicationContractsModule)
 )]
 public class SimpleApplicationContractsModule : AbpModule
 {

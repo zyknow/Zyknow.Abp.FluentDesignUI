@@ -13,7 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="SharpAbp.Abp.Identity.Domain" />
     <PackageReference Include="Volo.Abp.Emailing" />
     <PackageReference Include="Volo.Abp.Caching" />
     <PackageReference Include="Volo.Abp.PermissionManagement.Domain.Identity" />

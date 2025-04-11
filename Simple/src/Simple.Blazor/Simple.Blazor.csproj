@@ -20,8 +20,6 @@
     <PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" />
     <PackageReference Include="Serilog.AspNetCore" />
     <PackageReference Include="Serilog.Sinks.Async" />
-<!--    <PackageReference Include="Blazorise.Bootstrap5" />-->
-<!--    <PackageReference Include="Blazorise.Icons.FontAwesome" />-->
   </ItemGroup>
 
   <ItemGroup>
@@ -29,7 +27,6 @@
     <ProjectReference Include="..\..\..\modules\FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.Server.FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.Server.FluentDesignTheme.csproj" />
     <ProjectReference Include="..\..\..\modules\IdentityManagement\Zyknow.Abp.IdentityManagement.Blazor.Server.FluentDesignUI\Zyknow.Abp.IdentityManagement.Blazor.Server.FluentDesignUI.csproj" />
     <ProjectReference Include="..\..\..\modules\SettingManagement\Zyknow.Abp.SettingManagement.Blazor.Server.FluentDesignUI\Zyknow.Abp.SettingManagement.Blazor.Server.FluentDesignUI.csproj" />
-    <ProjectReference Include="..\..\..\modules\SharpAbp.IdentityManagement\Zyknow.SharpAbp.IdentityManagement.Blazor.Server.FluentDesignUI\Zyknow.SharpAbp.IdentityManagement.Blazor.Server.FluentDesignUI.csproj" />
     <ProjectReference Include="..\..\..\modules\TenantManagement\Zyknow.Abp.TenantManagement.Blazor.Server.FluentDesignUI\Zyknow.Abp.TenantManagement.Blazor.Server.FluentDesignUI.csproj" />
     <ProjectReference Include="..\Simple.Application\Simple.Application.csproj" />
     <ProjectReference Include="..\Simple.Blazor.Client\Simple.Blazor.Client.csproj" />
@@ -46,14 +43,6 @@
 
   <ItemGroup>
     <PackageReference Include="Volo.Abp.Account.Web.OpenIddict" />
-<!--    <PackageReference Include="Volo.Abp.Identity.Blazor.Server" />-->
-<!--    <PackageReference Include="Volo.Abp.TenantManagement.Blazor.Server" />-->
-  </ItemGroup>
-
-  <ItemGroup>
-<!--    <PackageReference Include="Volo.Abp.AspNetCore.Components.Server.BasicTheme" />-->
-<!--    <PackageReference Include="Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic" />-->
-<!--    <PackageReference Include="Volo.Abp.AspNetCore.Components.WebAssembly.BasicTheme.Bundling" />-->
   </ItemGroup>
 
   <ItemGroup Condition="Exists('./openiddict.pfx')">

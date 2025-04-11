@@ -12,7 +12,7 @@ using Zyknow.Abp.AspnetCore.Components.WebAssembly.FluentDesignTheme;
 using Zyknow.Abp.FeatureManagement.Blazor.WebAssembly.FluentDesignUI;
 using Zyknow.Abp.IdentityManagement.Blazor.WebAssembly.FluentDesignUI;
 using Zyknow.Abp.SettingManagement.Blazor.WebAssembly.FluentDesignUI;
-using Zyknow.SharpAbp.IdentityManagement.Blazor.WebAssembly.FluentDesignUI;
+using Zyknow.Abp.TenantManagement.Blazor.Webassembly.FluentDesignUI;
 
 
 namespace Simple.Blazor.Client;
@@ -23,9 +23,9 @@ namespace Simple.Blazor.Client;
     typeof(AbpAspNetCoreComponentsWebAssemblyFluentDesignThemeModule),
     typeof(AbpFeatureManagementBlazorWebAssemblyFluentDesignModule),
     typeof(AbpIdentityBlazorWebAssemblyFluentDesignModule),
+    typeof(AbpTenantManagementBlazorWebAssemblyFluentDesignModule),
     typeof(AbpSettingManagementBlazorWebAssemblyFluentDesignModule),
-    typeof(AbpAccountBlazorWebAssemblyFluentDesignModule),
-    typeof(SharpAbpIdentityBlazorWebAssemblyFluentDesignModule)
+    typeof(AbpAccountBlazorWebAssemblyFluentDesignModule)
 )]
 public class SimpleBlazorClientModule : AbpModule
 {
@@ -45,11 +45,8 @@ public class SimpleBlazorClientModule : AbpModule
         ConfigureMenu(context);
         ConfigureAutoMapper(context);
         ConfigureBundles();
-        
-        Configure<AbpClockOptions>(options =>
-        {
-            options.Kind = DateTimeKind.Utc;
-        });
+
+        Configure<AbpClockOptions>(options => { options.Kind = DateTimeKind.Utc; });
     }
 
 

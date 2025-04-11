@@ -99,14 +99,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "core", "core", "{F42DE5AE-1
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zyknow.Abp.GroupComponent.FluentDesignUI", "core\Zyknow.Abp.GroupComponent.FluentDesignUI\Zyknow.Abp.GroupComponent.FluentDesignUI.csproj", "{9C9FC095-C80E-497B-97E2-03198B975356}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SharpAbp.IdentityManagement", "SharpAbp.IdentityManagement", "{BBEC3D59-0504-4A4D-9453-BADBDDC8FAD5}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zyknow.SharpAbp.IdentityManagement.Blazor.WebAssembly.FluentDesignUI", "modules\SharpAbp.IdentityManagement\Zyknow.SharpAbp.IdentityManagement.Blazor.WebAssembly.FluentDesignUI\Zyknow.SharpAbp.IdentityManagement.Blazor.WebAssembly.FluentDesignUI.csproj", "{F0BD9B65-C578-4036-B570-6C20CF647B9A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zyknow.SharpAbp.IdentityManagement.Blazor.Server.FluentDesignUI", "modules\SharpAbp.IdentityManagement\Zyknow.SharpAbp.IdentityManagement.Blazor.Server.FluentDesignUI\Zyknow.SharpAbp.IdentityManagement.Blazor.Server.FluentDesignUI.csproj", "{C28C325A-4122-49A2-9570-899AB311A231}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zyknow.SharpAbp.IdentityManagement.Blazor.FluentDesignUI", "modules\SharpAbp.IdentityManagement\Zyknow.SharpAbp.IdentityManagement.Blazor.FluentDesignUI\Zyknow.SharpAbp.IdentityManagement.Blazor.FluentDesignUI.csproj", "{464346FE-74DB-4D99-B8AF-AC8B5356A1AE}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -245,18 +237,6 @@ Global
 		{9C9FC095-C80E-497B-97E2-03198B975356}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9C9FC095-C80E-497B-97E2-03198B975356}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9C9FC095-C80E-497B-97E2-03198B975356}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F0BD9B65-C578-4036-B570-6C20CF647B9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F0BD9B65-C578-4036-B570-6C20CF647B9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F0BD9B65-C578-4036-B570-6C20CF647B9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F0BD9B65-C578-4036-B570-6C20CF647B9A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C28C325A-4122-49A2-9570-899AB311A231}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C28C325A-4122-49A2-9570-899AB311A231}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C28C325A-4122-49A2-9570-899AB311A231}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C28C325A-4122-49A2-9570-899AB311A231}.Release|Any CPU.Build.0 = Release|Any CPU
-		{464346FE-74DB-4D99-B8AF-AC8B5356A1AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{464346FE-74DB-4D99-B8AF-AC8B5356A1AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{464346FE-74DB-4D99-B8AF-AC8B5356A1AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{464346FE-74DB-4D99-B8AF-AC8B5356A1AE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -302,10 +282,6 @@ Global
 		{F11F0E81-66CD-4452-991E-1B95752459A1} = {C63569B1-A81A-4F4D-BA91-B4C19056740C}
 		{603837ED-8EDC-4F7C-992F-E721ECFD6097} = {C63569B1-A81A-4F4D-BA91-B4C19056740C}
 		{9C9FC095-C80E-497B-97E2-03198B975356} = {F42DE5AE-14C5-43C2-8135-411C9D8DE251}
-		{BBEC3D59-0504-4A4D-9453-BADBDDC8FAD5} = {0CAB4092-B194-46CB-A18F-496D882BC63A}
-		{F0BD9B65-C578-4036-B570-6C20CF647B9A} = {BBEC3D59-0504-4A4D-9453-BADBDDC8FAD5}
-		{C28C325A-4122-49A2-9570-899AB311A231} = {BBEC3D59-0504-4A4D-9453-BADBDDC8FAD5}
-		{464346FE-74DB-4D99-B8AF-AC8B5356A1AE} = {BBEC3D59-0504-4A4D-9453-BADBDDC8FAD5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {864DE782-FCBD-4420-849C-8C817BA24FF9}

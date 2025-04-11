@@ -9,9 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-<!--    <PackageReference Include="Blazorise.Bootstrap5" />-->
-<!--    <PackageReference Include="Blazorise.Icons.FontAwesome" />-->
-<!--    <PackageReference Include="Blazorise.Components" />-->
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" />
     <PackageReference Include="Volo.Abp.AutoMapper" />
@@ -19,25 +16,13 @@
 
   <ItemGroup>
     <PackageReference Include="Volo.Abp.Autofac.WebAssembly" />
-<!--    <PackageReference Include="Volo.Abp.SettingManagement.Blazor.WebAssembly" />-->
-<!--    <PackageReference Include="Volo.Abp.FeatureManagement.Blazor.WebAssembly" />-->
   </ItemGroup>
-
-<!--  <ItemGroup>-->
-<!--    <PackageReference Include="Volo.Abp.AspNetCore.Components.WebAssembly.BasicTheme" />-->
-<!--  </ItemGroup>-->
-
-<!--  <ItemGroup>-->
-<!--    <PackageReference Include="Volo.Abp.Identity.Blazor.WebAssembly" />-->
-<!--    <PackageReference Include="Volo.Abp.TenantManagement.Blazor.WebAssembly" />-->
-<!--  </ItemGroup>-->
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\modules\Account\Zyknow.Abp.Account.Blazor.WebAssembly.FluentDesignUI\Zyknow.Abp.Account.Blazor.WebAssembly.FluentDesignUI.csproj" />
     <ProjectReference Include="..\..\..\modules\FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.WebAssembly.FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.WebAssembly.FluentDesignTheme.csproj" />
     <ProjectReference Include="..\..\..\modules\IdentityManagement\Zyknow.Abp.IdentityManagement.Blazor.WebAssembly.FluentDesignUI\Zyknow.Abp.IdentityManagement.Blazor.WebAssembly.FluentDesignUI.csproj" />
     <ProjectReference Include="..\..\..\modules\SettingManagement\Zyknow.Abp.SettingManagement.Blazor.WebAssembly.FluentDesignUI\Zyknow.Abp.SettingManagement.Blazor.WebAssembly.FluentDesignUI.csproj" />
-    <ProjectReference Include="..\..\..\modules\SharpAbp.IdentityManagement\Zyknow.SharpAbp.IdentityManagement.Blazor.WebAssembly.FluentDesignUI\Zyknow.SharpAbp.IdentityManagement.Blazor.WebAssembly.FluentDesignUI.csproj" />
     <ProjectReference Include="..\..\..\modules\TenantManagement\Zyknow.Abp.TenantManagement.Blazor.Webassembly.FluentDesignUI\Zyknow.Abp.TenantManagement.Blazor.Webassembly.FluentDesignUI.csproj" />
     <ProjectReference Include="..\..\src\Simple.HttpApi.Client\Simple.HttpApi.Client.csproj" />
   </ItemGroup>
