@@ -12,6 +12,10 @@
     "NotSelected": "未选择",
     "VisibleColumns": "显示列",
     "MultiItemWillBeDeletedMessageWithFormat": "{0} 个数据将被删除!",
-    "PageOf": "第 {0} 页，共 {1} 页"
+    "PageOf": "第 {0} 页，共 {1} 页",
+    "ThemeSettings": "主题设置",
+    "RenderModeSettings": "渲染模式设置",
+    "RenderMode": "渲染模式",
+    "Prerender": "预渲染"
   }
 }

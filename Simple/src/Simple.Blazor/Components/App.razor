@@ -53,7 +53,7 @@
                 ? GetDefaultRenderMode()
                 : null);
 
-    public IComponentRenderMode GetDefaultRenderMode()
+    protected IComponentRenderMode GetDefaultRenderMode()
     {
         var renderMode = HttpContext.Request.Cookies.FirstOrDefault(x => x.Key == "RenderMode");
         var prerenderStr = HttpContext.Request.Cookies.FirstOrDefault(x => x.Key == "Prerender");

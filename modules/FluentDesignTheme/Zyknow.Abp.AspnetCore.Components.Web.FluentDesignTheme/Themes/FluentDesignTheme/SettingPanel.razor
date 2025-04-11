@@ -10,41 +10,51 @@
 @inject ICookieService CookieService
 @inject NavigationManager NavigationManager
 @inject IOptions<AbpFluentDesignThemeOptions> ThemeOptions
-<FluentStack VerticalGap="10" Orientation="Orientation.Vertical">
-    <FluentSelect Label="@L["Theme"]"
-                  Width="100%"
-                  Items="@(Enum.GetValues<DesignThemeModes>())"
-                  @bind-SelectedOption="@ThemeStore.ThemeMode"/>
-    <FluentSelect Label="@L["Color"]"
-                  Items="@(Enum.GetValues<OfficeColor>().Select(i => i))"
-                  Height="500px"
-                  Width="100%"
-                  @bind-SelectedOption="@ThemeStore.Color">
-        <OptionTemplate>
-            <FluentStack>
-                <FluentIcon Value="@(new Size20.RectangleLandscape())"
-                            Color="Color.Custom"
-                            CustomColor="@(@context.ToAttributeValue() != "default" ? context.ToAttributeValue() : "#036ac4")"/>
-                <FluentLabel>@context</FluentLabel>
-            </FluentStack>
-        </OptionTemplate>
-    </FluentSelect>
+<FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch" VerticalGap="20">
+    <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch">
+        <FluentLabel Typo="Typography.H4" Weight="FontWeight.Bold">@L["ThemeSettings"]</FluentLabel>
+        <FluentDivider Orientation="Orientation.Horizontal"/>
+        <FluentSelect Label="@L["Theme"]"
+                      Width="100%"
+                      Items="@(Enum.GetValues<DesignThemeModes>())"
+                      @bind-SelectedOption="@ThemeStore.ThemeMode"/>
+        <FluentSelect Label="@L["Color"]"
+                      Items="@(Enum.GetValues<OfficeColor>().Select(i => i))"
+                      Height="500px"
+                      Width="100%"
+                      @bind-SelectedOption="@ThemeStore.Color">
+            <OptionTemplate>
+                <FluentStack>
+                    <FluentIcon Value="@(new Size20.RectangleLandscape())"
+                                Color="Color.Custom"
+                                CustomColor="@(@context.ToAttributeValue() != "default" ? context.ToAttributeValue() : "#036ac4")"/>
+                    <FluentLabel>@context</FluentLabel>
+                </FluentStack>
+            </OptionTemplate>
+        </FluentSelect>
+    </FluentStack>
+
     @if (ThemeOptions.Value.RenderModeChangeEnabled)
     {
-        <FluentSelect
-            TOption="string"
-            Items="@RenderModeList"
-            Width="100%"
-            OptionText="@(x => x.Replace("Interactive", "").Replace("RenderMode", ""))"
-            Label="@L["RenderMode"]"
-            SelectedOption="@CurrentRenderMode"
-            SelectedOptionChanged="@((v) => ChangeRenderModeAsync(v, Prerender))">
-        </FluentSelect>
+        <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch">
 
-        <FluentSwitch Label="@L["Prerender"]" Value="@Prerender"
-                      ValueChanged="@((v) => ChangeRenderModeAsync(CurrentRenderMode, v))">
+            <FluentLabel Typo="Typography.H4" Weight="FontWeight.Bold">@L["RenderModeSettings"]</FluentLabel>
+            <FluentDivider Orientation="Orientation.Horizontal"/>
+            <FluentSelect
+                TOption="string"
+                Items="@RenderModeList"
+                Width="100%"
+                OptionText="@(x => x.Replace("Interactive", "").Replace("RenderMode", ""))"
+                Label="@L["RenderMode"]"
+                SelectedOption="@CurrentRenderMode"
+                SelectedOptionChanged="@((v) => ChangeRenderModeAsync(v, Prerender))">
+            </FluentSelect>
+            
+            <FluentSwitch Style="margin-top: 10px" Label="@L["Prerender"]" Value="@Prerender"
+                          ValueChanged="@((v) => ChangeRenderModeAsync(CurrentRenderMode, v))">
 
-        </FluentSwitch>
+            </FluentSwitch>
+        </FluentStack>
     }
 
 

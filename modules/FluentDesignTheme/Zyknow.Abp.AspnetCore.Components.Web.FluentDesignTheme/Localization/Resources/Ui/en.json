@@ -11,6 +11,9 @@
     "SuccessfullyDeleted": "Successfully Deleted",
     "NotSelected": "Not Selected",
     "VisibleColumns": "Visible Columns",
-    "PageOf": "Page {0} of {1}"
+    "PageOf": "Page {0} of {1}",
+    "RenderModeSettings": "Render Mode Settings",
+    "RenderMode": "Render Mode",
+    "Prerender": "Prerender"
   }
 }
