@@ -1,7 +1,9 @@
 ﻿@using System.Globalization
 @using Microsoft.Extensions.Hosting
+@using Microsoft.Extensions.Options
 @using Volo.Abp.Localization
 @using Zyknow.Abp.AspnetCore.Components.Server.FluentDesignTheme.Bundling
+@using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme
 @using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Bundling
 @inject IHostEnvironment Env
 @{
@@ -41,15 +43,39 @@
 @code {
     [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
 
-    // you can change DefaultRenderMode
-    private IComponentRenderMode DefaultRenderMode = new InteractiveAutoRenderMode();
+    [Inject] protected IOptions<AbpFluentDesignThemeOptions> ThemeOptions { get; set; }
 
     private IComponentRenderMode? PageRenderMode =>
         // account/* must be handled by the server
         HttpContext.Request.Path.StartsWithSegments("/Account")
             ? new InteractiveServerRenderMode()
             : (HttpContext.AcceptsInteractiveRouting()
-                ? DefaultRenderMode
+                ? GetDefaultRenderMode()
                 : null);
+
+    public IComponentRenderMode GetDefaultRenderMode()
+    {
+        var renderMode = HttpContext.Request.Cookies.FirstOrDefault(x => x.Key == "RenderMode");
+        var prerenderStr = HttpContext.Request.Cookies.FirstOrDefault(x => x.Key == "Prerender");
+        var prerender = prerenderStr.Value.IsNullOrEmpty() || bool.TryParse(prerenderStr.Value, out var result) && result;
+
+        if (renderMode.Value == "InteractiveAutoRenderMode")
+        {
+            return new InteractiveAutoRenderMode(prerender);
+        }
+
+        if (renderMode.Value == "InteractiveServerRenderMode")
+        {
+            return new InteractiveServerRenderMode(prerender);
+        }
+
+        if (renderMode.Value == "InteractiveWebAssemblyRenderMode")
+        {
+            return new InteractiveWebAssemblyRenderMode(prerender);
+        }
+
+        // default to InteractiveAutoRenderMode
+        return new InteractiveAutoRenderMode(prerender);
+    }
 
 }

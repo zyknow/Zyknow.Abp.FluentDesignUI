@@ -1,12 +1,13 @@
 ﻿using Microsoft.Extensions.Options;
 using Microsoft.FluentUI.AspNetCore.Components;
+using Volo.Abp.AspNetCore.Components.Web;
 using Volo.Abp.DependencyInjection;
 
 namespace Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme;
 
 public class DefaultThemeStore : IThemeStore, IScopedDependency
 {
-    public DefaultThemeStore(IOptions<AbpFluentDesignThemeOptions> options)
+    public DefaultThemeStore(IOptions<AbpFluentDesignThemeOptions> options, ICookieService cookieService)
     {
         _themeMode = options.Value.DefaultThemeMode;
         Color = options.Value.DefaultColor;
@@ -15,8 +16,14 @@ public class DefaultThemeStore : IThemeStore, IScopedDependency
 
     public event EventHandler? ThemeModeChanged;
 
+    public string RenderMode { get; set; }
+
+    public bool Prerender { get; set; }
+
+
     // ThemeMode
     private DesignThemeModes _themeMode;
+
     public DesignThemeModes ThemeMode
     {
         get => _themeMode;
@@ -32,6 +39,7 @@ public class DefaultThemeStore : IThemeStore, IScopedDependency
 
     // Color
     private OfficeColor _color;
+
     public OfficeColor Color
     {
         get => _color;
@@ -47,6 +55,7 @@ public class DefaultThemeStore : IThemeStore, IScopedDependency
 
     // EnableMultipleTabs
     private bool _enableMultipleTabs;
+
     public bool EnableMultipleTabs
     {
         get => _enableMultipleTabs;

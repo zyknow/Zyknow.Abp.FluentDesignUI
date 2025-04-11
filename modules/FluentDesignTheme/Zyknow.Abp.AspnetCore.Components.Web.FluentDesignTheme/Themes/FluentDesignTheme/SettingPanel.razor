@@ -1,19 +1,24 @@
 ﻿@using Localization.Resources.AbpUi
 @using Microsoft.Extensions.Localization
+@using Microsoft.Extensions.Options
 @using Microsoft.FluentUI.AspNetCore.Components.Extensions
 @using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
+@using Volo.Abp.AspNetCore.Components.Web
 @implements IDialogContentComponent
 @inject IStringLocalizer<AbpUiResource> L
 @inject IThemeStore ThemeStore
+@inject ICookieService CookieService
+@inject NavigationManager NavigationManager
+@inject IOptions<AbpFluentDesignThemeOptions> ThemeOptions
 <FluentStack VerticalGap="10" Orientation="Orientation.Vertical">
     <FluentSelect Label="@L["Theme"]"
-                  Width="250px"
+                  Width="100%"
                   Items="@(Enum.GetValues<DesignThemeModes>())"
                   @bind-SelectedOption="@ThemeStore.ThemeMode"/>
     <FluentSelect Label="@L["Color"]"
                   Items="@(Enum.GetValues<OfficeColor>().Select(i => i))"
-                  Height="200px"
-                  Width="250px"
+                  Height="500px"
+                  Width="100%"
                   @bind-SelectedOption="@ThemeStore.Color">
         <OptionTemplate>
             <FluentStack>
@@ -24,4 +29,69 @@
             </FluentStack>
         </OptionTemplate>
     </FluentSelect>
+    @if (ThemeOptions.Value.RenderModeChangeEnabled)
+    {
+        <FluentSelect
+            TOption="string"
+            Items="@RenderModeList"
+            Width="100%"
+            OptionText="@(x => x.Replace("Interactive", "").Replace("RenderMode", ""))"
+            Label="@L["RenderMode"]"
+            SelectedOption="@CurrentRenderMode"
+            SelectedOptionChanged="@((v) => ChangeRenderModeAsync(v, Prerender))">
+        </FluentSelect>
+
+        <FluentSwitch Label="@L["Prerender"]" Value="@Prerender"
+                      ValueChanged="@((v) => ChangeRenderModeAsync(CurrentRenderMode, v))">
+
+        </FluentSwitch>
+    }
+
+
 </FluentStack>
+
+@code{
+
+    public static string[] RenderModeList =
+    [
+        nameof(InteractiveAutoRenderMode),
+        nameof(InteractiveServerRenderMode),
+        nameof(InteractiveWebAssemblyRenderMode)
+    ];
+
+    protected string CurrentRenderMode { get; set; }
+
+    protected bool Prerender { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (ThemeOptions.Value.RenderModeChangeEnabled)
+            {
+                CurrentRenderMode = await CookieService.GetAsync("RenderMode");
+                var prerenderStr = await CookieService.GetAsync("Prerender");
+                if (!prerenderStr.IsNullOrEmpty())
+                {
+                    Prerender = bool.Parse(prerenderStr);
+                }
+                else
+                {
+                    Prerender = true;
+                }
+
+                await InvokeAsync(StateHasChanged);
+            }
+        }
+    }
+
+    private async Task ChangeRenderModeAsync(string renderMode, bool prerender = false)
+    {
+        CurrentRenderMode = renderMode;
+        Prerender = prerender;
+        await CookieService.SetAsync("RenderMode", renderMode);
+        await CookieService.SetAsync("Prerender", prerender.ToString());
+        NavigationManager.Refresh(forceReload: true);
+    }
+
+}
