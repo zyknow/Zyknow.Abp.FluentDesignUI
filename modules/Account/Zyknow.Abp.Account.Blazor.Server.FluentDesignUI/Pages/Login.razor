@@ -1,6 +1,5 @@
 ﻿@page "/Account/Login"
 @layout AccountPublicLayout
-@rendermode RenderMode.InteractiveServer
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Hosting
 @using Microsoft.AspNetCore.Identity
@@ -19,6 +18,7 @@
 @using Zyknow.Abp.Account.Blazor.Server.FluentDesignUI.Themes.FluentDesignTheme
 @using IdentityUser = Volo.Abp.Identity.IdentityUser
 @using Zyknow.Abp.AspnetCore.Components.Server.FluentDesignTheme.Themes.FluentDesignTheme
+@using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Themes.FluentDesignTheme
 @inherits Zyknow.Abp.Account.Blazor.FluentDesignUI.AccountBlazorFluentDesignComponentBase
 
 <AbpFluentForm @ref="FormRef" Content="@Input" Localize="@LH.Localize" SubmitClick="LoginAsync">
