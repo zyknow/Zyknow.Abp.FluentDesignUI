@@ -1,6 +1,4 @@
-﻿using System.Linq.Expressions;
-
-namespace Zyknow.Abp.FluentDesignUI.Components;
+﻿namespace Zyknow.Abp.FluentDesignUI.Components;
 
 public class MultiItemDeleteConfirmDialogInput<TItem>(
     IEnumerable<TItem> items,

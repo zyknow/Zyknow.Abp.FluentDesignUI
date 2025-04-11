@@ -1,17 +1,5 @@
-﻿using JetBrains.Annotations;
-using Localization.Resources.AbpUi;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.Localization;
-using Microsoft.FluentUI.AspNetCore.Components;
-using Volo.Abp.Application.Dtos;
+﻿using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
-using Volo.Abp.AspNetCore.Components;
-using Volo.Abp.Authorization;
-using Volo.Abp.Localization;
-using Volo.Abp.ObjectExtending;
-using Volo.Abp.ObjectExtending.Modularity;
-using Zyknow.Abp.FluentDesignUI.Components;
 
 namespace Zyknow.Abp.FluentDesignUI;
 

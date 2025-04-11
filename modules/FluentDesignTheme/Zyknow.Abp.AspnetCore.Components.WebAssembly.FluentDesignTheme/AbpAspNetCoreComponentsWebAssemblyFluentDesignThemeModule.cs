@@ -5,7 +5,6 @@ using Volo.Abp.Http.Client.IdentityModel.WebAssembly;
 using Volo.Abp.Modularity;
 using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme;
 using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Routing;
-using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Toolbars;
 
 namespace Zyknow.Abp.AspnetCore.Components.WebAssembly.FluentDesignTheme;
 
