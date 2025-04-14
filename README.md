@@ -41,6 +41,7 @@ set of tools and components that are easy to use and customize, fostering a more
 - [ ] Publish NuGet Package
 - [ ] ABP CMS FluentUI Theme Module
 - [ ] ABP Docs FluentUI Theme Module
+- [ ] Migration to FluentBlazor V5 (wait for V5 release)
 
 ## 🖼️ Screenshots
 
