@@ -1,21 +1,40 @@
 ﻿@inherits LayoutComponentBase
-@using Microsoft.Extensions.Options
 @using Zyknow.Abp.FluentDesignUI.Components
-@inject IOptions<AbpFluentDesignThemeOptions> Options
-
+@implements IDisposable
 <FluentLayout Class="fluent-design-layout">
-    <FluentHeader>
-        <FluentStack HorizontalGap="20" Orientation="Orientation.Horizontal"
-                     HorizontalAlignment="HorizontalAlignment.Left"
-                     VerticalAlignment="VerticalAlignment.Center">
-            <Branding CollapsedMenuIconVisible="true" CollapsedMenuClick="OnCollapse"/>
-        </FluentStack>
-        <FluentSpacer/>
-        <NavToolbar/>
-    </FluentHeader>
+    @if (ThemeStore.LayoutTheme == FluentLayoutTheme.Default)
+    {
+        <FluentHeader Class="fluent-design-layout-default-header">
+            <FluentStack HorizontalGap="20" Orientation="Orientation.Horizontal"
+                         HorizontalAlignment="HorizontalAlignment.Left"
+                         VerticalAlignment="VerticalAlignment.Center">
+                <Branding CollapsedMenuIconVisible="true" CollapsedMenuClick="OnCollapse"/>
+            </FluentStack>
+            <FluentSpacer/>
+            <NavToolbar/>
+        </FluentHeader>
+    }
+    else if (ThemeStore.LayoutTheme == FluentLayoutTheme.Rounded)
+    {
+        <div class="fluent-design-layout-rounded-header">
+            <div class="fluent-design-layout-rounded-header-inner-content">
+                <FluentStack
+                    Style="padding: 0;height: 50px" VerticalAlignment="VerticalAlignment.Center">
+                    <FluentStack HorizontalGap="20" Orientation="Orientation.Horizontal"
+                                 HorizontalAlignment="HorizontalAlignment.Left"
+                                 VerticalAlignment="VerticalAlignment.Center">
+                        <Branding CollapsedMenuIconVisible="true" CollapsedMenuClick="OnCollapse"/>
+                    </FluentStack>
+                    <FluentStack>
+                        <NavToolbar/>
+                    </FluentStack>
+                </FluentStack>
+            </div>
+        </div>
+    }
 
     <FluentStack HorizontalAlignment="HorizontalAlignment.Stretch"
-                 VerticalAlignment="VerticalAlignment.Stretch" Style="height: calc(100vh - 50px);width: 100%"
+                 VerticalAlignment="VerticalAlignment.Stretch" Style="@(@$"height: calc(100vh - {GetHeaderHeight()});")"
                  HorizontalGap="0">
         <MainMenu Collapsed="@Collapsed"/>
         <FluentBodyContent Class="fluent-design-body-content">
@@ -52,9 +71,12 @@
 
     [Inject] protected IEnumerable<IBlazorStore> Stores { get; set; }
 
+    [Inject] protected IThemeStore ThemeStore { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         await SetLayout();
+        ThemeStore.ThemeModeChanged += OnSettingChanged;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -65,13 +87,21 @@
             {
                 await blazorStore.InitializeAsync();
             }
+
+            await InvokeAsync(StateHasChanged);
         }
     }
 
-    protected virtual async Task OnSettingChanged()
+    protected virtual async void OnSettingChanged(object? sender, EventArgs e)
     {
-        await SetLayout();
-        await InvokeAsync(StateHasChanged);
+        try
+        {
+            await SetLayout();
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception ex)
+        {
+        }
     }
 
     private async Task SetLayout()
@@ -82,6 +112,25 @@
     {
         Collapsed = !Collapsed;
         StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        ThemeStore.ThemeModeChanged -= OnSettingChanged;
+    }
+
+    string GetHeaderHeight()
+    {
+        if (ThemeStore.LayoutTheme == FluentLayoutTheme.Default)
+        {
+            return "50px";
+        }
+        else if (ThemeStore.LayoutTheme == FluentLayoutTheme.Rounded)
+        {
+            return "70px";
+        }
+
+        return "70px";
     }
 }
 

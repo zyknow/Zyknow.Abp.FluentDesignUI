@@ -34,6 +34,6 @@ public class AbpAspNetCoreComponentsWebFluentDesignThemeModule : AbpModule
                 .AddVirtualJson("/Localization/Resources/Ui");
         });
 
-
+        context.Services.AddScoped<IBlazorStore>(provider => provider.GetRequiredService<IThemeStore>());
     }
 }

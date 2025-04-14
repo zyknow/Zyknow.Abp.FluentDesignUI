@@ -1,28 +1,21 @@
 ﻿using Microsoft.Extensions.Options;
 using Microsoft.FluentUI.AspNetCore.Components;
+using Microsoft.JSInterop;
 using Volo.Abp.AspNetCore.Components.Web;
 using Volo.Abp.DependencyInjection;
 
 namespace Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme;
 
-public class DefaultThemeStore : IThemeStore, IScopedDependency
+public class DefaultThemeStore(IOptions<AbpFluentDesignThemeOptions> options, ICookieService cookieService)
+    : IThemeStore, IScopedDependency
 {
-    public DefaultThemeStore(IOptions<AbpFluentDesignThemeOptions> options, ICookieService cookieService)
-    {
-        _themeMode = options.Value.DefaultThemeMode;
-        Color = options.Value.DefaultColor;
-        EnableMultipleTabs = options.Value.DefaultEnableMultipleTabs;
-    }
+    protected string StorePrefix { get; set; } = "Theme_";
 
     public event EventHandler? ThemeModeChanged;
 
-    public string RenderMode { get; set; }
-
-    public bool Prerender { get; set; }
-
 
     // ThemeMode
-    private DesignThemeModes _themeMode;
+    private DesignThemeModes _themeMode = options.Value.DefaultThemeMode;
 
     public DesignThemeModes ThemeMode
     {
@@ -38,7 +31,7 @@ public class DefaultThemeStore : IThemeStore, IScopedDependency
     }
 
     // Color
-    private OfficeColor _color;
+    private OfficeColor _color = options.Value.DefaultColor;
 
     public OfficeColor Color
     {
@@ -53,6 +46,24 @@ public class DefaultThemeStore : IThemeStore, IScopedDependency
         }
     }
 
+    // FluentLayoutTheme
+    private FluentLayoutTheme _layoutTheme = options.Value.DefaultFluentLayoutTheme;
+
+    public FluentLayoutTheme LayoutTheme
+    {
+        get => _layoutTheme;
+        set
+        {
+            if (_layoutTheme != value)
+            {
+                _layoutTheme = value;
+                cookieService.SetAsync(GetStoreKey(nameof(LayoutTheme)), _layoutTheme.ToString());
+                ThemeModeChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+    }
+
+
     // EnableMultipleTabs
     private bool _enableMultipleTabs;
 
@@ -64,6 +75,7 @@ public class DefaultThemeStore : IThemeStore, IScopedDependency
             if (_enableMultipleTabs != value)
             {
                 _enableMultipleTabs = value;
+                cookieService.SetAsync(GetStoreKey(nameof(EnableMultipleTabs)), _enableMultipleTabs.ToString());
                 ThemeModeChanged?.Invoke(this, EventArgs.Empty);
             }
         }
@@ -72,5 +84,18 @@ public class DefaultThemeStore : IThemeStore, IScopedDependency
     public async Task InitializeAsync()
     {
         ThemeModeChanged?.Invoke(this, EventArgs.Empty);
+        _enableMultipleTabs = bool.TryParse(await cookieService.GetAsync(GetStoreKey(nameof(EnableMultipleTabs))),
+            out var enableMultipleTabs) && enableMultipleTabs;
+        _layoutTheme =
+            Enum.TryParse<FluentLayoutTheme>(await cookieService.GetAsync(GetStoreKey(nameof(LayoutTheme))),
+                out var layoutTheme)
+                ? layoutTheme
+                : options.Value.DefaultFluentLayoutTheme;
+    }
+
+
+    string GetStoreKey(string key)
+    {
+        return $"{StorePrefix}{key}";
     }
 }

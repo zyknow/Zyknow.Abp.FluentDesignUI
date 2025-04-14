@@ -32,6 +32,12 @@
                 </FluentStack>
             </OptionTemplate>
         </FluentSelect>
+        <FluentSelect Label="@L["Layout"]"
+                      Items="@(Enum.GetValues<FluentLayoutTheme>().Select(i => i))"
+                      Height="500px"
+                      Width="100%"
+                      @bind-SelectedOption="@ThemeStore.LayoutTheme">
+        </FluentSelect>
     </FluentStack>
 
     @if (ThemeOptions.Value.RenderModeChangeEnabled)

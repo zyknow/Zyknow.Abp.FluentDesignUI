@@ -1,6 +1,5 @@
 
 body {
-    height: 100vh;
     margin: 0;
     padding: 0;
     font-family: var(--body-font);
@@ -11,16 +10,23 @@ body {
     background: var(--neutral-layer-4);
 }
 
-.fluent-design-layout {
-    header {
-        background-color: var(--neutral-fill-layer-rest) !important;
-        border-bottom: calc(var(--stroke-width) * 2px) solid var(--accent-fill-rest);
-        margin-bottom: 0 !important;
+.fluent-design-layout-default-header {
+    background: var(--neutral-fill-layer-rest) !important;
+    border-bottom: calc(var(--stroke-width) * 2px) solid var(--accent-fill-rest);
+}
+
+.fluent-design-layout-rounded-header {
+    height: 70px;
+
+    .fluent-design-layout-rounded-header-inner-content {
+        border-radius: 0.5rem;
+        background-color: var(--neutral-fill-layer-rest);
+        margin: 1rem;
+        padding: 0 1rem 0 1rem;
     }
 }
 
 .fluent-design-body-content {
-    overflow-y: auto;
     padding: 1rem 1rem 1rem 1rem;
     border-right: 1px solid var(--neutral-stroke-divider-rest);
 }
@@ -72,3 +78,26 @@ body {
     padding: 2rem;
     border-radius: 0.5rem;
 }
+
+
+/* For Webkit browsers (Chrome, Safari, Opera) */
+::-webkit-scrollbar {
+    background: transparent; /* Set scrollbar background to transparent */
+}
+
+::-webkit-scrollbar-track {
+    background: transparent; /* Set track background to transparent */
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.3); /* Set thumb color with transparency */
+    border-radius: 4px; /* Optional: add border radius for a rounded thumb */
+}
+
+/* For Firefox */
+* {
+    /* The first value is the thumb color, the second is the track color */
+    scrollbar-color: var(--neutral-base-color) transparent;
+    scrollbar-width: 0.5rem; /* Options: auto or thin */
+}
+
