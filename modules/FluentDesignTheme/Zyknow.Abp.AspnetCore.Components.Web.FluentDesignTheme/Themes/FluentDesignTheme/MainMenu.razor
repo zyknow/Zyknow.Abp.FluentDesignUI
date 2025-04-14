@@ -1,7 +1,8 @@
 ﻿@using Volo.Abp.AspNetCore.Components.Web.Security
 @using Volo.Abp.UI.Navigation
 @implements IDisposable
-<div class="fluent-design-navmenu-card">
+@inherits FluentComponentBase
+<div class="fluent-design-navmenu-card" @attributes="AdditionalAttributes">
     <div class="fluent-design-navmenu">
         <FluentNavMenu Width="250" Expanded="@Collapsed" CollapsedChildNavigation>
             @if (Menu != null)

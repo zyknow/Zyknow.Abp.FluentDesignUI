@@ -1,19 +1,23 @@
 ﻿@using Volo.Abp.AspNetCore.Components.Web.Security
 @using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Toolbars
 @implements IDisposable
-<FluentStack Orientation="Orientation.Horizontal" HorizontalGap="10" HorizontalAlignment="HorizontalAlignment.End" VerticalAlignment="VerticalAlignment.Center" >
+@inherits FluentComponentBase
+<FluentStack Orientation="Orientation.Horizontal"
+             HorizontalGap="10"
+             HorizontalAlignment="HorizontalAlignment.End"
+             VerticalAlignment="VerticalAlignment.Center"
+             @attributes="AdditionalAttributes">
     @foreach (var render in ToolbarItemRenders)
     {
         @render
     }
 </FluentStack>
+
 @code
 {
-    [Inject]
-    private IToolbarManager ToolbarManager { get; set; }
+    [Inject] private IToolbarManager ToolbarManager { get; set; }
 
-    [Inject]
-    private ApplicationConfigurationChangedService ApplicationConfigurationChangedService { get; set; }
+    [Inject] private ApplicationConfigurationChangedService ApplicationConfigurationChangedService { get; set; }
 
     private List<RenderFragment> ToolbarItemRenders { get; set; } = new();
 

@@ -6,10 +6,12 @@
 @inject IJSRuntime JsRuntime
 @inject NavigationManager NavigationManager
 @inject IServiceProvider ServiceProvider
+@inherits FluentComponentBase
 
 @if (_otherLanguages != null && _otherLanguages.Any() && _currentLanguage != null)
 {
     <FluentMenuButton
+        @attributes="AdditionalAttributes"
         IconStart="@(new Size20.Globe())"
         ButtonAppearance="@Appearance.Stealth"
         Text="@_currentLanguage.DisplayName"
