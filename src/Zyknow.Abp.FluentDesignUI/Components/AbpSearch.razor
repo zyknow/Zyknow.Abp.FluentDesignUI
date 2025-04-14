@@ -2,9 +2,9 @@
 @using Microsoft.Extensions.Localization
 @using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
 @inject IStringLocalizer<AbpUiResource> L
+@inherits FluentComponentBase
 
-
-<FluentStack VerticalAlignment="VerticalAlignment.Center">
+<FluentStack VerticalAlignment="VerticalAlignment.Center" @attributes="AdditionalAttributes">
     @if (PrimaryInputVisible)
     {
         <FluentTextField Value="@PrimarySearchValue" ValueChanged="@PrimarySearchValueChanged"

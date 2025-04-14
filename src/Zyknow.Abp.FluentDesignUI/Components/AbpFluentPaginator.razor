@@ -1,9 +1,11 @@
 ﻿@using Localization.Resources.AbpUi
 @using Microsoft.Extensions.Localization
 @inject IStringLocalizer<AbpUiResource> UL
+@inherits FluentComponentBase
+
 @if (State != null)
 {
-    <FluentPaginator State="@State">
+    <FluentPaginator State="@State" @attributes="AdditionalAttributes">
         <PaginationTextTemplate>
             <FluentLabel Style="white-space: nowrap;" Alignment="HorizontalAlignment.Stretch" Weight="FontWeight.Bold">@UL["PageOf",(State.CurrentPageIndex + 1),State.LastPageIndex + 1]</FluentLabel>
         </PaginationTextTemplate>

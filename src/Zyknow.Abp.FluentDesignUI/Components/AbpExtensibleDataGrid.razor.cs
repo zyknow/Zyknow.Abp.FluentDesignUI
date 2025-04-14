@@ -8,7 +8,7 @@ using Volo.Abp.AspNetCore.Components.Web.Extensibility.TableColumns;
 
 namespace Zyknow.Abp.FluentDesignUI.Components;
 
-public partial class AbpExtensibleDataGrid<TItem, TKey> : ComponentBase where TItem : IEntityDto<TKey>
+public partial class AbpExtensibleDataGrid<TItem, TKey> : FluentComponentBase where TItem : IEntityDto<TKey>
 {
     protected const string DataFieldAttributeName = "Data";
 
@@ -51,7 +51,7 @@ public partial class AbpExtensibleDataGrid<TItem, TKey> : ComponentBase where TI
     [Inject] public IStringLocalizerFactory StringLocalizerFactory { get; set; }
 
     [Inject] public IUiMessageService UiMessageService { get; set; }
-    
+
     public FluentDataGrid<TItem> FluentDataGridRef { get; set; }
 
     protected bool ToggleColumnPopoverVisible { get; set; }
@@ -78,7 +78,7 @@ public partial class AbpExtensibleDataGrid<TItem, TKey> : ComponentBase where TI
         }
     }
 
-    protected  EntityActions<TItem> EntityActionsRef;
+    protected EntityActions<TItem> EntityActionsRef;
 
     protected virtual RenderFragment RenderCustomTableColumnComponent(Type type, object data)
     {
@@ -189,7 +189,7 @@ public partial class AbpExtensibleDataGrid<TItem, TKey> : ComponentBase where TI
         {
             return task;
         }
-        
+
         return Task.CompletedTask;
     }
 }

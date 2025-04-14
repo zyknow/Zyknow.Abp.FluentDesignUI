@@ -3,11 +3,12 @@
 @using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
 @using Volo.Abp.Data
 @inject IStringLocalizer<AbpUiResource> UL
+@inherits FluentComponentBase
 @typeparam TItem
 @typeparam TKey
 
 <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch"
-             Style="flex:1;min-height: 0;">
+             Style="flex:1;min-height: 0;" @attributes="@AdditionalAttributes">
 
     @if (EnableSelected && SelectEntities.Any())
     {

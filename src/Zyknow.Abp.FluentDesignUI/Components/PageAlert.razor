@@ -1,6 +1,7 @@
 ﻿@using Volo.Abp.AspNetCore.Components.Alerts
 @using System.Collections.Specialized
-<FluentStack Orientation="@Orientation.Vertical" VerticalGap="8">
+@inherits FluentComponentBase
+<FluentStack Orientation="@Orientation.Vertical" VerticalGap="8" @attributes="AdditionalAttributes">
     @foreach (var message in _messages)
     {
         <FluentMessageBar Intent="@GetMessageIntent(message.Type)" AllowDismiss="true"  Title="@message.Title">
