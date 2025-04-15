@@ -6,7 +6,6 @@
 @inherits FluentComponentBase
 @typeparam TItem
 @typeparam TKey
-
 <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch"
              Style="flex:1;min-height: 0;" @attributes="@AdditionalAttributes">
 
@@ -61,6 +60,7 @@
                 @if (EnableSelected)
                 {
                     <SelectColumn TGridItem="TItem"
+                                  SelectedItems="@SelectEntities"
                                   SelectFromEntireRow="false"
                                   SelectMode="DataGridSelectMode.Multiple"
                                   Property="@(dto => SelectEntities.Any(e => e.Id.Equals(dto.Id)))"

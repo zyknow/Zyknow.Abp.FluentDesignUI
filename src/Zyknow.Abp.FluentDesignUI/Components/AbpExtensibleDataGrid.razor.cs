@@ -167,7 +167,9 @@ public partial class AbpExtensibleDataGrid<TItem, TKey> : FluentComponentBase wh
             if (!result.Cancelled)
             {
                 await OnDeleteSelected.InvokeAsync(SelectEntities);
-                SelectEntities.Clear();
+                SelectEntities = [];
+                await SelectEntitiesChanged.InvokeAsync(SelectEntities);
+                await InvokeAsync(StateHasChanged);
             }
         }
     }
@@ -179,7 +181,9 @@ public partial class AbpExtensibleDataGrid<TItem, TKey> : FluentComponentBase wh
             return;
         }
 
-        SelectEntities.Clear();
+        SelectEntities = [];
+        await SelectEntitiesChanged.InvokeAsync(SelectEntities);
+        await InvokeAsync(StateHasChanged);
     }
 
     protected Task RefreshItemsAsync(GridItemsProviderRequest<TItem> request)

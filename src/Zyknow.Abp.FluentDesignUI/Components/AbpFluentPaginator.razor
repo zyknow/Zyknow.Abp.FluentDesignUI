@@ -21,6 +21,7 @@
                         @ItemsPerPageStart
                     }
                     <FluentSelect
+                        Width="180px"
                         OptionText="@(v => @UL["PagerShowMenuEntries"].Value.Replace("_MENU_", v.ToString()))"
                         Items="@ItemsPerPageList" SelectedOption="@State.ItemsPerPage"
                         TOption="int"
