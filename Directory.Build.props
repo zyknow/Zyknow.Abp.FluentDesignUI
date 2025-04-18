@@ -1,15 +1,15 @@
 <Project>
     <PropertyGroup>
         <LangVersion>latest</LangVersion>
-        <!-- 此版本号无需修改，gitlab流水线会在构建发布前自动修改对应的版本号 ,如需手动发布，则需要修改-->
-        <Version>0.0.3-alpha</Version>
-        <!-- 以下配置将禁止特定警告 -->
+        <Version>0.0.1</Version>
         <NoWarn>$(NoWarn);CS1591;NU1903;NU1902;NU1904;</NoWarn>
-        <!-- 以下配置将禁止显示所有警告 -->
-        <WarningLevel>0</WarningLevel>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
 
+        <PackageProjectUrl>https://github.com/zyknow/Zyknow.Abp.FluentDesignUI</PackageProjectUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/zyknow/Zyknow.Abp.FluentDesignUI</RepositoryUrl>
     </PropertyGroup>
 
 

@@ -1,0 +1,118 @@
+name: publish-nuget.yml
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # to be able to publish a GitHub release
+      issues: write # to be able to comment on released issues
+      pull-requests: write # to be able to comment on released pull requests
+      id-token: write # to enable use of OIDC for npm provenance
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "lts/*"
+      - name: Install dependencies
+        run: yarn install
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
+      - name: Get new version
+        id: get_version
+        run: echo "::set-output name=version::$(jq -r ".version" package.json)"
+    
+    outputs:
+      new_version: ${{ steps.get_version.outputs.version }}
+  
+  build_nuget:
+    needs: release
+    name: Build NuGet
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # to be able to publish a GitHub release
+      issues: write # to be able to comment on released issues
+      pull-requests: write # to be able to comment on released pull requests
+      id-token: write # to enable use of OIDC for npm provenance
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Ensure PowerShell is available
+        # ubuntu-latest 自带 pwsh；如果你想显式安装可以用 actions/setup-pwsh@v2
+        run: pwsh --version
+
+      - name: Publish NuGet package
+        shell: pwsh {0}
+        run: |
+          .\package-publish-csproj.ps1
+
+      #  需要修改项目根目录下的 Directory.Build.props 中的Version跟package.json中的version一致
+      - name: Update version
+        run: |
+          # Extract version from package.json
+          VERSION=${{ needs.release.outputs.new_version }}
+
+          # Update Directory.Build.props with the extracted version
+          sed -i "s|<Version>.*</Version>|<Version>$VERSION</Version>|" Directory.Build.props
+
+      - name: Commit changes
+        run: |
+          # Configure git
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+          # Check if there are changes to commit
+          if git diff --exit-code; then
+            echo "No changes to commit"
+          else
+            # Add changes to git
+            git add Directory.Build.props
+
+            # Commit changes
+            git commit -m "chore: update Directory.Build.props version"
+
+            # Pull the latest changes from the remote branch with rebase
+            git pull --rebase origin ${{ github.ref }}
+
+            # Push changes to the repository
+            git push origin HEAD:${{ github.ref }}
+          fi
+
+      - name: Push to NuGet
+        run: |
+          dotnet nuget push out/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate --no-symbols
+
+      - name: Upload all NuGet packages in out folder to existing GitHub Release
+        run: |
+          # Install GitHub CLI
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+          sudo apt update
+          sudo apt install gh
+
+          # Authenticate with GitHub CLI
+          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+
+          # Get the tag by parsing package.json
+          TAG=v${{ needs.release.outputs.new_version }}
+
+          # Upload each .nupkg file in the out directory to the existing release
+          for file in out/*.nupkg; do
+            gh release upload "$TAG" "$file"
+          done

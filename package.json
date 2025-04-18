@@ -1,0 +1,26 @@
+{
+  "name": "Zyknow.Abp.FluentDesignUI",
+  "version": "0.0.1",
+  "description": "[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://mit-license.org/)\r [![GitHub Stars](https://img.shields.io/github/stars/zyknow/Zyknow.Abp.FluentDesignUI.svg)](https://github.com/zyknow/Zyknow.Abp.FluentDesignUI/stargazers)\r [![GitHub Issues](https://img.shields.io/github/issues/zyknow/Zyknow.Abp.FluentDesignUI.svg)](https://github.com/zyknow/Zyknow.Abp.FluentDesignUI/issues)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zyknow/Zyknow.Abp.FluentDesignUI.git"
+  },
+  "author": "zyknow",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zyknow/Zyknow.Abp.FluentDesignUI/issues"
+  },
+  "homepage": "https://github.com/zyknow/Zyknow.Abp.FluentDesignUI#readme",
+  "dependencies": {
+    "semantic-release": "^24.2.3"
+  },
+  "devDependencies": {
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1"
+  }
+}
