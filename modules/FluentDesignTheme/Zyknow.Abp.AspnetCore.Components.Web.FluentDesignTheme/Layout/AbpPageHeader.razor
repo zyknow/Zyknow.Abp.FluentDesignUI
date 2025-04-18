@@ -1,8 +1,9 @@
 ﻿@using Microsoft.Extensions.Options
 @using Size16 = Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16
 @inject IOptions<PageHeaderOptions> Options
+<MediaQuery Media="@Breakpoints.SmallDown" @bind-Matches="Wrap"/>
 <FluentStack Orientation="Orientation.Vertical" VerticalGap="20">
-    <FluentStack Class="fluent-design-row-breadcrumb" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+    <FluentStack Wrap="@Wrap" HorizontalAlignment="HorizontalAlignment.Stretch" Class="fluent-design-row-breadcrumb" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
         <FluentStack Orientation="Orientation.Vertical">
             <FluentStack Class="fluent-design-breadcrumb" VerticalAlignment="VerticalAlignment.Center">
                 @if (Options.Value.RenderBreadcrumbs && BreadcrumbItems.Any())
@@ -53,3 +54,8 @@
         <FluentLabel Typo="Typography.H1" Weight="FontWeight.Bolder" >@Title</FluentLabel>
     }
 </FluentStack>
+
+@code
+{
+    protected bool Wrap { get; set; }
+}

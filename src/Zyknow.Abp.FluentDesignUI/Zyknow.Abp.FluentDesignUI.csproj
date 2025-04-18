@@ -5,6 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="BlazorPro.BlazorSize" />
         <PackageReference Include="Microsoft.AspNetCore.Components.Web"/>
         <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components"/>
         <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Emoji"/>

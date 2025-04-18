@@ -1,6 +1,14 @@
 ﻿@inherits LayoutComponentBase
+@using Microsoft.Extensions.Options
 @using Zyknow.Abp.FluentDesignUI.Components
 @implements IDisposable
+
+<MediaQuery Media="@ThemeOptions.Value.MobileBreakpoint" Matches="@IsMobileStyle"
+            MatchesChanged="@(v =>
+                            {
+                                IsMobileStyle = v;
+                                Collapsed = !IsMobileStyle;
+                            })"/>
 <FluentLayout Class="fluent-design-layout">
     @if (ThemeStore.LayoutTheme == FluentLayoutTheme.Default)
     {
@@ -11,33 +19,47 @@
                 <Branding CollapsedMenuIconVisible="true" CollapsedMenuClick="OnCollapse"/>
             </FluentStack>
             <FluentSpacer/>
-            <NavToolbar/>
+            @if (!IsMobileStyle)
+            {
+                <NavToolbar/>
+            }
+            else
+            {
+                <LoginDisplay/>
+            }
         </FluentHeader>
     }
     else if (ThemeStore.LayoutTheme == FluentLayoutTheme.Rounded)
     {
         <div class="fluent-design-layout-rounded-header">
-            <div class="fluent-design-layout-rounded-header-inner-content">
-                <FluentStack
-                    Style="padding: 0;height: 50px" VerticalAlignment="VerticalAlignment.Center">
-                    <FluentStack HorizontalGap="20" Orientation="Orientation.Horizontal"
-                                 HorizontalAlignment="HorizontalAlignment.Left"
-                                 VerticalAlignment="VerticalAlignment.Center">
-                        <Branding CollapsedMenuIconVisible="true" CollapsedMenuClick="OnCollapse"/>
-                    </FluentStack>
-                    <FluentStack>
-                        <NavToolbar/>
-                    </FluentStack>
+            <FluentStack Style="height: 100%" VerticalAlignment="VerticalAlignment.Center">
+                <FluentStack HorizontalGap="20" Orientation="Orientation.Horizontal"
+                             HorizontalAlignment="HorizontalAlignment.Left"
+                             VerticalAlignment="VerticalAlignment.Center">
+                    <Branding CollapsedMenuIconVisible="true" CollapsedMenuClick="OnCollapse"/>
                 </FluentStack>
-            </div>
+                <FluentStack>
+                    @if (!IsMobileStyle)
+                    {
+                        <NavToolbar/>
+                    }
+                    else
+                    {
+                        <LoginDisplay/>
+                    }
+                </FluentStack>
+            </FluentStack>
         </div>
     }
 
     <FluentStack HorizontalAlignment="HorizontalAlignment.Stretch"
-                 VerticalAlignment="VerticalAlignment.Stretch" Style="@(@$"height: calc(100vh - {GetHeaderHeight()});")"
-                 HorizontalGap="0">
-        <MainMenu Collapsed="@Collapsed"/>
-        <FluentBodyContent Class="fluent-design-body-content">
+                 VerticalAlignment="VerticalAlignment.Stretch"
+                 HorizontalGap="0" Style="flex:1;min-height: 0;">
+
+        <MainMenu IsMobile="IsMobileStyle" Collapsed="Collapsed"/>
+
+        <FluentBodyContent Class="fluent-design-body-content"
+                           Style="@(IsMobileStyle && Collapsed ? "display: none !important" : "")">
             <PageAlert/>
             @Body
             @* TODO: EnableMultipleTabs ? *@
@@ -50,16 +72,29 @@
             @*     <ReuseTabs Class="fluent-design-body-reusetabs" TabPaneClass="fluent-design-body-reusetabs-tabpane" *@
             @*                Draggable></ReuseTabs> *@
             @* } *@
-            <FluentDialogProvider/>
-            <FluentTooltipProvider/>
-            <FluentMessageBarProvider/>
-            <FluentMenuProvider/>
-            <FluentToastProvider Position="ToastPosition.BottomRight"/>
             @* <UiPageProgress/> *@
         </FluentBodyContent>
+
     </FluentStack>
+    <FluentFooter>
+        @if (ThemeOptions.Value.DefaultLayoutFooterType != null)
+        {
+            <DynamicComponent Type="@ThemeOptions.Value.DefaultLayoutFooterType"/>
+        }
+    </FluentFooter>
 
-
+    <FluentDialogProvider/>
+    <FluentTooltipProvider/>
+    <FluentMessageBarProvider/>
+    <FluentMenuProvider/>
+    @if (IsMobileStyle)
+    {
+        <FluentToastProvider Position="ToastPosition.BottomCenter"/>
+    }
+    else
+    {
+        <FluentToastProvider Position="ToastPosition.BottomRight"/>
+    }
 </FluentLayout>
 
 @code
@@ -70,10 +105,29 @@
 
     [Inject] protected IThemeStore ThemeStore { get; set; }
 
+    [Inject] protected NavigationManager NavigationManager { get; set; }
+
+    [Inject] IOptions<AbpFluentDesignThemeOptions> ThemeOptions { get; set; }
+
+    [Inject] IDialogService DialogService { get; set; }
+
+    protected bool IsMobileStyle { get; set; }
+
+
     protected override async Task OnInitializedAsync()
     {
         await SetLayout();
         ThemeStore.ThemeModeChanged += OnSettingChanged;
+        NavigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        if (IsMobileStyle)
+        {
+            Collapsed = false;
+            InvokeAsync(StateHasChanged);
+        }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -108,26 +162,12 @@
     protected virtual void OnCollapse()
     {
         Collapsed = !Collapsed;
-        StateHasChanged();
     }
 
     public void Dispose()
     {
         ThemeStore.ThemeModeChanged -= OnSettingChanged;
-    }
-
-    string GetHeaderHeight()
-    {
-        if (ThemeStore.LayoutTheme == FluentLayoutTheme.Default)
-        {
-            return "50px";
-        }
-        else if (ThemeStore.LayoutTheme == FluentLayoutTheme.Rounded)
-        {
-            return "70px";
-        }
-
-        return "70px";
+        NavigationManager.LocationChanged -= OnLocationChanged;
     }
 }
 

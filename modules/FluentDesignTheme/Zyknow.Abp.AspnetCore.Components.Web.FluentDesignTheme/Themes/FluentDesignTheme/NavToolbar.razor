@@ -6,7 +6,10 @@
              HorizontalGap="10"
              HorizontalAlignment="HorizontalAlignment.End"
              VerticalAlignment="VerticalAlignment.Center"
-             @attributes="AdditionalAttributes">
+             Style="@Style"
+             Class="@Class"
+             Id="@Id"
+             AdditionalAttributes="@AdditionalAttributes">
     @foreach (var render in ToolbarItemRenders)
     {
         @render
@@ -21,6 +24,8 @@
 
     private List<RenderFragment> ToolbarItemRenders { get; set; } = new();
 
+    [Parameter] public List<Type> IgnoreTypes { get; set; } = [];
+
     protected override async Task OnInitializedAsync()
     {
         await GetToolbarItemRendersAsync();
@@ -34,7 +39,7 @@
         ToolbarItemRenders.Clear();
 
         var sequence = 0;
-        foreach (var item in toolbar.Items)
+        foreach (var item in toolbar.Items.Where(x=> !IgnoreTypes.Contains(x.ComponentType)))
         {
             ToolbarItemRenders.Add(builder =>
             {

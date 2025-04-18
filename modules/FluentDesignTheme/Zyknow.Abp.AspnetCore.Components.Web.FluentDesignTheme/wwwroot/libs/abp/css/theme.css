@@ -2,6 +2,7 @@
 body {
     margin: 0;
     padding: 0;
+    height: 100vh;
     font-family: var(--body-font);
     font-size: var(--type-ramp-base-font-size);
     line-height: var(--type-ramp-base-line-height);
@@ -10,20 +11,21 @@ body {
     background: var(--neutral-layer-4);
 }
 
+.fluent-design-layout {
+    display: flex;
+}
+
 .fluent-design-layout-default-header {
     background: var(--neutral-fill-layer-rest) !important;
     border-bottom: calc(var(--stroke-width) * 2px) solid var(--accent-fill-rest);
 }
 
 .fluent-design-layout-rounded-header {
-    height: 70px;
-
-    .fluent-design-layout-rounded-header-inner-content {
-        border-radius: 0.5rem;
-        background-color: var(--neutral-fill-layer-rest);
-        margin: 1rem;
-        padding: 0 1rem 0 1rem;
-    }
+    height: 50px;
+    border-radius: 0.5rem;
+    background-color: var(--neutral-fill-layer-rest);
+    margin: 1rem 1rem 0;
+    padding: 0 1rem 0 1rem;
 }
 
 .fluent-design-body-content {
@@ -31,15 +33,19 @@ body {
     border-right: 1px solid var(--neutral-stroke-divider-rest);
 }
 
-.fluent-design-navmenu-card {
+.fluent-design-navmenu-content-card {
     background-color: var(--neutral-fill-layer-rest);
     border-radius: 0.5rem;
     margin: 1rem 0 1rem 1rem;
-    padding: 0;
-    padding-right: 10px;
+    padding: 0 10px 0 0;
 }
 
-.fluent-design-navmenu {
+.fluent-design-mobile-navmenu-content-card {
+    background-color: var(--neutral-fill-layer-rest);
+    width: 100%;
+}
+
+.fluent-design-navmenu-content {
     display: flex;
     height: 100%;
     overflow-y: auto;
@@ -73,6 +79,11 @@ body {
     }
 }
 
+.mobile-nav-app-bar {
+    background: var(--neutral-fill-layer-rest) !important;
+    border-top: calc(var(--stroke-width) * 2px) solid var(--accent-fill-rest);
+}
+
 .fluent-card {
     background-color: var(--neutral-fill-layer-rest);
     padding: 2rem;
@@ -100,4 +111,3 @@ body {
     scrollbar-color: var(--neutral-base-color) transparent;
     scrollbar-width: 0.5rem; /* Options: auto or thin */
 }
-

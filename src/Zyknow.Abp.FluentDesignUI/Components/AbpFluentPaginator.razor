@@ -1,36 +1,64 @@
 ﻿@using Localization.Resources.AbpUi
 @using Microsoft.Extensions.Localization
+@using BlazorPro.BlazorSize
 @inject IStringLocalizer<AbpUiResource> UL
 @inherits FluentComponentBase
 
 @if (State != null)
 {
+    <MediaQuery Media="@Breakpoints.MediumDown">
+        <Matched>
+            <FluentStack HorizontalAlignment="HorizontalAlignment.Right"
+                         VerticalAlignment="VerticalAlignment.Center">
+                @if (ItemsPerPageStart != null)
+                {
+                    @ItemsPerPageStart
+                }
+                <FluentSelect
+                    Width="180px"
+                    OptionText="@(v => @UL["PagerShowMenuEntries"].Value.Replace("_MENU_", v.ToString()))"
+                    Items="@ItemsPerPageList" SelectedOption="@State.ItemsPerPage"
+                    TOption="int"
+                    SelectedOptionChanged="@(v => State.SetItemsPerPageAsync(v))"></FluentSelect>
+                @if (ItemsPerPageEnd != null)
+                {
+                    @ItemsPerPageEnd
+                }
+            </FluentStack>
+        </Matched>
+    </MediaQuery>
     <FluentPaginator State="@State" @attributes="AdditionalAttributes">
         <PaginationTextTemplate>
-            <FluentLabel Style="white-space: nowrap;" Alignment="HorizontalAlignment.Stretch" Weight="FontWeight.Bold">@UL["PageOf",(State.CurrentPageIndex + 1),State.LastPageIndex + 1]</FluentLabel>
+            <FluentLabel Style="white-space: nowrap;" Alignment="HorizontalAlignment.Stretch"
+                         Weight="FontWeight.Bold">@UL["PageOf", (State.CurrentPageIndex + 1), State.LastPageIndex + 1]</FluentLabel>
         </PaginationTextTemplate>
         <SummaryTemplate>
             <FluentStack Style="white-space: nowrap;" VerticalAlignment="VerticalAlignment.Center"
                          HorizontalAlignment="HorizontalAlignment.SpaceBetween">
                 <FluentLabel Typo="Typography.Body"
                              Weight="FontWeight.Bolder">@UL["Total"]: @State.TotalItemCount</FluentLabel>
-                <FluentStack HorizontalAlignment="HorizontalAlignment.Right"
-                             VerticalAlignment="VerticalAlignment.Center">
-                    @if (ItemsPerPageStart != null)
-                    {
-                        @ItemsPerPageStart
-                    }
-                    <FluentSelect
-                        Width="180px"
-                        OptionText="@(v => @UL["PagerShowMenuEntries"].Value.Replace("_MENU_", v.ToString()))"
-                        Items="@ItemsPerPageList" SelectedOption="@State.ItemsPerPage"
-                        TOption="int"
-                        SelectedOptionChanged="@(v => State.SetItemsPerPageAsync(v))"></FluentSelect>
-                    @if (ItemsPerPageEnd != null)
-                    {
-                        @ItemsPerPageEnd
-                    }
-                </FluentStack>
+                <MediaQuery Media="@Breakpoints.MediumDown">
+                    <Unmatched>
+                        <FluentStack HorizontalAlignment="HorizontalAlignment.Right"
+                                     VerticalAlignment="VerticalAlignment.Center">
+                            @if (ItemsPerPageStart != null)
+                            {
+                                @ItemsPerPageStart
+                            }
+                            <FluentSelect
+                                Width="180px"
+                                OptionText="@(v => @UL["PagerShowMenuEntries"].Value.Replace("_MENU_", v.ToString()))"
+                                Items="@ItemsPerPageList" SelectedOption="@State.ItemsPerPage"
+                                TOption="int"
+                                SelectedOptionChanged="@(v => State.SetItemsPerPageAsync(v))"></FluentSelect>
+                            @if (ItemsPerPageEnd != null)
+                            {
+                                @ItemsPerPageEnd
+                            }
+                        </FluentStack>
+                    </Unmatched>
+                </MediaQuery>
+
             </FluentStack>
         </SummaryTemplate>
     </FluentPaginator>
@@ -43,6 +71,8 @@
 
     [Parameter] public RenderFragment ItemsPerPageStart { get; set; }
     [Parameter] public RenderFragment ItemsPerPageEnd { get; set; }
+
+    [Parameter] public string WarpMaxWidth { get; set; } = "700px";
 }
 
 <style scoped>

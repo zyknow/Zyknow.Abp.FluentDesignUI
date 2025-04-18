@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using BlazorPro.BlazorSize;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Volo.Abp.Application;
 using Volo.Abp.AspNetCore.Components.Web;
@@ -18,5 +19,7 @@ public class AbpFluentDesignUIModule : AbpModule
     {
         context.Services.AddFluentUIComponents();
         context.Services.AddSingleton(typeof(AbpBlazorMessageLocalizerHelper<>));
+        
+        context.Services.AddMediaQueryService();
     }
 }

@@ -35,7 +35,7 @@ set of tools and components that are easy to use and customize, fostering a more
 
 ## 🗺️ Roadmap
 
-- [ ] Mobile Support
+- [x] Mobile Support
 - [ ] Custom Pagination
 - [ ] Multiple Tabs
 - [ ] Publish NuGet Package

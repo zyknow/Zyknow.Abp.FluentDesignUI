@@ -2,9 +2,21 @@
 @using Volo.Abp.UI.Navigation
 @implements IDisposable
 @inherits FluentComponentBase
-<div class="fluent-design-navmenu-card" @attributes="AdditionalAttributes">
-    <div class="fluent-design-navmenu">
-        <FluentNavMenu Width="250" Expanded="@Collapsed" CollapsedChildNavigation>
+<div id="@Id" class="@ClassValue" style="@StyleValue"
+     @attributes="AdditionalAttributes">
+
+    @if (IsMobile)
+    {
+        <FluentStack Class="fluent-card">
+            <NavToolbar IgnoreTypes="@( [typeof(LoginDisplay)])"></NavToolbar>
+        </FluentStack>
+
+        <FluentDivider Orientation="Orientation.Horizontal"></FluentDivider>
+    }
+
+    <div class="fluent-design-navmenu-content">
+        <FluentNavMenu Width="@(IsMobile ? null : 250)" Expanded="@Collapsed"
+                       CollapsedChildNavigation>
             @if (Menu != null)
             {
                 @foreach (var menu in Menu.Items)
@@ -15,9 +27,12 @@
         </FluentNavMenu>
     </div>
 </div>
+
 @code
 {
     protected ApplicationMenu Menu { get; set; }
+
+    [Parameter] public bool IsMobile { get; set; }
 
     [Inject] protected IMenuManager MenuManager { get; set; }
 
@@ -26,6 +41,11 @@
     [Inject] protected ApplicationConfigurationChangedService ApplicationConfigurationChangedService { get; set; }
 
     [Parameter] public bool Collapsed { get; set; }
+
+
+    protected string ClassValue => IsMobile ? $"{Class} fluent-design-mobile-navmenu-content-card" : $"{Class} fluent-design-navmenu-content-card";
+
+    protected string StyleValue => $@"{Style} {(IsMobile && !Collapsed ? "display:none" : "")}";
 
     protected override async Task OnInitializedAsync()
     {

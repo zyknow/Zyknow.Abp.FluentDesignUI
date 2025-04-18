@@ -9,6 +9,7 @@
 @inject IStringLocalizer<AbpUiResource> L
 @inject NavigationManager NavigationManager
 @implements IDisposable
+
 <AuthorizeView>
     <Authorized>
         <FluentProfileMenu
@@ -21,6 +22,8 @@
             OnHeaderButtonClick="LogoutAsync"
             PopoverStyle="min-width: 330px;">
             <FooterTemplate>
+                <MediaQuery Media="@ThemeOptions.Value.MobileBreakpoint" @bind-Matches="IsMobileStyle"/>
+                
                 @if (Menu != null)
                 {
                     <FluentStack Wrap="true">
@@ -57,8 +60,10 @@
     [Inject] protected IMenuManager MenuManager { get; set; }
     [Inject] protected IJSRuntime JsRuntime { get; set; }
     [Inject] protected IOptions<AuthenticationOptions> AuthenticationOptions { get; set; }
+    [Inject] IOptions<AbpFluentDesignThemeOptions> ThemeOptions { get; set; }
 
     protected ApplicationMenu Menu { get; set; }
+    protected bool IsMobileStyle { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
