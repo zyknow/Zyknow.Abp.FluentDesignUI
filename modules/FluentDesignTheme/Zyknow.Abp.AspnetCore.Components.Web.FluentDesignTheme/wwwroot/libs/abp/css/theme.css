@@ -90,6 +90,13 @@ body {
     border-radius: 0.5rem;
 }
 
+.fluent-border-card {
+    background-color: var(--neutral-fill-layer-rest);
+    padding: 2rem;
+    border-radius: 0.5rem;
+    border: calc(var(--stroke-width) * 1px) solid var(--neutral-layer-4);
+}
+
 
 /* For Webkit browsers (Chrome, Safari, Opera) */
 ::-webkit-scrollbar {

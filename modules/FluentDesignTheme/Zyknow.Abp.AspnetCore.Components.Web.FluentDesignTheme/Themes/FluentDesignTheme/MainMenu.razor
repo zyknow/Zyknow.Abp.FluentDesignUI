@@ -38,14 +38,16 @@
 
     [Inject] NavigationManager NavigationManager { get; set; }
 
+    [Inject] protected IThemeStore ThemeStore { get; set; }
+
     [Inject] protected ApplicationConfigurationChangedService ApplicationConfigurationChangedService { get; set; }
 
     [Parameter] public bool Collapsed { get; set; }
 
 
-    protected string ClassValue => IsMobile ? $"{Class} fluent-design-mobile-navmenu-content-card" : $"{Class} fluent-design-navmenu-content-card";
+    protected string ClassValue => IsMobile && ThemeStore.LayoutTheme == FluentLayoutTheme.Default ? $"{Class} fluent-design-mobile-navmenu-content-card" : $"{Class} fluent-design-navmenu-content-card";
 
-    protected string StyleValue => $@"{Style} {(IsMobile && !Collapsed ? "display:none" : "")}";
+    protected string StyleValue => $@"{Style} {(IsMobile && !Collapsed ? "display:none;" : "")}" + $@"{(IsMobile && ThemeStore.LayoutTheme == FluentLayoutTheme.Rounded ? "width:100%;margin-right:1rem;" : "")}";
 
     protected override async Task OnInitializedAsync()
     {
