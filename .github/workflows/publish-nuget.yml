@@ -60,7 +60,7 @@ jobs:
       - name: Publish NuGet package
         shell: pwsh {0}
         run: |
-          .\package-publish-csproj.ps1
+          ./package-publish-csproj.ps1
 
       #  需要修改项目根目录下的 Directory.Build.props 中的Version跟package.json中的version一致
       - name: Update version
