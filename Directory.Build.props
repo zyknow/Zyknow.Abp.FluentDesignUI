@@ -1,7 +1,7 @@
 <Project>
     <PropertyGroup>
         <LangVersion>latest</LangVersion>
-        <Version>0.0.1</Version>
+        <Version>1.0.0-preview.1</Version>
         <NoWarn>$(NoWarn);CS1591;NU1903;NU1902;NU1904;</NoWarn>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
