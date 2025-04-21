@@ -98,9 +98,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zyknow.Abp.Account.Blazor.S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zyknow.Abp.Account.Blazor.WebAssembly.FluentDesignUI", "modules\Account\Zyknow.Abp.Account.Blazor.WebAssembly.FluentDesignUI\Zyknow.Abp.Account.Blazor.WebAssembly.FluentDesignUI.csproj", "{603837ED-8EDC-4F7C-992F-E721ECFD6097}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "core", "core", "{F42DE5AE-14C5-43C2-8135-411C9D8DE251}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zyknow.Abp.GroupComponent.FluentDesignUI", "core\Zyknow.Abp.GroupComponent.FluentDesignUI\Zyknow.Abp.GroupComponent.FluentDesignUI.csproj", "{9C9FC095-C80E-497B-97E2-03198B975356}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zyknow.Abp.GroupComponent.FluentDesignUI", "src\Zyknow.Abp.GroupComponent.FluentDesignUI\Zyknow.Abp.GroupComponent.FluentDesignUI.csproj", "{AE728D44-3237-42E9-B643-1009A43DB20B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -236,10 +234,10 @@ Global
 		{603837ED-8EDC-4F7C-992F-E721ECFD6097}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{603837ED-8EDC-4F7C-992F-E721ECFD6097}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{603837ED-8EDC-4F7C-992F-E721ECFD6097}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9C9FC095-C80E-497B-97E2-03198B975356}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9C9FC095-C80E-497B-97E2-03198B975356}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9C9FC095-C80E-497B-97E2-03198B975356}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9C9FC095-C80E-497B-97E2-03198B975356}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE728D44-3237-42E9-B643-1009A43DB20B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE728D44-3237-42E9-B643-1009A43DB20B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE728D44-3237-42E9-B643-1009A43DB20B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE728D44-3237-42E9-B643-1009A43DB20B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -284,7 +282,7 @@ Global
 		{92FE9D39-968D-4D99-94A8-A3CBE24EE171} = {C63569B1-A81A-4F4D-BA91-B4C19056740C}
 		{F11F0E81-66CD-4452-991E-1B95752459A1} = {C63569B1-A81A-4F4D-BA91-B4C19056740C}
 		{603837ED-8EDC-4F7C-992F-E721ECFD6097} = {C63569B1-A81A-4F4D-BA91-B4C19056740C}
-		{9C9FC095-C80E-497B-97E2-03198B975356} = {F42DE5AE-14C5-43C2-8135-411C9D8DE251}
+		{AE728D44-3237-42E9-B643-1009A43DB20B} = {1ADC320B-7E6A-435C-87B5-C4DA560C19F5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {864DE782-FCBD-4420-849C-8C817BA24FF9}
