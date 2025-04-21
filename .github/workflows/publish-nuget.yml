@@ -24,13 +24,16 @@ jobs:
           node-version: "lts/*"
       - name: Install dependencies
         run: yarn install
-      - name: Release
+      - name: Get new version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
-      - name: Get new version
-        id: get_version
-        run: echo "::set-output name=version::$(jq -r ".version" package.json)"
+        run: |
+          VER=$(npx semantic-release --dry-run 2>&1 \
+            | grep -oP 'The next release version is \K.*')
+          echo "version=$VER" >> $GITHUB_OUTPUT
+
+      - name: Use extracted version
+        run: echo "Next version is ${{ steps.get_version.outputs.version }}"
     
     outputs:
       new_version: ${{ steps.get_version.outputs.version }}
