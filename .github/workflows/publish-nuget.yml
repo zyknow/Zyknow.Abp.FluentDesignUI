@@ -39,7 +39,7 @@ jobs:
       
           # 提取版本号
           PUBLISH_VERSION=$(echo "$RELEASE_INFO" \
-          | grep -oP 'The next release version is \K.*')
+          | grep -oP '(?i)next release version is \K\S+')
       
           # 没取到就报错
           if [ -z "$PUBLISH_VERSION" ]; then
