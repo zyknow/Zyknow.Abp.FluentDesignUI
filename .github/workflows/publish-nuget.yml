@@ -28,9 +28,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          RELEASE_INFO=$(npx semantic-release --dry-run) \
-          echo "RELEASE_INFO =  $RELEASE_INFO" \ 
-          PUBLISH_VERSION=$(echo "$RELEASE_INFO" | grep -oP 'The next release version is \K.*') \ 
+          RELEASE_INFO=$(npx semantic-release --dry-run 2>&1)
+          echo "RELEASE_INFO=$RELEASE_INFO"
+          PUBLISH_VERSION=$(echo "$RELEASE_INFO" | grep -oP 'The next release version is \K.*')
+          if [ -z "$PUBLISH_VERSION" ]; then
+            echo "Error: 未能抽取到版本号" >&2
+            exit 1
+          fi
           echo "version=$PUBLISH_VERSION" >> $GITHUB_OUTPUT
       - name: Use extracted version
         run: echo "Next version is ${{ steps.get_version.outputs.version }}"
