@@ -81,8 +81,9 @@ jobs:
       #  需要修改项目根目录下的 Directory.Build.props 中的Version跟package.json中的version一致
       - name: Update version
         run: |
+          echo "Next version is ${{ steps.get_version.outputs.version }}"
           # Extract version from package.json
-          VERSION=${{ needs.release.outputs.new_version }}"
+          VERSION=${{ needs.release.outputs.new_version }}
 
           # Update Directory.Build.props with the extracted version
           sed -i "s|<Version>.*</Version>|<Version>$VERSION</Version>|" Directory.Build.props
