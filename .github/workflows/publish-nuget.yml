@@ -56,22 +56,6 @@ jobs:
           
       - name: Use extracted version
         run: echo "Next version is ${{ steps.get_version.outputs.version }}"
-    
-    outputs:
-      new_version: ${{ steps.get_version.outputs.version }}
-  
-  build_nuget:
-    needs: release
-    name: Build NuGet
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write # to be able to publish a GitHub release
-      issues: write # to be able to comment on released issues
-      pull-requests: write # to be able to comment on released pull requests
-      id-token: write # to enable use of OIDC for npm provenance
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
 
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
@@ -81,9 +65,9 @@ jobs:
       #  需要修改项目根目录下的 Directory.Build.props 中的Version跟package.json中的version一致
       - name: Update version
         run: |
-          echo "Next version is ${{ needs.release.outputs.new_version }}"
+          echo "Next version is ${{ steps.get_version.outputs.version }}"
           # Extract version from package.json
-          VERSION=${{ needs.release.outputs.new_version }}
+          VERSION=${{ steps.get_version.outputs.version }}
 
           # Update Directory.Build.props with the extracted version
           sed -i "s|<Version>.*</Version>|<Version>$VERSION</Version>|" Directory.Build.props
@@ -98,28 +82,28 @@ jobs:
           # 用 call operator (&) 来执行脚本
           & "./package-publish-csproj.ps1"
 
-      - name: Commit changes
-        run: |
-          # Configure git
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-
-          # Check if there are changes to commit
-          if git diff --exit-code; then
-            echo "No changes to commit"
-          else
-            # Add changes to git
-            git add Directory.Build.props
-
-            # Commit changes
-            git commit -m "chore: update Directory.Build.props version"
-
-            # Pull the latest changes from the remote branch with rebase
-            git pull --rebase origin ${{ github.ref }}
-
-            # Push changes to the repository
-            git push origin HEAD:${{ github.ref }}
-          fi
+#      - name: Commit changes
+#        run: |
+#          # Configure git
+#          git config --local user.email "action@github.com"
+#          git config --local user.name "GitHub Action"
+#
+#          # Check if there are changes to commit
+#          if git diff --exit-code; then
+#            echo "No changes to commit"
+#          else
+#            # Add changes to git
+#            git add Directory.Build.props
+#
+#            # Commit changes
+#            git commit -m "chore: update Directory.Build.props version"
+#
+#            # Pull the latest changes from the remote branch with rebase
+#            git pull --rebase origin ${{ github.ref }}
+#
+#            # Push changes to the repository
+#            git push origin HEAD:${{ github.ref }}
+#          fi
 
       - name: Push to NuGet
         run: |
@@ -143,7 +127,7 @@ jobs:
           echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
 
           # Get the tag by parsing package.json
-          TAG=v${{ needs.release.outputs.new_version }}
+          TAG=v${{ steps.get_version.outputs.version }}
 
           # Upload each .nupkg file in the .nuget directory to the existing release
           for file in .nuget/*.nupkg; do
