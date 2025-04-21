@@ -28,10 +28,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          VER=$(npx semantic-release --dry-run 2>&1 \
-            | grep -oP 'The next release version is \K.*')
-          echo "version=$VER" >> $GITHUB_OUTPUT
-
+          RELEASE_INFO=$(npx semantic-release --dry-run) \
+          echo "RELEASE_INFO =  $RELEASE_INFO" \ 
+          PUBLISH_VERSION=$(echo "$RELEASE_INFO" | grep -oP 'The next release version is \K.*') \ 
+          echo "version=$PUBLISH_VERSION" >> $GITHUB_OUTPUT
       - name: Use extracted version
         run: echo "Next version is ${{ steps.get_version.outputs.version }}"
     
