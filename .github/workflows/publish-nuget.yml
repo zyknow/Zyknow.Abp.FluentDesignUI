@@ -30,7 +30,7 @@ jobs:
         run: |
           # 暂时关闭 -e，避免 semantic-release 出错时直接退出
           set +e
-          RELEASE_INFO=$(npx semantic-release --dry-run --branches main 2>&1 || true)
+          RELEASE_INFO=$(npx semantic-release --dry-run 2>&1 || true)
           # 恢复 -e
           set -e
       
@@ -72,6 +72,15 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '9.0.x'
+          
+      #  需要修改项目根目录下的 Directory.Build.props 中的Version跟package.json中的version一致
+      - name: Update version
+        run: |
+          # Extract version from package.json
+          VERSION=${{ needs.release.outputs.new_version }}
+
+          # Update Directory.Build.props with the extracted version
+          sed -i "s|<Version>.*</Version>|<Version>$VERSION</Version>|" Directory.Build.props
 
       - name: Ensure PowerShell is available
         # ubuntu-latest 自带 pwsh；如果你想显式安装可以用 actions/setup-pwsh@v2
@@ -81,15 +90,6 @@ jobs:
         shell: pwsh {0}
         run: |
           ./package-publish-csproj.ps1
-
-      #  需要修改项目根目录下的 Directory.Build.props 中的Version跟package.json中的version一致
-      - name: Update version
-        run: |
-          # Extract version from package.json
-          VERSION=${{ needs.release.outputs.new_version }}
-
-          # Update Directory.Build.props with the extracted version
-          sed -i "s|<Version>.*</Version>|<Version>$VERSION</Version>|" Directory.Build.props
 
       - name: Commit changes
         run: |
