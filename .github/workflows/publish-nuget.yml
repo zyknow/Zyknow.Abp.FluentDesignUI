@@ -25,6 +25,7 @@ jobs:
       - name: Install dependencies
         run: yarn install
       - name: Get new version
+        id: get_version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -52,6 +53,7 @@ jobs:
       
           echo "Extracted version: $VER"
           echo "version=$VER" >> $GITHUB_OUTPUT
+          
       - name: Use extracted version
         run: echo "Next version is ${{ steps.get_version.outputs.version }}"
     
@@ -75,12 +77,12 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '9.0.x'
-          
+
       #  需要修改项目根目录下的 Directory.Build.props 中的Version跟package.json中的version一致
       - name: Update version
         run: |
           # Extract version from package.json
-          VERSION=${{ needs.release.outputs.new_version }}
+          VERSION=${{ needs.release.outputs.new_version }}"
 
           # Update Directory.Build.props with the extracted version
           sed -i "s|<Version>.*</Version>|<Version>$VERSION</Version>|" Directory.Build.props
