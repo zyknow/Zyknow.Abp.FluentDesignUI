@@ -1,6 +1,6 @@
 {
   "name": "Zyknow.Abp.FluentDesignUI",
-  "version": "0.0.1",
+  "version": "1.0.0-preview.1",
   "description": "[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://mit-license.org/)\r [![GitHub Stars](https://img.shields.io/github/stars/zyknow/Zyknow.Abp.FluentDesignUI.svg)](https://github.com/zyknow/Zyknow.Abp.FluentDesignUI/stargazers)\r [![GitHub Issues](https://img.shields.io/github/issues/zyknow/Zyknow.Abp.FluentDesignUI.svg)](https://github.com/zyknow/Zyknow.Abp.FluentDesignUI/issues)",
   "main": "index.js",
   "scripts": {
