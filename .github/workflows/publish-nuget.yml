@@ -28,27 +28,30 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # 暂时关闭 -e，避免 semantic-release 出错时直接退出
           set +e
-          RELEASE_INFO=$(npx semantic-release --dry-run 2>&1 || true)
-          # 恢复 -e
+          OUTPUT=$(npx semantic-release --dry-run 2>&1 || true)
           set -e
       
-          echo "RELEASE_INFO:"
-          echo "$RELEASE_INFO"
+          echo "―― semantic-release 输出 ――"
+          echo "$OUTPUT"
+          echo "―― 以上结束 ――"
       
-          # 提取版本号
-          PUBLISH_VERSION=$(echo "$RELEASE_INFO" \
-          | grep -oP '(?i)next release version is \K\S+')
+          # 尝试从 “next release version is” 行提取
+          VER=$(echo "$OUTPUT" \
+          | grep -oP '(?i)(?<=next release version is )\S+' || true)
+          # 如果没取到，再从 “Published release” 行提取
+          if [ -z "$VER" ]; then
+          VER=$(echo "$OUTPUT" \
+          | grep -oP '(?<=Published release )\S+' || true)
+          fi
       
-          # 没取到就报错
-          if [ -z "$PUBLISH_VERSION" ]; then
+          if [ -z "$VER" ]; then
           echo "Error: 未能抽取到版本号" >&2
           exit 1
           fi
       
-          # 写入输出
-          echo "version=$PUBLISH_VERSION" >> $GITHUB_OUTPUT
+          echo "Extracted version: $VER"
+          echo "version=$VER" >> $GITHUB_OUTPUT
       - name: Use extracted version
         run: echo "Next version is ${{ steps.get_version.outputs.version }}"
     
