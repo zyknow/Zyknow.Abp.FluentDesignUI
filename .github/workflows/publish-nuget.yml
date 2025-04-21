@@ -81,7 +81,7 @@ jobs:
       #  需要修改项目根目录下的 Directory.Build.props 中的Version跟package.json中的version一致
       - name: Update version
         run: |
-          echo "Next version is ${{ steps.get_version.outputs.version }}"
+          echo "Next version is ${{ needs.release.outputs.new_version }}"
           # Extract version from package.json
           VERSION=${{ needs.release.outputs.new_version }}
 
@@ -93,9 +93,10 @@ jobs:
         run: pwsh --version
 
       - name: Publish NuGet package
-        shell: pwsh {0}
+        shell: pwsh
         run: |
-          ./package-publish-csproj.ps1
+          # 用 call operator (&) 来执行脚本
+          & "./package-publish-csproj.ps1"
 
       - name: Commit changes
         run: |
