@@ -121,9 +121,9 @@ jobs:
 
       - name: Push to NuGet
         run: |
-          dotnet nuget push out/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate --no-symbols
+          dotnet nuget push .nuget/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate --no-symbols
 
-      - name: Upload all NuGet packages in out folder to existing GitHub Release
+      - name: Upload all NuGet packages in .nuget folder to existing GitHub Release
         run: |
           # Install GitHub CLI
           curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg
@@ -137,7 +137,7 @@ jobs:
           # Get the tag by parsing package.json
           TAG=v${{ needs.release.outputs.new_version }}
 
-          # Upload each .nupkg file in the out directory to the existing release
-          for file in out/*.nupkg; do
+          # Upload each .nupkg file in the .nuget directory to the existing release
+          for file in .nuget/*.nupkg; do
             gh release upload "$TAG" "$file"
           done
