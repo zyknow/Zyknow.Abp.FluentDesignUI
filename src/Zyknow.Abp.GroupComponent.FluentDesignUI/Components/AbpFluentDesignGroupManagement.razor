@@ -6,29 +6,33 @@
 <MediaQuery Media="@ThemeOptions.Value.MobileBreakpoint" @bind-Matches="IsMobileStyle"/>
 
 <CascadingValue Value="this" IsFixed="true">
-    <FluentTabs Orientation="@(IsMobileStyle ? Orientation.Horizontal : Orientation.Vertical)"
-                @bind-ActiveTabId="SelectedComponentGroup.Id" Width="100%">
-        @foreach (var group in ComponentCreationContext.Groups)
-        {
-            <FluentTab Id="@group.Id" Label="@group.DisplayName" LabelStyle="min-width:200px;font-size: 18px;">
-                <div class="fluent-border-card">
-                    <FluentStack Orientation="Orientation.Vertical" VerticalGap="20">
-                        <FluentLabel Weight="FontWeight.Bold"
-                                     Typo="Typography.H4">@group.DisplayName</FluentLabel>
-                        <FluentDivider/>
-                        @{
-                            GroupItemRenders.Add(b =>
-                            {
-                                b.OpenComponent(0, group.ComponentType);
-                                b.CloseComponent();
-                            });
-                        }
-                        @GroupItemRenders.Last()
-                    </FluentStack>
-                </div>
-            </FluentTab>
-        }
-    </FluentTabs>
+    @if (SelectedComponentGroup != null)
+    {
+        <FluentTabs Orientation="@(IsMobileStyle ? Orientation.Horizontal : Orientation.Vertical)"
+                    @bind-ActiveTabId="SelectedComponentGroup.Id" Width="100%">
+            @foreach (var group in ComponentCreationContext.Groups)
+            {
+                <FluentTab Id="@group.Id" Label="@group.DisplayName" LabelStyle="min-width:200px;font-size: 18px;">
+                    <div class="fluent-border-card">
+                        <FluentStack Orientation="Orientation.Vertical" VerticalGap="20">
+                            <FluentLabel Weight="FontWeight.Bold"
+                                         Typo="Typography.H4">@group.DisplayName</FluentLabel>
+                            <FluentDivider/>
+                            @{
+                                GroupItemRenders.Add(b =>
+                                {
+                                    b.OpenComponent(0, group.ComponentType);
+                                    b.CloseComponent();
+                                });
+                            }
+                            @GroupItemRenders.Last()
+                        </FluentStack>
+                    </div>
+                </FluentTab>
+            }
+        </FluentTabs>
+    }
+
 </CascadingValue>
 
 @code {
@@ -37,7 +41,7 @@
 
     [Inject] protected IServiceProvider ServiceProvider { get; set; }
 
-    [Inject] protected IOptions<GroupComponentOptions> _options { get; set; }
+    [Inject] protected IOptions<GroupComponentOptions> GroupOptions { get; set; }
 
     [Inject] protected IStringLocalizer<TResource> L { get; set; }
 
@@ -45,19 +49,19 @@
 
     protected bool IsMobileStyle { get; set; }
 
-    protected GroupComponentCreationContext ComponentCreationContext { get; set; }
+    private GroupComponentCreationContext ComponentCreationContext { get; set; }
 
-    protected List<IGroupComponentContributor> Contributors { get; set; }
+    private List<IGroupComponentContributor> Contributors { get; set; }
 
-    protected List<RenderFragment> GroupItemRenders { get; set; } = new();
+    private List<RenderFragment> GroupItemRenders { get; set; } = new();
 
-    protected ComponentGroup SelectedComponentGroup { get; set; }
+    protected ComponentGroup? SelectedComponentGroup { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         ComponentCreationContext = new GroupComponentCreationContext(ServiceProvider);
 
-        Contributors = _options.Value.GetContributors(GroupKey);
+        Contributors = GroupOptions.Value.GetContributors(GroupKey);
         foreach (var contributor in Contributors)
         {
             await contributor.ConfigureAsync(ComponentCreationContext);
