@@ -59,7 +59,7 @@
     <PackageVersion Include="Volo.Abp.Caching" Version="$(ABPPackageVersion)" />
     <PackageVersion Include="Volo.Abp.Ddd.Application.Contracts" Version="$(ABPPackageVersion)" />
     <PackageVersion Include="Volo.Abp.Emailing" Version="$(ABPPackageVersion)" />
-    <PackageVersion Include="Volo.Abp.EntityFrameworkCore.PostgreSql" Version="$(ABPPackageVersion)" />
+    <PackageVersion Include="Volo.Abp.EntityFrameworkCore.Sqlite" Version="$(ABPPackageVersion)" />
     <PackageVersion Include="Volo.Abp.Features" Version="$(ABPPackageVersion)" />
     <PackageVersion Include="Volo.Abp.GlobalFeatures" Version="$(ABPPackageVersion)" />
     <PackageVersion Include="Volo.Abp.Http.Client.IdentityModel.WebAssembly" Version="$(ABPPackageVersion)" />

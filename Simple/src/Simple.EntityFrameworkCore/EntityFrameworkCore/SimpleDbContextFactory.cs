@@ -10,15 +10,13 @@ public class SimpleDbContextFactory : IDesignTimeDbContextFactory<SimpleDbContex
 {
     public SimpleDbContext CreateDbContext(string[] args)
     {
-        // https://www.npgsql.org/efcore/release-notes/6.0.html#opting-out-of-the-new-timestamp-mapping-logic
-        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         
         var configuration = BuildConfiguration();
         
         SimpleEfCoreEntityExtensionMappings.Configure();
 
         var builder = new DbContextOptionsBuilder<SimpleDbContext>()
-            .UseNpgsql(configuration.GetConnectionString("Default"));
+            .UseSqlite(configuration.GetConnectionString("Default"));
         
         return new SimpleDbContext(builder.Options);
     }
