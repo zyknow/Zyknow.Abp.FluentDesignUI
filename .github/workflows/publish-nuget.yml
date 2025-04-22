@@ -6,7 +6,7 @@ on:
       - preview
 jobs:
   release:
-    name: Release
+    name: Publish-Nuget
     runs-on: ubuntu-latest
     permissions:
       contents: write # to be able to publish a GitHub release
