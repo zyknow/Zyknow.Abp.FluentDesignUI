@@ -25,17 +25,13 @@ set of tools and components that are easy to use and customize, fostering a more
 - ✅ Comprehensive replacement of default ABP Blazor UI components.
 - ✅ Modern and intuitive UI powered by **FluentBlazor**.
 
-## 📦 Installation
-
-*Coming soon...*
-
 ## 🚀 Getting Started
 
-*Coming soon...*
+[Setup-Guide](./README.Setup-Guide.md)
 
 ## 🗺️ Roadmap
 
-- [x] Mobile Support
+- [x] Mobile Support[README.Start.md](README.Start.md)
 - [ ] Custom Pagination
 - [ ] Multiple Tabs
 - [ ] Publish NuGet Package
@@ -61,7 +57,8 @@ We welcome contributions! Please follow the guidelines below:
 
 ### Commit Message Guidelines
 
-When contributing, please adhere to the following commit message conventions inspired by the [Angular Commit Message Guidelines](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular):
+When contributing, please adhere to the following commit message conventions inspired by
+the [Angular Commit Message Guidelines](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular):
 
 - **`feat`**: Add new features
 - **`fix`**: Fix a bug or issue
@@ -78,7 +75,6 @@ When contributing, please adhere to the following commit message conventions ins
 - **`wip`**: Work in progress
 
 Thank you for contributing!
-
 
 ## License
 
