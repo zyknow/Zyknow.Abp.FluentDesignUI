@@ -32,7 +32,7 @@ set of tools and components that are easy to use and customize, fostering a more
 ## 🗺️ Roadmap
 
 - [x] Mobile Support[README.Start.md](README.Start.md)
-- [ ] Custom Pagination
+- [x] Custom Pagination
 - [ ] Multiple Tabs
 - [ ] Publish NuGet Package
 - [ ] ABP CMS FluentUI Theme Module
