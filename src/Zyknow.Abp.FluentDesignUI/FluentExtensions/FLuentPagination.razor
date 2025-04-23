@@ -22,7 +22,7 @@
             }
             else
             {
-                // 显示省略号
+                // Display ellipsis
                 if (pageNumbers.First() > 1)
                 {
                     <FluentButton Appearance="@(1 == CurrentPage ? Appearance.Accent : Appearance.Outline)"
@@ -44,7 +44,7 @@
                     </FluentButton>
                 }
 
-                // 显示省略号
+                // Display ellipsis
                 if (pageNumbers.Last() < TotalPages - 1)
                 {
                     if (pageNumbers.Last() < TotalPages - 2)
@@ -74,62 +74,62 @@
 @code {
 
     /// <summary>
-    /// 总项目数
+    /// Total number of items
     /// </summary>
     [Parameter]
     public int TotalCount { get; set; }
 
     /// <summary>
-    /// 每页显示的项目数
+    /// Number of items per page
     /// </summary>
     [Parameter]
     public int PageSize { get; set; } = 10;
 
     /// <summary>
-    /// 当前页码
+    /// Current page number
     /// </summary>
     [Parameter]
     public int CurrentPage { get; set; } = 1;
 
     /// <summary>
-    /// 页码变化时触发的事件
+    /// Event triggered when the page number changes
     /// </summary>
     [Parameter]
     public EventCallback<int> CurrentPageChanged { get; set; }
 
     /// <summary>
-    /// 在分页导航中显示的最大页码数
+    /// Maximum number of page numbers to display in the pagination navigation
     /// </summary>
     [Parameter]
     public int MaxVisiblePages { get; set; } = 5;
 
     /// <summary>
-    /// 总页数
+    /// Total number of pages
     /// </summary>
     private int TotalPages => (int)Math.Ceiling(TotalCount / (double)PageSize);
 
     /// <summary>
-    /// 是否有上一页
+    /// Whether there is a previous page
     /// </summary>
     private bool HasPreviousPage => CurrentPage > 1;
 
     /// <summary>
-    /// 是否有下一页
+    /// Whether there is a next page
     /// </summary>
     private bool HasNextPage => CurrentPage < TotalPages;
 
     /// <summary>
-    /// 获取要显示的页码列表
+    /// Get the list of page numbers to display
     /// </summary>
     private List<int> GetVisiblePageNumbers()
     {
         var pages = new List<int>();
 
-        // 计算显示页码的起始和结束位置
+        // Calculate the start and end positions of the page numbers to display
         int start = Math.Max(1, CurrentPage - MaxVisiblePages / 2);
         int end = Math.Min(TotalPages, start + MaxVisiblePages - 1);
 
-        // 如果结束页接近总页数，调整起始页
+        // If the end page is close to the total number of pages, adjust the start page
         if (end == TotalPages)
         {
             start = Math.Max(1, end - MaxVisiblePages + 1);
@@ -144,7 +144,7 @@
     }
 
     /// <summary>
-    /// 跳转到指定页
+    /// Navigate to the specified page
     /// </summary>
     private async Task GoToPage(int page)
     {
@@ -158,11 +158,11 @@
     }
 
     /// <summary>
-    /// 参数设置时的处理
+    /// Process when parameters are set
     /// </summary>
     protected override void OnParametersSet()
     {
-        // 确保当前页在有效范围内
+        // Ensure the current page is within a valid range
         if (CurrentPage < 1)
         {
             CurrentPage = 1;
