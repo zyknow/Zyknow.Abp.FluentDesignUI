@@ -1,0 +1,124 @@
+﻿@using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
+<FluentStack VerticalAlignment="VerticalAlignment.Center">
+    <FluentButton Appearance="@Appearance.Outline" 
+                  Disabled="@(!HasPreviousPage)" 
+                  OnClick="@(() => GoToPage(CurrentPage - 1))">
+        <FluentIcon Value="@(new Size16.ChevronLeft())" />
+    </FluentButton>
+    
+    @foreach(var pageNumber in GetVisiblePageNumbers())
+    {
+        <FluentButton Appearance="@(pageNumber == CurrentPage ? Appearance.Accent : Appearance.Outline)"
+                      OnClick="@(() => GoToPage(pageNumber))">
+            @pageNumber
+        </FluentButton>
+    }
+    
+    <FluentButton Appearance="@Appearance.Outline" 
+                  Disabled="@(!HasNextPage)" 
+                  OnClick="@(() => GoToPage(CurrentPage + 1))">
+        <FluentIcon Value="@(new Size16.ChevronRight())" />
+    </FluentButton>
+</FluentStack>
+
+@code {
+    /// <summary>
+    /// 总项目数
+    /// </summary>
+    [Parameter]
+    public int TotalCount { get; set; }
+
+    /// <summary>
+    /// 每页显示的项目数
+    /// </summary>
+    [Parameter]
+    public int PageSize { get; set; } = 10;
+
+    /// <summary>
+    /// 当前页码
+    /// </summary>
+    [Parameter]
+    public int CurrentPage { get; set; } = 1;
+
+    /// <summary>
+    /// 页码变化时触发的事件
+    /// </summary>
+    [Parameter]
+    public EventCallback<int> CurrentPageChanged { get; set; }
+
+    /// <summary>
+    /// 在分页导航中显示的最大页码数
+    /// </summary>
+    [Parameter]
+    public int MaxVisiblePages { get; set; } = 5;
+
+    /// <summary>
+    /// 总页数
+    /// </summary>
+    private int TotalPages => (int)Math.Ceiling(TotalCount / (double)PageSize);
+
+    /// <summary>
+    /// 是否有上一页
+    /// </summary>
+    private bool HasPreviousPage => CurrentPage > 1;
+
+    /// <summary>
+    /// 是否有下一页
+    /// </summary>
+    private bool HasNextPage => CurrentPage < TotalPages;
+
+    /// <summary>
+    /// 获取要显示的页码列表
+    /// </summary>
+    private List<int> GetVisiblePageNumbers()
+    {
+        var pages = new List<int>();
+        
+        // 计算显示页码的起始和结束位置
+        int start = Math.Max(1, CurrentPage - MaxVisiblePages / 2);
+        int end = Math.Min(TotalPages, start + MaxVisiblePages - 1);
+        
+        // 如果结束页接近总页数，调整起始页
+        if (end == TotalPages)
+        {
+            start = Math.Max(1, end - MaxVisiblePages + 1);
+        }
+        
+        for (int i = start; i <= end; i++)
+        {
+            pages.Add(i);
+        }
+        
+        return pages;
+    }
+
+    /// <summary>
+    /// 跳转到指定页
+    /// </summary>
+    private async Task GoToPage(int page)
+    {
+        if (page < 1 || page > TotalPages || page == CurrentPage)
+        {
+            return;
+        }
+
+        CurrentPage = page;
+        await CurrentPageChanged.InvokeAsync(page);
+    }
+
+    /// <summary>
+    /// 参数设置时的处理
+    /// </summary>
+    protected override void OnParametersSet()
+    {
+        // 确保当前页在有效范围内
+        if (CurrentPage < 1)
+        {
+            CurrentPage = 1;
+        }
+        else if (CurrentPage > TotalPages && TotalPages > 0)
+        {
+            CurrentPage = TotalPages;
+        }
+    }
+}
