@@ -1,6 +1,7 @@
 ﻿@using Localization.Resources.AbpUi
 @using Microsoft.Extensions.Localization
 @using BlazorPro.BlazorSize
+@using Zyknow.Abp.FluentDesignUI.FluentExtensions
 @inject IStringLocalizer<AbpUiResource> UL
 @inherits FluentComponentBase
 
@@ -27,41 +28,42 @@
             </FluentStack>
         </Matched>
     </MediaQuery>
-    <FluentPaginator State="@State" @attributes="AdditionalAttributes">
-        <PaginationTextTemplate>
-            <FluentLabel Style="white-space: nowrap;" Alignment="HorizontalAlignment.Stretch"
-                         Weight="FontWeight.Bold">@UL["PageOf", (State.CurrentPageIndex + 1), State.LastPageIndex + 1]</FluentLabel>
-        </PaginationTextTemplate>
-        <SummaryTemplate>
-            <FluentStack Style="white-space: nowrap;" VerticalAlignment="VerticalAlignment.Center"
-                         HorizontalAlignment="HorizontalAlignment.SpaceBetween">
-                <FluentLabel Typo="Typography.Body"
-                             Weight="FontWeight.Bolder">@UL["Total"]: @State.TotalItemCount</FluentLabel>
-                <MediaQuery Media="@Breakpoints.MediumDown">
-                    <Unmatched>
-                        <FluentStack HorizontalAlignment="HorizontalAlignment.Right"
-                                     VerticalAlignment="VerticalAlignment.Center">
-                            @if (ItemsPerPageStart != null)
-                            {
-                                @ItemsPerPageStart
-                            }
-                            <FluentSelect
-                                Width="180px"
-                                OptionText="@(v => @UL["PagerShowMenuEntries"].Value.Replace("_MENU_", v.ToString()))"
-                                Items="@ItemsPerPageList" SelectedOption="@State.ItemsPerPage"
-                                TOption="int"
-                                SelectedOptionChanged="@(v => State.SetItemsPerPageAsync(v))"></FluentSelect>
-                            @if (ItemsPerPageEnd != null)
-                            {
-                                @ItemsPerPageEnd
-                            }
-                        </FluentStack>
-                    </Unmatched>
-                </MediaQuery>
 
-            </FluentStack>
-        </SummaryTemplate>
-    </FluentPaginator>
+    <FluentStack Style="white-space: nowrap;" VerticalAlignment="VerticalAlignment.Center"
+                 HorizontalAlignment="HorizontalAlignment.Stretch">
+        <FluentLabel Typo="Typography.Body"
+                     Weight="FontWeight.Bolder">@UL["Total"]: @State.TotalItemCount</FluentLabel>
+
+        <FluentStack HorizontalAlignment="HorizontalAlignment.Right">
+            <MediaQuery Media="@Breakpoints.MediumDown">
+                <Unmatched>
+                    <FluentStack HorizontalAlignment="HorizontalAlignment.Right"
+                                 VerticalAlignment="VerticalAlignment.Center">
+                        @if (ItemsPerPageStart != null)
+                        {
+                            @ItemsPerPageStart
+                        }
+                        <FluentSelect
+                            Width="180px"
+                            OptionText="@(v => @UL["PagerShowMenuEntries"].Value.Replace("_MENU_", v.ToString()))"
+                            Items="@ItemsPerPageList" SelectedOption="@State.ItemsPerPage"
+                            TOption="int"
+                            SelectedOptionChanged="@(v => State.SetItemsPerPageAsync(v))"></FluentSelect>
+                        @if (ItemsPerPageEnd != null)
+                        {
+                            @ItemsPerPageEnd
+                        }
+                    </FluentStack>
+                </Unmatched>
+            </MediaQuery>
+
+            <FLuentPagination TotalCount="@(State.TotalItemCount ?? 0)" PageSize="@State.ItemsPerPage"
+                              CurrentPage="@(State.CurrentPageIndex + 1)"
+                              CurrentPageChanged="@(page => { State.SetCurrentPageIndexAsync(page - 1); })">
+            </FLuentPagination>
+        </FluentStack>
+
+    </FluentStack>
 }
 
 @code {

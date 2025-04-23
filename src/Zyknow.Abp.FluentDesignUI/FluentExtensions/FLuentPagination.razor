@@ -1,27 +1,78 @@
 ﻿@using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
-<FluentStack VerticalAlignment="VerticalAlignment.Center">
-    <FluentButton Appearance="@Appearance.Outline" 
-                  Disabled="@(!HasPreviousPage)" 
-                  OnClick="@(() => GoToPage(CurrentPage - 1))">
-        <FluentIcon Value="@(new Size16.ChevronLeft())" />
-    </FluentButton>
-    
-    @foreach(var pageNumber in GetVisiblePageNumbers())
-    {
-        <FluentButton Appearance="@(pageNumber == CurrentPage ? Appearance.Accent : Appearance.Outline)"
-                      OnClick="@(() => GoToPage(pageNumber))">
-            @pageNumber
+<div>
+    <FluentStack VerticalAlignment="VerticalAlignment.Center" HorizontalGap="5">
+        <FluentButton Appearance="@Appearance.Outline"
+                      Disabled="@(!HasPreviousPage)"
+                      OnClick="@(() => GoToPage(CurrentPage - 1))">
+            <FluentIcon Value="@(new Size16.ChevronLeft())"/>
         </FluentButton>
-    }
-    
-    <FluentButton Appearance="@Appearance.Outline" 
-                  Disabled="@(!HasNextPage)" 
-                  OnClick="@(() => GoToPage(CurrentPage + 1))">
-        <FluentIcon Value="@(new Size16.ChevronRight())" />
-    </FluentButton>
-</FluentStack>
+
+        @{
+            var pageNumbers = GetVisiblePageNumbers().ToList();
+
+            if (TotalPages <= pageNumbers.Count)
+            {
+                foreach (var pageNumber in pageNumbers)
+                {
+                    <FluentButton Appearance="@(pageNumber == CurrentPage ? Appearance.Accent : Appearance.Outline)"
+                                  OnClick="@(() => GoToPage(pageNumber))">
+                        @pageNumber
+                    </FluentButton>
+                }
+            }
+            else
+            {
+                // 显示省略号
+                if (pageNumbers.First() > 1)
+                {
+                    <FluentButton Appearance="@(1 == CurrentPage ? Appearance.Accent : Appearance.Outline)"
+                                  OnClick="@(() => GoToPage(1))">
+                        1
+                    </FluentButton>
+                    if (pageNumbers.First() > 2)
+                    {
+                        <FluentButton Appearance="@(Appearance.Outline)" Disabled="true">...</FluentButton>
+                        ;
+                    }
+                }
+
+                foreach (var pageNumber in pageNumbers)
+                {
+                    <FluentButton Appearance="@(pageNumber == CurrentPage ? Appearance.Accent : Appearance.Outline)"
+                                  OnClick="@(() => GoToPage(pageNumber))">
+                        @pageNumber
+                    </FluentButton>
+                }
+
+                // 显示省略号
+                if (pageNumbers.Last() < TotalPages - 1)
+                {
+                    if (pageNumbers.Last() < TotalPages - 2)
+                    {
+                        <FluentButton Appearance="@(Appearance.Outline)" Disabled="true">...</FluentButton>
+                        ;
+                    }
+
+                    <FluentButton Appearance="@(TotalPages == CurrentPage ? Appearance.Accent : Appearance.Outline)"
+                                  OnClick="@(() => GoToPage(TotalPages))">
+                        @TotalPages
+                    </FluentButton>
+                }
+            }
+        }
+
+
+
+        <FluentButton Appearance="@Appearance.Outline"
+                      Disabled="@(!HasNextPage)"
+                      OnClick="@(() => GoToPage(CurrentPage + 1))">
+            <FluentIcon Value="@(new Size16.ChevronRight())"/>
+        </FluentButton>
+    </FluentStack>
+</div>
 
 @code {
+
     /// <summary>
     /// 总项目数
     /// </summary>
@@ -73,22 +124,22 @@
     private List<int> GetVisiblePageNumbers()
     {
         var pages = new List<int>();
-        
+
         // 计算显示页码的起始和结束位置
         int start = Math.Max(1, CurrentPage - MaxVisiblePages / 2);
         int end = Math.Min(TotalPages, start + MaxVisiblePages - 1);
-        
+
         // 如果结束页接近总页数，调整起始页
         if (end == TotalPages)
         {
             start = Math.Max(1, end - MaxVisiblePages + 1);
         }
-        
+
         for (int i = start; i <= end; i++)
         {
             pages.Add(i);
         }
-        
+
         return pages;
     }
 
@@ -121,4 +172,5 @@
             CurrentPage = TotalPages;
         }
     }
+
 }
