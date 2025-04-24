@@ -117,7 +117,7 @@ public class CmsKitAdminMenuContributor : IMenuContributor
             {
                 cmsMenu = new ApplicationMenuItem(
                     CmsKitAdminMenus.GroupName,
-                    l["Cms"]
+                    l["Menu:CMS"]
                     // icon: "far fa-newspaper"
                 ).SetFluentIcon(new Size24.News());
 

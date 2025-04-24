@@ -39,6 +39,11 @@ namespace Simple;
 )]
 public class SimpleDomainModule : AbpModule
 {
+    public override void PreConfigureServices(ServiceConfigurationContext context)
+    {
+        FeatureConfigurer.Configure();
+    }
+
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         Configure<AbpMultiTenancyOptions>(options => { options.IsEnabled = MultiTenancyConsts.IsEnabled; });
@@ -68,5 +73,6 @@ public class SimpleDomainModule : AbpModule
 #if DEBUG
         context.Services.Replace(ServiceDescriptor.Singleton<IEmailSender, NullEmailSender>());
 #endif
+        
     }
 }

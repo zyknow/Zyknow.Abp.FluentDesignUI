@@ -13,6 +13,8 @@ using Volo.Abp.EntityFrameworkCore.Sqlite;
 using Volo.Abp.GlobalFeatures;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
 using Volo.Abp.Studio;
+using Volo.Abp.Threading;
+using Volo.Abp.Uow;
 using Volo.CmsKit.EntityFrameworkCore;
 
 namespace Simple.EntityFrameworkCore;
@@ -63,6 +65,10 @@ public class SimpleEntityFrameworkCoreModule : AbpModule
             options.UseSqlite();
         });
 
-        GlobalFeatureManager.Instance.Modules.CmsKit(cmsKit => { cmsKit.EnableAll(); });
+        context.Services.AddAlwaysDisableUnitOfWorkTransaction();
+        Configure<AbpUnitOfWorkDefaultOptions>(options =>
+        {
+            options.TransactionBehavior = UnitOfWorkTransactionBehavior.Disabled;
+        });
     }
 }

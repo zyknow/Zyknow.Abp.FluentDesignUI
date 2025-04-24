@@ -10,7 +10,7 @@ public class SimpleDbContextFactory : IDesignTimeDbContextFactory<SimpleDbContex
 {
     public SimpleDbContext CreateDbContext(string[] args)
     {
-        
+        FeatureConfigurer.Configure();
         var configuration = BuildConfiguration();
         
         SimpleEfCoreEntityExtensionMappings.Configure();
