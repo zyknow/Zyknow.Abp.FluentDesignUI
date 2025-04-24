@@ -20,6 +20,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\modules\Account\Zyknow.Abp.Account.Blazor.WebAssembly.FluentDesignUI\Zyknow.Abp.Account.Blazor.WebAssembly.FluentDesignUI.csproj" />
+    <ProjectReference Include="..\..\..\modules\CmsKit\Zyknow.Abp.CmsKit.Blazor.Admin.WebAssembly.FluentDesignUI\Zyknow.Abp.CmsKit.Blazor.Admin.WebAssembly.FluentDesignUI.csproj" />
+    <ProjectReference Include="..\..\..\modules\CmsKit\Zyknow.Abp.CmsKit.Blazor.Public.WebAssembly.FluentDesignUI\Zyknow.Abp.CmsKit.Blazor.Public.WebAssembly.FluentDesignUI.csproj" />
     <ProjectReference Include="..\..\..\modules\FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.WebAssembly.FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.WebAssembly.FluentDesignTheme.csproj" />
     <ProjectReference Include="..\..\..\modules\IdentityManagement\Zyknow.Abp.IdentityManagement.Blazor.WebAssembly.FluentDesignUI\Zyknow.Abp.IdentityManagement.Blazor.WebAssembly.FluentDesignUI.csproj" />
     <ProjectReference Include="..\..\..\modules\SettingManagement\Zyknow.Abp.SettingManagement.Blazor.WebAssembly.FluentDesignUI\Zyknow.Abp.SettingManagement.Blazor.WebAssembly.FluentDesignUI.csproj" />

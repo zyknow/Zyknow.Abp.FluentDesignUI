@@ -24,6 +24,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\modules\Account\Zyknow.Abp.Account.Blazor.Server.FluentDesignUI\Zyknow.Abp.Account.Blazor.Server.FluentDesignUI.csproj" />
+    <ProjectReference Include="..\..\..\modules\CmsKit\Zyknow.Abp.CmsKit.Blazor.Admin.Server.FluentDesignUI\Zyknow.Abp.CmsKit.Blazor.Admin.Server.FluentDesignUI.csproj" />
+    <ProjectReference Include="..\..\..\modules\CmsKit\Zyknow.Abp.CmsKit.Blazor.Public.Server.FluentDesignUI\Zyknow.Abp.CmsKit.Blazor.Public.Server.FluentDesignUI.csproj" />
     <ProjectReference Include="..\..\..\modules\FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.Server.FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.Server.FluentDesignTheme.csproj" />
     <ProjectReference Include="..\..\..\modules\IdentityManagement\Zyknow.Abp.IdentityManagement.Blazor.Server.FluentDesignUI\Zyknow.Abp.IdentityManagement.Blazor.Server.FluentDesignUI.csproj" />
     <ProjectReference Include="..\..\..\modules\SettingManagement\Zyknow.Abp.SettingManagement.Blazor.Server.FluentDesignUI\Zyknow.Abp.SettingManagement.Blazor.Server.FluentDesignUI.csproj" />

@@ -13,6 +13,18 @@ using Volo.Abp.SettingManagement.EntityFrameworkCore;
 using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
+using Volo.CmsKit.Blogs;
+using Volo.CmsKit.Comments;
+using Volo.CmsKit.EntityFrameworkCore;
+using Volo.CmsKit.GlobalResources;
+using Volo.CmsKit.MarkedItems;
+using Volo.CmsKit.MediaDescriptors;
+using Volo.CmsKit.Menus;
+using Volo.CmsKit.Pages;
+using Volo.CmsKit.Ratings;
+using Volo.CmsKit.Reactions;
+using Volo.CmsKit.Tags;
+using Volo.CmsKit.Users;
 
 namespace Simple.EntityFrameworkCore;
 
@@ -56,6 +68,38 @@ public class SimpleDbContext(DbContextOptions<SimpleDbContext> options) :
 
     #endregion
 
+    #region CMS Kit Entities
+
+    public DbSet<Comment> Comments { get; set; }
+
+    public DbSet<CmsUser> User { get; set; }
+
+    public DbSet<UserReaction> Reactions { get; set; }
+
+    public DbSet<Rating> Ratings { get; set; }
+
+    public DbSet<Tag> Tags { get; set; }
+
+    public DbSet<EntityTag> EntityTags { get; set; }
+
+    public DbSet<Page> Pages { get; set; }
+
+    public DbSet<Blog> Blogs { get; set; }
+
+    public DbSet<BlogPost> BlogPosts { get; set; }
+
+    public DbSet<BlogFeature> BlogFeatures { get; set; }
+
+    public DbSet<MediaDescriptor> MediaDescriptors { get; set; }
+
+    public DbSet<MenuItem> MenuItems { get; set; }
+
+    public DbSet<GlobalResource> GlobalResources { get; set; }
+
+    public DbSet<UserMarkedItem> UserMarkedItems { get; set; }
+
+    #endregion
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -71,7 +115,8 @@ public class SimpleDbContext(DbContextOptions<SimpleDbContext> options) :
         builder.ConfigureOpenIddict();
         builder.ConfigureTenantManagement();
         builder.ConfigureBlobStoring();
-        
+        builder.ConfigureCmsKit();
+
         /* Configure your own tables/entities inside here */
 
         //builder.Entity<YourEntity>(b =>

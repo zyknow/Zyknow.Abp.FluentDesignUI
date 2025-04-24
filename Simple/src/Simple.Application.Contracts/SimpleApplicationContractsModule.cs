@@ -5,6 +5,7 @@ using Volo.Abp.SettingManagement;
 using Volo.Abp.FeatureManagement;
 using Volo.Abp.Identity;
 using Volo.Abp.TenantManagement;
+using Volo.CmsKit;
 
 namespace Simple;
 
@@ -15,7 +16,8 @@ namespace Simple;
     typeof(AbpIdentityApplicationContractsModule),
     typeof(AbpAccountApplicationContractsModule),
     typeof(AbpTenantManagementApplicationContractsModule),
-    typeof(AbpPermissionManagementApplicationContractsModule)
+    typeof(AbpPermissionManagementApplicationContractsModule),
+    typeof(CmsKitApplicationContractsModule)
 )]
 public class SimpleApplicationContractsModule : AbpModule
 {

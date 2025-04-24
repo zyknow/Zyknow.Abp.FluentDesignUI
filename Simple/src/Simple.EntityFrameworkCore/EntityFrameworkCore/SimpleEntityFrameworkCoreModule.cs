@@ -12,6 +12,7 @@ using Volo.Abp.BlobStoring.Database.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore.Sqlite;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
 using Volo.Abp.Studio;
+using Volo.CmsKit.EntityFrameworkCore;
 
 namespace Simple.EntityFrameworkCore;
 
@@ -26,7 +27,8 @@ namespace Simple.EntityFrameworkCore;
     typeof(AbpIdentityEntityFrameworkCoreModule),
     typeof(AbpOpenIddictEntityFrameworkCoreModule),
     typeof(AbpTenantManagementEntityFrameworkCoreModule),
-    typeof(BlobStoringDatabaseEntityFrameworkCoreModule)
+    typeof(BlobStoringDatabaseEntityFrameworkCoreModule),
+    typeof(CmsKitEntityFrameworkCoreModule)
     )]
 public class SimpleEntityFrameworkCoreModule : AbpModule
 {

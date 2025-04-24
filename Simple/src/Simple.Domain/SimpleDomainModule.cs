@@ -14,8 +14,10 @@ using Volo.Abp.AuditLogging;
 using Volo.Abp.BackgroundJobs;
 using Volo.Abp.Emailing;
 using Volo.Abp.FeatureManagement;
+using Volo.Abp.GlobalFeatures;
 using Volo.Abp.Identity;
 using Volo.Abp.TenantManagement;
+using Volo.CmsKit;
 
 namespace Simple;
 
@@ -32,16 +34,14 @@ namespace Simple;
     typeof(AbpIdentityDomainModule),
     typeof(AbpOpenIddictDomainModule),
     typeof(AbpTenantManagementDomainModule),
-    typeof(BlobStoringDatabaseDomainModule)
-    )]
+    typeof(BlobStoringDatabaseDomainModule),
+    typeof(CmsKitDomainModule)
+)]
 public class SimpleDomainModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
-        Configure<AbpMultiTenancyOptions>(options =>
-        {
-            options.IsEnabled = MultiTenancyConsts.IsEnabled;
-        });
+        Configure<AbpMultiTenancyOptions>(options => { options.IsEnabled = MultiTenancyConsts.IsEnabled; });
 
         Configure<AbpLocalizationOptions>(options =>
         {
@@ -64,7 +64,7 @@ public class SimpleDomainModule : AbpModule
             options.Languages.Add(new LanguageInfo("es", "es", "Español"));
             options.Languages.Add(new LanguageInfo("sv", "sv", "Svenska"));
         });
-        
+        GlobalFeatureManager.Instance.Modules.CmsKit(cmsKit => { cmsKit.EnableAll(); });
 
 #if DEBUG
         context.Services.Replace(ServiceDescriptor.Singleton<IEmailSender, NullEmailSender>());

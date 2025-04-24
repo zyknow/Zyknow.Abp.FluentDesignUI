@@ -8,18 +8,20 @@ using Volo.Abp.Modularity;
 using Volo.Abp.PermissionManagement.HttpApi;
 using Volo.Abp.Localization;
 using Volo.Abp.TenantManagement;
+using Volo.CmsKit;
 
 namespace Simple;
 
- [DependsOn(
+[DependsOn(
     typeof(SimpleApplicationContractsModule),
     typeof(AbpPermissionManagementHttpApiModule),
     typeof(AbpSettingManagementHttpApiModule),
     typeof(AbpAccountHttpApiModule),
     typeof(AbpIdentityHttpApiModule),
     typeof(AbpTenantManagementHttpApiModule),
-    typeof(AbpFeatureManagementHttpApiModule)
-    )]
+    typeof(AbpFeatureManagementHttpApiModule),
+    typeof(CmsKitHttpApiModule)
+)]
 public class SimpleHttpApiModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)

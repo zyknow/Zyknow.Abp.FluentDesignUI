@@ -13,6 +13,7 @@ using Volo.Abp.VirtualFileSystem;
 using Volo.Abp.OpenIddict;
 using Volo.Abp.BlobStoring.Database;
 using Volo.Abp.TenantManagement;
+using Volo.CmsKit;
 
 namespace Simple;
 
@@ -25,8 +26,9 @@ namespace Simple;
     typeof(AbpIdentityDomainSharedModule),
     typeof(AbpOpenIddictDomainSharedModule),
     typeof(AbpTenantManagementDomainSharedModule),
-    typeof(BlobStoringDatabaseDomainSharedModule)
-    )]
+    typeof(BlobStoringDatabaseDomainSharedModule),
+    typeof(CmsKitDomainSharedModule)
+)]
 public class SimpleDomainSharedModule : AbpModule
 {
     public override void PreConfigureServices(ServiceConfigurationContext context)
