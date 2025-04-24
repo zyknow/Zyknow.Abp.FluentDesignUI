@@ -101,6 +101,20 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zyknow.Abp.Account.Blazor.W
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zyknow.Abp.GroupComponent.FluentDesignUI", "src\Zyknow.Abp.GroupComponent.FluentDesignUI\Zyknow.Abp.GroupComponent.FluentDesignUI.csproj", "{AE728D44-3237-42E9-B643-1009A43DB20B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CmsKit", "CmsKit", "{F80EB4D8-74E8-414B-A821-382150B84088}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zyknow.Abp.CmsKit.Blazor.Admin.FluentDesignUI", "modules\CmsKit\Zyknow.Abp.CmsKit.Blazor.Admin.FluentDesignUI\Zyknow.Abp.CmsKit.Blazor.Admin.FluentDesignUI.csproj", "{1AD891C0-8464-464F-A2A9-A8BAE31F2B1C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zyknow.Abp.CmsKit.Blazor.Admin.Server.FluentDesignUI", "modules\CmsKit\Zyknow.Abp.CmsKit.Blazor.Admin.Server.FluentDesignUI\Zyknow.Abp.CmsKit.Blazor.Admin.Server.FluentDesignUI.csproj", "{8418FE02-9C3C-4DD6-8C1B-2AF572B5B3A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zyknow.Abp.CmsKit.Blazor.Admin.WebAssembly.FluentDesignUI", "modules\CmsKit\Zyknow.Abp.CmsKit.Blazor.Admin.WebAssembly.FluentDesignUI\Zyknow.Abp.CmsKit.Blazor.Admin.WebAssembly.FluentDesignUI.csproj", "{0C3BC20A-5761-4E08-873A-4DDACA97B8D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zyknow.Abp.CmsKit.Blazor.Public.FluentDesignUI", "modules\CmsKit\Zyknow.Abp.CmsKit.Blazor.Public.FluentDesignUI\Zyknow.Abp.CmsKit.Blazor.Public.FluentDesignUI.csproj", "{11F85DC3-B83B-4E83-B2B4-6AF025ACCD62}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zyknow.Abp.CmsKit.Blazor.Public.Server.FluentDesignUI", "modules\CmsKit\Zyknow.Abp.CmsKit.Blazor.Public.Server.FluentDesignUI\Zyknow.Abp.CmsKit.Blazor.Public.Server.FluentDesignUI.csproj", "{5A0A307E-FFC5-4F39-A900-27465FFB58A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zyknow.Abp.CmsKit.Blazor.Public.WebAssembly.FluentDesignUI", "modules\CmsKit\Zyknow.Abp.CmsKit.Blazor.Public.WebAssembly.FluentDesignUI\Zyknow.Abp.CmsKit.Blazor.Public.WebAssembly.FluentDesignUI.csproj", "{379A0B75-9333-4F2F-90A7-4580908EE413}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -239,6 +253,30 @@ Global
 		{AE728D44-3237-42E9-B643-1009A43DB20B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE728D44-3237-42E9-B643-1009A43DB20B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE728D44-3237-42E9-B643-1009A43DB20B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AD891C0-8464-464F-A2A9-A8BAE31F2B1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AD891C0-8464-464F-A2A9-A8BAE31F2B1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AD891C0-8464-464F-A2A9-A8BAE31F2B1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AD891C0-8464-464F-A2A9-A8BAE31F2B1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8418FE02-9C3C-4DD6-8C1B-2AF572B5B3A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8418FE02-9C3C-4DD6-8C1B-2AF572B5B3A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8418FE02-9C3C-4DD6-8C1B-2AF572B5B3A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8418FE02-9C3C-4DD6-8C1B-2AF572B5B3A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C3BC20A-5761-4E08-873A-4DDACA97B8D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C3BC20A-5761-4E08-873A-4DDACA97B8D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C3BC20A-5761-4E08-873A-4DDACA97B8D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C3BC20A-5761-4E08-873A-4DDACA97B8D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11F85DC3-B83B-4E83-B2B4-6AF025ACCD62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11F85DC3-B83B-4E83-B2B4-6AF025ACCD62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11F85DC3-B83B-4E83-B2B4-6AF025ACCD62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11F85DC3-B83B-4E83-B2B4-6AF025ACCD62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A0A307E-FFC5-4F39-A900-27465FFB58A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A0A307E-FFC5-4F39-A900-27465FFB58A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A0A307E-FFC5-4F39-A900-27465FFB58A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A0A307E-FFC5-4F39-A900-27465FFB58A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{379A0B75-9333-4F2F-90A7-4580908EE413}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{379A0B75-9333-4F2F-90A7-4580908EE413}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{379A0B75-9333-4F2F-90A7-4580908EE413}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{379A0B75-9333-4F2F-90A7-4580908EE413}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -284,6 +322,13 @@ Global
 		{F11F0E81-66CD-4452-991E-1B95752459A1} = {C63569B1-A81A-4F4D-BA91-B4C19056740C}
 		{603837ED-8EDC-4F7C-992F-E721ECFD6097} = {C63569B1-A81A-4F4D-BA91-B4C19056740C}
 		{AE728D44-3237-42E9-B643-1009A43DB20B} = {1ADC320B-7E6A-435C-87B5-C4DA560C19F5}
+		{F80EB4D8-74E8-414B-A821-382150B84088} = {0CAB4092-B194-46CB-A18F-496D882BC63A}
+		{1AD891C0-8464-464F-A2A9-A8BAE31F2B1C} = {F80EB4D8-74E8-414B-A821-382150B84088}
+		{8418FE02-9C3C-4DD6-8C1B-2AF572B5B3A0} = {F80EB4D8-74E8-414B-A821-382150B84088}
+		{0C3BC20A-5761-4E08-873A-4DDACA97B8D7} = {F80EB4D8-74E8-414B-A821-382150B84088}
+		{11F85DC3-B83B-4E83-B2B4-6AF025ACCD62} = {F80EB4D8-74E8-414B-A821-382150B84088}
+		{5A0A307E-FFC5-4F39-A900-27465FFB58A0} = {F80EB4D8-74E8-414B-A821-382150B84088}
+		{379A0B75-9333-4F2F-90A7-4580908EE413} = {F80EB4D8-74E8-414B-A821-382150B84088}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {864DE782-FCBD-4420-849C-8C817BA24FF9}

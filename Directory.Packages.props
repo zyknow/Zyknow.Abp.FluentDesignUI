@@ -130,5 +130,6 @@
     <PackageVersion Include="Volo.Abp.TenantManagement.EntityFrameworkCore" Version="$(ABPPackageVersion)" />
     <PackageVersion Include="Volo.Abp.TenantManagement.HttpApi" Version="$(ABPPackageVersion)" />
     <PackageVersion Include="Volo.Abp.TenantManagement.HttpApi.Client" Version="$(ABPPackageVersion)" />
+    <PackageVersion Include="Volo.CmsKit.Admin.Application.Contracts" Version="$(ABPPackageVersion)" />
   </ItemGroup>
 </Project>
