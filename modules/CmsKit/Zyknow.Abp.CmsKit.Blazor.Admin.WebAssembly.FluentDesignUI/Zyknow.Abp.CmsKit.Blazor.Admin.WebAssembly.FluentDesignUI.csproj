@@ -1,13 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Zyknow.Abp.FluentDesignUI\Zyknow.Abp.FluentDesignUI.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.WebAssembly.FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.WebAssembly.FluentDesignTheme.csproj" />
+        <ProjectReference Include="..\Zyknow.Abp.CmsKit.Blazor.Admin.FluentDesignUI\Zyknow.Abp.CmsKit.Blazor.Admin.FluentDesignUI.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Volo.CmsKit.Admin.HttpApi.Client"/>
+    </ItemGroup>
 
 </Project> 

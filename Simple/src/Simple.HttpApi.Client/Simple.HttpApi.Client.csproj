@@ -16,6 +16,7 @@
     <PackageReference Include="Volo.Abp.PermissionManagement.HttpApi.Client" />
     <PackageReference Include="Volo.Abp.FeatureManagement.HttpApi.Client" />
     <PackageReference Include="Volo.Abp.SettingManagement.HttpApi.Client" />
+    <PackageReference Include="Volo.CmsKit.HttpApi.Client" />
   </ItemGroup>
 
   <ItemGroup>

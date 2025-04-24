@@ -1,1 +1,19 @@
-﻿
+﻿@using TInput = Volo.CmsKit.Admin.Blogs.UpdateBlogDto
+@using TResource = Volo.CmsKit.Localization.CmsKitResource
+@inherits Zyknow.Abp.FluentDesignUI.AbpDialogFormBase<TInput, TResource>
+
+<AbpFluentForm HeaderText="@($@"{L["Edit"]} - {Content.Name}")"
+               IsConstHeader="true"
+               Content="@Content"
+               SubmitValidClick="SubmitClick"
+               CancelClick="CancelClick"
+               Localize="@LH.Localize">
+    <FluentTextField Style="width: 100%" Label="@L["BlogName"]" @bind-Value="@Content.Name"/>
+    <FluentValidationMessage For="@(() => Content.Name)"/>
+
+    <FluentTextField Style="width: 100%" Label="@L["BlogSlug"]" @bind-Value="@Content.Slug"/>
+    <FluentValidationMessage For="@(() => Content.Slug)"/>
+
+    <ExtensionProperties TEntityType="TInput" TResourceType="TResource"
+                         Entity="@Content" LH="@LH"/>
+</AbpFluentForm>

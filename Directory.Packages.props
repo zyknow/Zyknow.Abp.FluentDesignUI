@@ -21,7 +21,7 @@
     <PackageVersion Include="AspNetCore.HealthChecks.UI" Version="$(HealthChecksPackageVersion)" />
     <PackageVersion Include="AspNetCore.HealthChecks.UI.Client" Version="$(HealthChecksPackageVersion)" />
     <PackageVersion Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="$(HealthChecksPackageVersion)" />
-    <PackageVersion Include="BlazorPro.BlazorSize" Version="9.0.0" />
+    <PackageVersion Include="BlazorPro.BlazorSize" Version="$(ABPPackageVersion)" />
     <!-- Microsoft.AspNetCore Related Packages -->
     <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="$(MicrosoftAspNetCoreWebPackageVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="$(MicrosoftAspNetCoreWebPackageVersion)" />
@@ -131,5 +131,15 @@
     <PackageVersion Include="Volo.Abp.TenantManagement.HttpApi" Version="$(ABPPackageVersion)" />
     <PackageVersion Include="Volo.Abp.TenantManagement.HttpApi.Client" Version="$(ABPPackageVersion)" />
     <PackageVersion Include="Volo.CmsKit.Admin.Application.Contracts" Version="$(ABPPackageVersion)" />
+    <PackageVersion Include="Volo.CmsKit.Admin.HttpApi.Client" Version="$(ABPPackageVersion)" />
+    <PackageVersion Include="Volo.CmsKit.Application" Version="$(ABPPackageVersion)" />
+    <PackageVersion Include="Volo.CmsKit.Application.Contracts" Version="$(ABPPackageVersion)" />
+    <PackageVersion Include="Volo.CmsKit.Domain" Version="$(ABPPackageVersion)" />
+    <PackageVersion Include="Volo.CmsKit.Domain.Shared" Version="$(ABPPackageVersion)" />
+    <PackageVersion Include="Volo.CmsKit.EntityFrameworkCore" Version="$(ABPPackageVersion)" />
+    <PackageVersion Include="Volo.CmsKit.HttpApi" Version="$(ABPPackageVersion)" />
+    <PackageVersion Include="Volo.CmsKit.HttpApi.Client" Version="$(ABPPackageVersion)" />
+    <PackageVersion Include="Volo.CmsKit.Public.Application.Contracts" Version="$(ABPPackageVersion)" />
+    <PackageVersion Include="Volo.CmsKit.Public.HttpApi.Client" Version="$(ABPPackageVersion)" />
   </ItemGroup>
 </Project>

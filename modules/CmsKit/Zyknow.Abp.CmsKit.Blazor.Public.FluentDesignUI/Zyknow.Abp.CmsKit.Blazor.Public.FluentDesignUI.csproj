@@ -7,7 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Zyknow.Abp.FluentDesignUI\Zyknow.Abp.FluentDesignUI.csproj" />
+    <PackageReference Include="Volo.Abp.AutoMapper"/>
+    <PackageReference Include="Volo.CmsKit.Public.Application.Contracts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.csproj"/>
   </ItemGroup>
 
 </Project> 

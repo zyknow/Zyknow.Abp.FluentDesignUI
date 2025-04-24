@@ -1,1 +1,141 @@
-﻿
+﻿@page "/Cms/Blogs"
+@attribute [Authorize(CmsKitAdminPermissions.Blogs.Default)]
+@using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
+@using Volo.CmsKit.Admin.Blogs
+@using Volo.CmsKit.Localization
+@using Volo.CmsKit.Permissions
+@inherits AbpCrudPageBase<IBlogAdminAppService, BlogDto, Guid, BlogGetListInput, CreateBlogDto, UpdateBlogDto>
+
+<FluentAdaptiveCard>
+    <AbpPageHeader Title="@L["Blogs"]" BreadcrumbItems="@BreadcrumbItems" Toolbar="@Toolbar"/>
+
+    <AbpSearch Loading="@Loading" @bind-PrimarySearchValue="GetListInput.Filter"
+               OnSearch="SearchEntitiesAsync"></AbpSearch>
+
+    <AbpExtensibleDataGrid Loading="@Loading"
+                           TKey="Guid"
+                           TItem="BlogDto"
+                           EnableSelected="true"
+                           PrimarySelectedDeletesBtnVisible="@HasDeletePermission"
+                           OnDeleteSelected="DeleteEntitiesAsync"
+                           DeleteSelectedDisplayPropertyConfirmExpression="@(r => r.Name)"
+                           Entities="Entities"
+                           OnChange="@OnDataGridReadAsync"
+                           Pagination="@Pagination"
+                           Columns="@BlogManagementTableColumns">
+    </AbpExtensibleDataGrid>
+</FluentAdaptiveCard>
+
+@code
+{
+    protected const string FeatureProviderName = "T";
+
+    protected bool HasFeaturesPermission;
+    protected string ManageFeaturesPolicyName;
+    protected PageToolbar Toolbar { get; } = new();
+
+    protected bool FeatureDialogHidden = true;
+
+    protected List<FluentTableColumn> BlogManagementTableColumns => TableColumns.Get<BlogManagement>();
+
+    public BlogManagement()
+    {
+        LocalizationResource = typeof(CmsKitResource);
+        ObjectMapperContext = typeof(AbpCmsKitBlazorAdminFluentDesignModule);
+
+        CreatePolicyName = CmsKitAdminPermissions.Blogs.Create;
+        UpdatePolicyName = CmsKitAdminPermissions.Blogs.Update;
+        DeletePolicyName = CmsKitAdminPermissions.Blogs.Delete;
+    }
+
+    protected override ValueTask SetBreadcrumbItemsAsync()
+    {
+        BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Menu:CmsKit"], icon: new Size16.News()));
+        BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Blogs"]));
+
+        return base.SetBreadcrumbItemsAsync();
+    }
+
+    protected override string GetDeleteConfirmationMessage(BlogDto entity)
+    {
+        return string.Format(L["BlogDeletionConfirmationMessage"], entity.Name);
+    }
+
+    protected override ValueTask SetToolbarItemsAsync()
+    {
+        Toolbar.AddButton(L["NewBlog"],
+            OpenCreateDialogAsync,
+            new Size20.Add(),
+            requiredPolicyName: CreatePolicyName);
+
+        return base.SetToolbarItemsAsync();
+    }
+
+    protected override ValueTask SetEntityActionsAsync()
+    {
+        EntityActions
+            .Get<BlogManagement>()
+            .AddRange([
+                new FluentEntityAction
+                {
+                    Text = L["Edit"],
+                    Visible = (data) => HasUpdatePermission,
+                    Clicked = async (data) => { await OpenEditDialogAsync(data.As<BlogDto>()); }
+                },
+                new FluentEntityAction
+                {
+                    Text = L["Features"],
+                    Visible = (data) => HasFeaturesPermission,
+                    Clicked = async (data) =>
+                    {
+                        // 如果需要管理博客特性，在这里实现
+                    }
+                },
+                new FluentEntityAction
+                {
+                    Text = L["Delete"],
+                    Color = "red",
+                    Visible = (data) => HasDeletePermission,
+                    Clicked = async (data) => await DeleteEntityAsync(data.As<BlogDto>()),
+                    ConfirmationMessage = (data) => GetDeleteConfirmationMessage(data.As<BlogDto>())
+                }
+            ]);
+
+        return base.SetEntityActionsAsync();
+    }
+
+    protected override ValueTask SetTableColumnsAsync()
+    {
+        BlogManagementTableColumns
+            .AddRange([
+                new FluentTableColumn
+                {
+                    Title = L["BlogName"],
+                    Sortable = true,
+                    Data = nameof(BlogDto.Name),
+                    PropertyName = nameof(BlogDto.Name)
+                },
+                new FluentTableColumn
+                {
+                    Title = L["BlogSlug"],
+                    Sortable = true,
+                    Data = nameof(BlogDto.Slug),
+                    PropertyName = nameof(BlogDto.Slug)
+                }
+            ]);
+
+        BlogManagementTableColumns.Add(new FluentTableColumn
+        {
+            Title = L["Actions"],
+            Actions = EntityActions.Get<BlogManagement>()
+        });
+
+        return base.SetTableColumnsAsync();
+    }
+
+    protected override Task ShowCreateDialogAsync()
+        => ShowDialogAsync(@<BlogCreateDialog Content="@NewEntity" SubmitClick="CreateEntityAsync"/>);
+
+    protected override Task ShowEditDialogAsync()
+        => ShowDialogAsync(@<BlogEditDialog Content="@EditingEntity" SubmitClick="UpdateEntityAsync"/>);
+}
