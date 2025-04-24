@@ -13,6 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".sln", ".sln", "{F278F140-4
 		package.json = package.json
 		.releaserc.json = .releaserc.json
 		README.Setup-Guide.md = README.Setup-Guide.md
+		.gitignore = .gitignore
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1ADC320B-7E6A-435C-87B5-C4DA560C19F5}"

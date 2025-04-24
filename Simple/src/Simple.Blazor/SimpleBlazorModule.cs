@@ -26,7 +26,10 @@ using Volo.Abp.Timing;
 using Zyknow.Abp.Account.Blazor.Server.FluentDesignUI;
 using Zyknow.Abp.AspnetCore.Components.Server.FluentDesignTheme;
 using Zyknow.Abp.AspnetCore.Components.Server.FluentDesignTheme.Bundling;
+using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme;
 using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Routing;
+using Zyknow.Abp.CmsKit.Blazor.Admin.Server.FluentDesignUI;
+using Zyknow.Abp.CmsKit.Blazor.Public.Server.FluentDesignUI;
 using Zyknow.Abp.IdentityManagement.Blazor.Server.FluentDesignUI;
 using Zyknow.Abp.SettingManagement.Blazor.Server.FluentDesignUI;
 using Zyknow.Abp.TenantManagement.Blazor.FluentDesignUI;
@@ -46,7 +49,9 @@ namespace Simple.Blazor;
     typeof(AbpTenantManagementBlazorFluentDesignModule),
     typeof(AbpIdentityBlazorServerFluentDesignModule),
     typeof(AbpSettingManagementBlazorServerFluentDesignModule),
-    typeof(AbpAccountBlazorServerFluentDesignModule)
+    typeof(AbpAccountBlazorServerFluentDesignModule),
+    typeof(AbpCmsKitBlazorAdminServerFluentDesignModule),
+    typeof(AbpCmsKitBlazorPublicServerFluentDesignModule)
 )]
 public class SimpleBlazorModule : AbpModule
 {
@@ -93,11 +98,8 @@ public class SimpleBlazorModule : AbpModule
         }
 
         PreConfigure<AbpAspNetCoreComponentsWebOptions>(options => { options.IsBlazorWebApp = true; });
-        
-        Configure<AbpClockOptions>(options =>
-        {
-            options.Kind = DateTimeKind.Utc;
-        });
+
+        Configure<AbpClockOptions>(options => { options.Kind = DateTimeKind.Utc; });
     }
 
     public override void ConfigureServices(ServiceConfigurationContext context)
@@ -134,11 +136,8 @@ public class SimpleBlazorModule : AbpModule
         ConfigureBlazorise(context);
         ConfigureRouter(context);
         ConfigureMenu(context);
-        
-        Configure<AbpMvcLibsOptions>(options =>
-        {
-            options.CheckLibs = false;
-        });
+
+        Configure<AbpMvcLibsOptions>(options => { options.CheckLibs = false; });
     }
 
     private void ConfigureAuthentication(ServiceConfigurationContext context)
@@ -216,8 +215,7 @@ public class SimpleBlazorModule : AbpModule
 
     private void ConfigureSwaggerServices(IServiceCollection services)
     {
-        services.AddAbpSwaggerGen(
-            options =>
+        services.AddAbpSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "Simple API", Version = "v1" });
                 options.DocInclusionPredicate((docName, description) => true);

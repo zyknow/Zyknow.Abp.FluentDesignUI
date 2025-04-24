@@ -64,7 +64,6 @@ public class SimpleDomainModule : AbpModule
             options.Languages.Add(new LanguageInfo("es", "es", "Español"));
             options.Languages.Add(new LanguageInfo("sv", "sv", "Svenska"));
         });
-        GlobalFeatureManager.Instance.Modules.CmsKit(cmsKit => { cmsKit.EnableAll(); });
 
 #if DEBUG
         context.Services.Replace(ServiceDescriptor.Singleton<IEmailSender, NullEmailSender>());

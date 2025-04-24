@@ -10,6 +10,7 @@ using Volo.Abp.PermissionManagement.EntityFrameworkCore;
 using Volo.Abp.SettingManagement.EntityFrameworkCore;
 using Volo.Abp.BlobStoring.Database.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore.Sqlite;
+using Volo.Abp.GlobalFeatures;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
 using Volo.Abp.Studio;
 using Volo.CmsKit.EntityFrameworkCore;
@@ -29,7 +30,7 @@ namespace Simple.EntityFrameworkCore;
     typeof(AbpTenantManagementEntityFrameworkCoreModule),
     typeof(BlobStoringDatabaseEntityFrameworkCoreModule),
     typeof(CmsKitEntityFrameworkCoreModule)
-    )]
+)]
 public class SimpleEntityFrameworkCoreModule : AbpModule
 {
     public override void PreConfigureServices(ServiceConfigurationContext context)
@@ -44,8 +45,8 @@ public class SimpleEntityFrameworkCoreModule : AbpModule
     {
         context.Services.AddAbpDbContext<SimpleDbContext>(options =>
         {
-                /* Remove "includeAllEntities: true" to create
-                 * default repositories only for aggregate roots */
+            /* Remove "includeAllEntities: true" to create
+             * default repositories only for aggregate roots */
             options.AddDefaultRepositories(includeAllEntities: true);
         });
 
@@ -60,8 +61,8 @@ public class SimpleEntityFrameworkCoreModule : AbpModule
              * See also SimpleDbContextFactory for EF Core tooling. */
 
             options.UseSqlite();
-
         });
-        
+
+        GlobalFeatureManager.Instance.Modules.CmsKit(cmsKit => { cmsKit.EnableAll(); });
     }
 }
