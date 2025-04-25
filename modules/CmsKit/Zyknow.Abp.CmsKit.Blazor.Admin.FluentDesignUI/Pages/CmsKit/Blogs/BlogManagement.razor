@@ -2,6 +2,7 @@
 @attribute [Authorize(CmsKitAdminPermissions.Blogs.Default)]
 @using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
 @using Volo.CmsKit.Admin.Blogs
+@using Volo.CmsKit.Blogs
 @using Volo.CmsKit.Localization
 @using Volo.CmsKit.Permissions
 @inherits AbpCrudPageBase<IBlogAdminAppService, BlogDto, Guid, BlogGetListInput, CreateBlogDto, UpdateBlogDto>
@@ -29,12 +30,11 @@
 @code
 {
     protected const string FeatureProviderName = "T";
-
     protected bool HasFeaturesPermission;
     protected string ManageFeaturesPolicyName;
     protected PageToolbar Toolbar { get; } = new();
 
-    protected bool FeatureDialogHidden = true;
+    [Inject] protected IBlogFeatureAdminAppService BlogFeatureAppService { get; set; }
 
     protected List<FluentTableColumn> BlogManagementTableColumns => TableColumns.Get<BlogManagement>();
 
@@ -46,6 +46,13 @@
         CreatePolicyName = CmsKitAdminPermissions.Blogs.Create;
         UpdatePolicyName = CmsKitAdminPermissions.Blogs.Update;
         DeletePolicyName = CmsKitAdminPermissions.Blogs.Delete;
+        ManageFeaturesPolicyName = CmsKitAdminPermissions.Blogs.Features;
+    }
+
+    protected override async Task SetPermissionsAsync()
+    {
+        await base.SetPermissionsAsync();
+        HasFeaturesPermission = await AuthorizationService.IsGrantedAsync(ManageFeaturesPolicyName);
     }
 
     protected override ValueTask SetBreadcrumbItemsAsync()
@@ -88,7 +95,8 @@
                     Visible = (data) => HasFeaturesPermission,
                     Clicked = async (data) =>
                     {
-                        // 如果需要管理博客特性，在这里实现
+                        var blog = data.As<BlogDto>();
+                        await ShowFeatureDialogAsync(blog);
                     }
                 },
                 new FluentEntityAction
@@ -131,6 +139,31 @@
         });
 
         return base.SetTableColumnsAsync();
+    }
+
+    protected async Task ShowFeatureDialogAsync(BlogDto blog)
+    {
+        var features = await BlogFeatureAppService.GetListAsync(blog.Id);
+        await ShowDialogAsync(@<BlogFeaturesDialog EntityName="@blog.Name" Content="@features"
+                                                   SubmitClick="@(() => UpdateFeaturesAsync(blog.Id, features))"/>);
+    }
+
+    protected async Task<DialogResult?> UpdateFeaturesAsync(Guid blogId, List<BlogFeatureDto> features)
+    {
+        try
+        {
+            foreach (var blogFeatureDto in ObjectMapper.Map<List<BlogFeatureDto>, List<BlogFeatureInputDto>>(features))
+            {
+                await BlogFeatureAppService.SetAsync(blogId, blogFeatureDto);
+            }
+
+            return DialogResult.Ok<object>(null);
+        }
+        catch (Exception e)
+        {
+            await HandleErrorAsync(e);
+            return null;
+        }
     }
 
     protected override Task ShowCreateDialogAsync()

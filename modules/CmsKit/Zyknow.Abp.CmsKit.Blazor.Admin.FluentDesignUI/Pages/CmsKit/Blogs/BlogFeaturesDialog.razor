@@ -1,1 +1,24 @@
-﻿
+﻿@using TInput = List<Volo.CmsKit.Blogs.BlogFeatureDto>
+@using TResource = Volo.CmsKit.Localization.CmsKitResource
+@inherits Zyknow.Abp.FluentDesignUI.AbpDialogFormBase<TInput, TResource>
+
+<AbpFluentForm HeaderText="@($@"{L["Features"]} - {EntityName}")"
+               IsConstHeader="true"
+               Content="@Content"
+               SubmitValidClick="SubmitClick"
+               CancelClick="CancelClick"
+               Localize="@LH.Localize">
+    
+    @foreach (var feature in Content)
+    {
+        <FluentCheckbox Label="@L[feature.FeatureName]" @bind-Value="@feature.IsEnabled"/>
+        <FluentValidationMessage For="@(() => feature.IsEnabled)"/>
+    }
+
+</AbpFluentForm>
+
+
+@code
+{
+    [Parameter] public string EntityName { get; set; }
+}

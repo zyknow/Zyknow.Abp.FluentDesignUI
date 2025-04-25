@@ -5,6 +5,7 @@ using Volo.CmsKit.Admin.GlobalResources;
 using Volo.CmsKit.Admin.Menus;
 using Volo.CmsKit.Admin.Pages;
 using Volo.CmsKit.Admin.Tags;
+using Volo.CmsKit.Blogs;
 using Volo.CmsKit.Menus;
 using Volo.CmsKit.Tags;
 
@@ -16,6 +17,8 @@ public class CmsKitAdminBlazorAutoMapperProfile : Profile
     {
         CreateMap<BlogDto, UpdateBlogDto>()
             .MapExtraProperties();
+
+        CreateMap<BlogFeatureDto, BlogFeatureInputDto>();
 
         CreateMap<BlogPostDto, UpdateBlogPostDto>()
             .MapExtraProperties();
