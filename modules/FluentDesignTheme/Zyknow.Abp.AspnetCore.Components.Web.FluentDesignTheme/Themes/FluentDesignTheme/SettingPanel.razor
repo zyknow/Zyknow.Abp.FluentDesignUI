@@ -55,7 +55,7 @@
                 SelectedOption="@CurrentRenderMode"
                 SelectedOptionChanged="@((v) => ChangeRenderModeAsync(v, Prerender))">
             </FluentSelect>
-            
+
             <FluentSwitch Style="margin-top: 10px" Label="@L["Prerender"]" Value="@Prerender"
                           ValueChanged="@((v) => ChangeRenderModeAsync(CurrentRenderMode, v))">
 
@@ -105,8 +105,12 @@
     {
         CurrentRenderMode = renderMode;
         Prerender = prerender;
-        await CookieService.SetAsync("RenderMode", renderMode);
-        await CookieService.SetAsync("Prerender", prerender.ToString());
+        var cookieOptions = new CookieOptions()
+        {
+            ExpireDate = DateTimeOffset.Now.AddYears(10)
+        };
+        await CookieService.SetAsync("RenderMode", renderMode, cookieOptions);
+        await CookieService.SetAsync("Prerender", prerender.ToString(), cookieOptions);
         NavigationManager.Refresh(forceReload: true);
     }
 
