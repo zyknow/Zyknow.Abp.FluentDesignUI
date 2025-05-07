@@ -1,1 +1,230 @@
-﻿
+﻿@page "/Cms/BlogPosts"
+@attribute [Authorize(CmsKitAdminPermissions.BlogPosts.Default)]
+@using Microsoft.FluentUI.AspNetCore.Components.Extensions
+@using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
+@using Volo.Abp.Application.Dtos
+@using Volo.CmsKit.Admin.Blogs
+@using Volo.CmsKit.Admin.Tags
+@using Volo.CmsKit.Blogs
+@using Volo.CmsKit.Localization
+@using Volo.CmsKit.Permissions
+@inherits AbpCustomCrudMethodPageBase<IBlogPostAdminAppService, BlogPostDto, BlogPostListDto, Guid, BlogPostGetListInput, CreateBlogPostDto, UpdateBlogPostDto>
+
+<FluentAdaptiveCard>
+    <AbpPageHeader Title="@L["BlogPosts"]" BreadcrumbItems="@BreadcrumbItems" Toolbar="@Toolbar"/>
+
+    <AbpSearch Loading="@Loading" @bind-PrimarySearchValue="GetListInput.Filter"
+               OnSearch="SearchEntitiesAsync"></AbpSearch>
+
+    <AbpExtensibleDataGrid Loading="@Loading"
+                           TKey="Guid"
+                           TItem="BlogPostListDto"
+                           EnableSelected="true"
+                           PrimarySelectedDeletesBtnVisible="@HasDeletePermission"
+                           OnDeleteSelected="DeleteEntitiesAsync"
+                           DeleteSelectedDisplayPropertyConfirmExpression="@(r => r.Title)"
+                           Entities="Entities"
+                           OnChange="@OnDataGridReadAsync"
+                           Pagination="@Pagination"
+                           Columns="@BlogPostManagementTableColumns">
+    </AbpExtensibleDataGrid>
+</FluentAdaptiveCard>
+
+@code
+{
+    protected PageToolbar Toolbar { get; } = new();
+
+    protected List<FluentTableColumn> BlogPostManagementTableColumns => TableColumns.Get<BlogPostManagement>();
+
+    protected IEntityTagAdminAppService EntityTagAdminAppService { get; set; }
+
+    [Inject] protected NavigationManager NavigationManager { get; set; }
+
+    protected bool HasPublishPermission { get; set; }
+
+    public BlogPostManagement()
+    {
+        LocalizationResource = typeof(CmsKitResource);
+        ObjectMapperContext = typeof(AbpCmsKitBlazorAdminFluentDesignModule);
+
+        CreatePolicyName = CmsKitAdminPermissions.BlogPosts.Create;
+        UpdatePolicyName = CmsKitAdminPermissions.BlogPosts.Update;
+        DeletePolicyName = CmsKitAdminPermissions.BlogPosts.Delete;
+    }
+
+    protected override async Task SetPermissionsAsync()
+    {
+        await base.SetPermissionsAsync();
+        HasPublishPermission = (await AuthorizationService.AuthorizeAsync(CmsKitAdminPermissions.BlogPosts.Publish)).Succeeded;
+    }
+
+    protected override ValueTask SetBreadcrumbItemsAsync()
+    {
+        BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Menu:CMS"], icon: new Size16.News()));
+        BreadcrumbItems.Add(new AbpBreadcrumbItem(L["BlogPosts"]));
+
+        return base.SetBreadcrumbItemsAsync();
+    }
+
+    protected override string GetDeleteConfirmationMessage(BlogPostListDto entity)
+    {
+        return string.Format(L["BlogPostDeletionConfirmationMessage"], entity.Title);
+    }
+
+    protected override ValueTask SetToolbarItemsAsync()
+    {
+        Toolbar.AddButton(L["NewBlogPost"],
+            async () => NavigationManager.NavigateTo("/Cms/BlogPosts/Create"),
+            new Size20.Add(),
+            requiredPolicyName: CreatePolicyName);
+
+        return base.SetToolbarItemsAsync();
+    }
+
+    protected override ValueTask SetEntityActionsAsync()
+    {
+        EntityActions
+            .Get<BlogPostManagement>()
+            .AddRange([
+                new FluentEntityAction
+                {
+                    Text = L["Edit"],
+                    Visible = (data) => HasUpdatePermission,
+                    Clicked = async (data) =>
+                    {
+                        var entity = data.As<BlogPostListDto>();
+                        var url = $"/Cms/BlogPosts/Edit/{entity.Id}";
+                        NavigationManager.NavigateTo(url);
+                    }
+                },
+                new FluentEntityAction
+                {
+                    Text = L["Draft"],
+                    Visible = (data) => HasUpdatePermission && data.As<BlogPostListDto>().Status == BlogPostStatus.Published,
+                    Clicked = async (data) =>
+                    {
+                        var entity = data.As<BlogPostListDto>();
+                        await AppService.DraftAsync(entity.Id);
+                        // TODO: why we need this delay?
+                        await Task.Delay(1);
+                        await GetEntitiesAsync();
+                    }
+                },
+                new FluentEntityAction
+                {
+                    Text = L["Publish"],
+                    Visible = (data) => HasPublishPermission && data.As<BlogPostListDto>().Status != BlogPostStatus.Published,
+                    Clicked = async (data) =>
+                    {
+                        var entity = data.As<BlogPostListDto>();
+                        await AppService.PublishAsync(entity.Id);
+                        // TODO: why we need this delay?
+                        await Task.Delay(1);
+                        await GetEntitiesAsync();
+                    }
+                },
+                new FluentEntityAction
+                {
+                    Text = L["Delete"],
+                    Color = "red",
+                    Visible = (data) => HasDeletePermission,
+                    Clicked = async (data) => await DeleteEntityAsync(data.As<BlogPostListDto>()),
+                    ConfirmationMessage = (data) => GetDeleteConfirmationMessage(data.As<BlogPostListDto>())
+                }
+            ]);
+
+        return base.SetEntityActionsAsync();
+    }
+
+    protected override ValueTask SetTableColumnsAsync()
+    {
+        BlogPostManagementTableColumns
+            .AddRange([
+                new FluentTableColumn
+                {
+                    Title = L["Blog"],
+                    Sortable = false,
+                    Data = nameof(BlogPostListDto.BlogName),
+                    PropertyName = nameof(BlogPostListDto.BlogName),
+                },
+                new FluentTableColumn
+                {
+                    Title = L["Title"],
+                    Sortable = true,
+                    Data = nameof(BlogPostListDto.Title),
+                    PropertyName = nameof(BlogPostListDto.Title)
+                },
+                new FluentTableColumn
+                {
+                    Title = L["Slug"],
+                    Sortable = true,
+                    Data = nameof(BlogPostListDto.Slug),
+                    PropertyName = nameof(BlogPostListDto.Slug)
+                },
+                new FluentTableColumn
+                {
+                    Title = L["CreationTime"],
+                    Sortable = true,
+                    Data = nameof(BlogPostListDto.CreationTime),
+                    PropertyName = nameof(BlogPostListDto.CreationTime)
+                },
+                new FluentTableColumn
+                {
+                    Title = L["Status"],
+                    Sortable = true,
+                    Data = nameof(BlogPostListDto.Status),
+                    PropertyName = nameof(BlogPostListDto.Status),
+                    ValueConverter = v =>
+                    {
+                        var entity = v.As<BlogPostListDto>();
+                        return L[@$"CmsKit.BlogPost.Status.{(int)entity.Status}"];
+                    }
+                }
+            ]);
+
+        BlogPostManagementTableColumns.Add(new FluentTableColumn
+        {
+            Title = L["Actions"],
+            Actions = EntityActions.Get<BlogPostManagement>()
+        });
+
+        return base.SetTableColumnsAsync();
+    }
+
+
+}
+
+@code {
+
+    protected override async Task<IPagedResult<BlogPostListDto>> AppServiceGetListAsync(BlogPostGetListInput input)
+    {
+        var res = await AppService.GetListAsync(input);
+        return res;
+    }
+
+    protected override Task<BlogPostDto> AppServiceGetAsync(Guid id) => AppService.GetAsync(id);
+
+    protected override Task AppServiceCreateAsync(CreateBlogPostDto input)
+    {
+        throw new NotImplementedException();
+    }
+
+    protected override Task AppServiceUpdateAsync(Guid id, UpdateBlogPostDto input)
+    {
+        throw new NotImplementedException();
+    }
+
+    protected override Task AppServiceDeleteAsync(Guid id) => AppService.DeleteAsync(id);
+
+    protected override Task ShowCreateDialogAsync()
+    {
+        throw new NotImplementedException();
+    }
+
+    protected override Task ShowEditDialogAsync()
+    {
+        throw new NotImplementedException();
+    }
+
+}
+

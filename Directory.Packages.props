@@ -43,6 +43,9 @@
     <PackageVersion Include="Serilog.Sinks.Async" Version="$(SerilogSinksAsyncPackageVersion)" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="$(SerilogSinksConsolePackageVersion)" />
     <PackageVersion Include="Serilog.Sinks.File" Version="$(SerilogSinksFilePackageVersion)" />
+    <PackageVersion Include="Spillgebees.Blazor.RichTextEditor" Version="2.0.0" />
+    <PackageVersion Include="TinyMCE" Version="7.8.0" />
+    <PackageVersion Include="TinyMCE.Blazor" Version="2.0.0" />
     <!-- Volo.Abp Core Packages -->
     <PackageVersion Include="Volo.Abp.AspNetCore" Version="$(ABPPackageVersion)" />
     <PackageVersion Include="Volo.Abp.AspNetCore.Components.Server" Version="$(ABPPackageVersion)" />

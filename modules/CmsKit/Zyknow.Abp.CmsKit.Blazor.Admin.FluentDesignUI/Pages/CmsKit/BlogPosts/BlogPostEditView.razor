@@ -1,0 +1,80 @@
+﻿@page "/Cms/BlogPosts/Edit/{Id:guid}"
+@inherits Volo.Abp.AspNetCore.Components.AbpComponentBase
+@using Volo.Abp.Content
+@using Volo.CmsKit.Admin.Blogs
+@using Volo.CmsKit.Admin.MediaDescriptors
+@using Volo.CmsKit.Admin.Tags
+@using Volo.CmsKit.Blogs
+
+<FluentAdaptiveCard>
+    <div style="margin-bottom: 10px">
+        <BlogPostEditDialog Content="@Entity"
+                            SubmitClick="@UpdateEntityAsync" EntityId="@Id"></BlogPostEditDialog>
+    </div>
+</FluentAdaptiveCard>
+
+@code {
+
+    [Parameter] public Guid Id { get; set; }
+
+    [Inject] protected IEntityTagAdminAppService EntityTagAdminAppService { get; set; }
+    [Inject] protected IBlogPostAdminAppService AppService { get; set; }
+    [Inject] protected IMediaDescriptorAdminAppService MediaDescriptorAdminAppService { get; set; }
+    [Inject] protected NavigationManager NavigationManager { get; set; }
+
+    public UpdateBlogPostDto Entity { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var post = await AppService.GetAsync(Id);
+        Entity = ObjectMapper.Map<BlogPostDto, UpdateBlogPostDto>(post);
+    }
+
+    protected async Task<DialogResult?> UpdateEntityAsync(BlogPostUpdateResultModel res)
+    {
+        try
+        {
+            var input = res.Dto;
+
+            BlogPostDto entity = default!;
+            if (res.CoverImageStream != null && res.CoverImageStream.Length > 0)
+            {
+                var mediaDto = await MediaDescriptorAdminAppService.CreateAsync("BlogPost", new CreateMediaInputWithStream()
+                {
+                    File = new RemoteStreamContent(res.CoverImageStream),
+                    Name = res.FileName,
+                });
+
+                input.CoverImageMediaId = mediaDto.Id;
+                res.Dispose();
+            }
+
+            entity = await AppService.UpdateAsync(Id, res.Dto);
+
+            var tagNames = res.TagNameString?.Split(",")?.ToList() ?? [];
+
+            if (!tagNames.IsNullOrEmpty())
+            {
+                await EntityTagAdminAppService.SetEntityTagsAsync(new EntityTagSetDto()
+                {
+                    Tags = tagNames,
+                    EntityType = "BlogPost",
+                    EntityId = entity.Id.ToString()
+                });
+            }
+
+            NavigationManager.NavigateTo("/Cms/BlogPosts");
+            return DialogResult.Ok(entity);
+        }
+        catch (Exception ex)
+        {
+            await HandleErrorAsync(ex);
+            return null;
+        }
+        finally
+        {
+        }
+    }
+
+
+}

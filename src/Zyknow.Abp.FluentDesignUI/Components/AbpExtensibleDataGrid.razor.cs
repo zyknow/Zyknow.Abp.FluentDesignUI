@@ -169,7 +169,7 @@ public partial class AbpExtensibleDataGrid<TItem, TKey> : FluentComponentBase wh
                 await OnDeleteSelected.InvokeAsync(SelectEntities);
                 SelectEntities = [];
                 await SelectEntitiesChanged.InvokeAsync(SelectEntities);
-                await InvokeAsync(StateHasChanged);
+                // await FluentDataGridRef.RefreshDataAsync();
             }
         }
     }

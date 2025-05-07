@@ -3,9 +3,15 @@
 @using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
 @using Volo.CmsKit.Admin.Blogs
 @using Volo.CmsKit.Blogs
-@using Volo.CmsKit.Localization
 @using Volo.CmsKit.Permissions
-@inherits AbpCrudPageBase<IBlogAdminAppService, BlogDto, Guid, BlogGetListInput, CreateBlogDto, UpdateBlogDto>
+@using TKey = Guid
+@using TDto = Volo.CmsKit.Admin.Blogs.BlogDto
+@using TGetListInput = Volo.CmsKit.Admin.Blogs.BlogGetListInput
+@using TCreateDto = Volo.CmsKit.Admin.Blogs.CreateBlogDto
+@using TUpdateDto = Volo.CmsKit.Admin.Blogs.UpdateBlogDto
+@using TResource = Volo.CmsKit.Localization.CmsKitResource
+@using TAppService = Volo.CmsKit.Admin.Blogs.IBlogAdminAppService
+@inherits AbpCrudPageBase<TAppService, TDto, TKey, TGetListInput, TCreateDto, TUpdateDto>
 
 <FluentAdaptiveCard>
     <AbpPageHeader Title="@L["Blogs"]" BreadcrumbItems="@BreadcrumbItems" Toolbar="@Toolbar"/>
@@ -14,8 +20,8 @@
                OnSearch="SearchEntitiesAsync"></AbpSearch>
 
     <AbpExtensibleDataGrid Loading="@Loading"
-                           TKey="Guid"
-                           TItem="BlogDto"
+                           TKey="TKey"
+                           TItem="TDto"
                            EnableSelected="true"
                            PrimarySelectedDeletesBtnVisible="@HasDeletePermission"
                            OnDeleteSelected="DeleteEntitiesAsync"
@@ -40,8 +46,7 @@
 
     public BlogManagement()
     {
-        LocalizationResource = typeof(CmsKitResource);
-        ObjectMapperContext = typeof(AbpCmsKitBlazorAdminFluentDesignModule);
+        LocalizationResource = typeof(TResource);
 
         CreatePolicyName = CmsKitAdminPermissions.Blogs.Create;
         UpdatePolicyName = CmsKitAdminPermissions.Blogs.Update;
@@ -63,7 +68,7 @@
         return base.SetBreadcrumbItemsAsync();
     }
 
-    protected override string GetDeleteConfirmationMessage(BlogDto entity)
+    protected override string GetDeleteConfirmationMessage(TDto entity)
     {
         return string.Format(L["BlogDeletionConfirmationMessage"], entity.Name);
     }
@@ -87,7 +92,7 @@
                 {
                     Text = L["Edit"],
                     Visible = (data) => HasUpdatePermission,
-                    Clicked = async (data) => { await OpenEditDialogAsync(data.As<BlogDto>()); }
+                    Clicked = async (data) => { await OpenEditDialogAsync(data.As<TDto>()); }
                 },
                 new FluentEntityAction
                 {
@@ -95,7 +100,7 @@
                     Visible = (data) => HasFeaturesPermission,
                     Clicked = async (data) =>
                     {
-                        var blog = data.As<BlogDto>();
+                        var blog = data.As<TDto>();
                         await ShowFeatureDialogAsync(blog);
                     }
                 },
@@ -104,8 +109,8 @@
                     Text = L["Delete"],
                     Color = "red",
                     Visible = (data) => HasDeletePermission,
-                    Clicked = async (data) => await DeleteEntityAsync(data.As<BlogDto>()),
-                    ConfirmationMessage = (data) => GetDeleteConfirmationMessage(data.As<BlogDto>())
+                    Clicked = async (data) => await DeleteEntityAsync(data.As<TDto>()),
+                    ConfirmationMessage = (data) => GetDeleteConfirmationMessage(data.As<TDto>())
                 }
             ]);
 
@@ -120,15 +125,15 @@
                 {
                     Title = L["BlogName"],
                     Sortable = true,
-                    Data = nameof(BlogDto.Name),
-                    PropertyName = nameof(BlogDto.Name)
+                    Data = nameof(TDto.Name),
+                    PropertyName = nameof(TDto.Name)
                 },
                 new FluentTableColumn
                 {
                     Title = L["BlogSlug"],
                     Sortable = true,
-                    Data = nameof(BlogDto.Slug),
-                    PropertyName = nameof(BlogDto.Slug)
+                    Data = nameof(TDto.Slug),
+                    PropertyName = nameof(TDto.Slug)
                 }
             ]);
 
@@ -141,7 +146,7 @@
         return base.SetTableColumnsAsync();
     }
 
-    protected async Task ShowFeatureDialogAsync(BlogDto blog)
+    protected async Task ShowFeatureDialogAsync(TDto blog)
     {
         var features = await BlogFeatureAppService.GetListAsync(blog.Id);
         await ShowDialogAsync(@<BlogFeaturesDialog EntityName="@blog.Name" Content="@features"

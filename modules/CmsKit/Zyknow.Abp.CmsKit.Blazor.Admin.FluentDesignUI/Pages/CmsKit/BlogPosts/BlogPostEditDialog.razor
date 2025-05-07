@@ -1,0 +1,115 @@
+@using Localization.Resources.AbpUi
+@using Volo.CmsKit.Admin.Blogs
+@using Volo.CmsKit.Admin.MediaDescriptors
+@using Volo.CmsKit.Admin.Tags
+@using Volo.CmsKit.Blogs
+@using Volo.CmsKit.Permissions
+@using Volo.CmsKit.Tags
+@using TInput = Volo.CmsKit.Admin.Blogs.UpdateBlogPostDto
+@using TResource = Volo.CmsKit.Localization.CmsKitResource
+@using TResult = BlogPostUpdateResultModel
+@inherits Zyknow.Abp.FluentDesignUI.AbpDialogFormBase<TResult, TInput, TResource>
+
+
+<AbpFluentForm HeaderText="@(FormTitle)"
+               Content="@Content"
+               @ref="FormRef"
+               SubmitValidClick="@(() => SubmitClick(ResModel))"
+               CancelClick="CancelClick"
+               Localize="@LH.Localize">
+
+    <ChildContent>
+        <FluentStack Orientation="Orientation.Vertical">
+            @if (Content.CoverImageMediaId != null)
+            {
+                <img src="@(@$"/api/cms-kit/media/{Content.CoverImageMediaId}")" alt="Cover Image" width="100%"/>
+                <FluentButton OnClick="RemoveCoverClick">@L["RemoveCoverImage"]</FluentButton>
+            }
+            else
+            {
+                <FluentInputFile
+                    DragDropZoneVisible="false"
+                    Mode="InputFileMode.Stream"
+                    AnchorId="UploadStream"
+                    Accept=".jpg, .jpeg, .png, .webp, .gif"
+                    OnFileUploaded="@OnCoverUploadedAsync"/>
+
+                <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center"
+                             Style="margin-bottom: 10px">
+                    <FluentButton Appearance="Appearance.Accent" Id="UploadStream">
+                        @L["CoverImage"] 16:9
+                    </FluentButton>
+                    <FluentLabel>@ResModel.FileName</FluentLabel>
+                </FluentStack>
+            }
+
+
+            <FluentTextField Style="width: 100%" Label="@L["BlogPostTitle"]" @bind-Value="@Content.Title"/>
+            <FluentValidationMessage For="@(() => Content.Title)"/>
+
+            <FluentTextField Style="width: 100%" Label="@L["BlogPostSlug"]" @bind-Value="@Content.Slug"/>
+            <FluentValidationMessage For="@(() => Content.Slug)"/>
+
+            <FluentTextField Style="width: 100%" Label="@L["BlogPostShortDescription"]"
+                             @bind-Value="@Content.ShortDescription"/>
+            <FluentValidationMessage For="@(() => Content.ShortDescription)"/>
+
+            <FluentTextField Style="width: 100%" Label="@($@"{@L["CmsKit.Tags"]} - ({@L["TagsHelpText"]})")"
+                             @bind-Value="@ResModel.TagNameString"/>
+
+            <ExtensionProperties TEntityType="TInput" TResourceType="TResource"
+                                 Entity="@Content" LH="@LH"/>
+
+            <CmsKitEditor @bind-Value="@Content.Content"></CmsKitEditor>
+
+        </FluentStack>
+    </ChildContent>
+</AbpFluentForm>
+
+@code
+{
+    [Inject] protected IBlogAdminAppService BlogAdminAppService { get; set; }
+    [Inject] protected IStringLocalizer<AbpUiResource> UL { get; set; }
+    [Inject] protected IAuthorizationService AuthorizationService { get; set; }
+    [Inject] protected IEntityTagAdminAppService EntityTagAdminAppService { get; set; }
+    [Inject] protected ITagAppService TagAppService { get; set; }
+
+    [Parameter] public Guid EntityId { get; set; }
+
+    protected string FormTitle = "";
+
+    public TResult ResModel { get; set; } = new();
+
+    AbpFluentForm<TInput> FormRef { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var tags = await TagAppService.GetAllRelatedTagsAsync("BlogPost", EntityId.ToString());
+        FormTitle = $"{L["Edit"]}{@L["BlogPosts"]} - {Content.Title}";
+        ResModel.Dto = Content;
+        if (!tags.IsNullOrEmpty())
+        {
+            ResModel.TagNameString = string.Join(",", tags.Select(x => x.Name));
+        }
+    }
+
+    async Task OnCoverUploadedAsync(FluentInputFileEventArgs file)
+    {
+        var localFile = Path.GetTempFileName() + file.Name;
+        ResModel.FileName = file.Name;
+        ResModel.CoverImageStream = new(localFile, FileMode.Create);
+        await file.Stream!.CopyToAsync(ResModel.CoverImageStream);
+    }
+
+    private async Task RemoveCoverClick()
+    {
+        var removeConfirm = await Message.Confirm(
+            L["RemoveCoverImageConfirmationMessage"], L["Confirm"]);
+
+        if (removeConfirm)
+        {
+            Content.CoverImageMediaId = null;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+}

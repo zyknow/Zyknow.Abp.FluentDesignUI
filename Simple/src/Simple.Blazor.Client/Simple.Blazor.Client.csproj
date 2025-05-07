@@ -11,6 +11,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" />
+    <PackageReference Include="TinyMCE" />
     <PackageReference Include="Volo.Abp.AutoMapper" />
   </ItemGroup>
 
@@ -28,5 +29,4 @@
     <ProjectReference Include="..\..\..\modules\TenantManagement\Zyknow.Abp.TenantManagement.Blazor.Webassembly.FluentDesignUI\Zyknow.Abp.TenantManagement.Blazor.Webassembly.FluentDesignUI.csproj" />
     <ProjectReference Include="..\..\src\Simple.HttpApi.Client\Simple.HttpApi.Client.csproj" />
   </ItemGroup>
-
 </Project>

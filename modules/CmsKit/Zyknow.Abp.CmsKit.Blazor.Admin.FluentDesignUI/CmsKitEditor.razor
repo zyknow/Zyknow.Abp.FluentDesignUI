@@ -1,0 +1,154 @@
+﻿@using System.Diagnostics.CodeAnalysis
+@using Volo.Abp.Localization
+@inherits FluentInputBase<string?>
+@inject ILanguageProvider LanguageProvider
+@inject IThemeStore ThemeStore
+@if (Conf != null)
+{
+    <TinyMCE.Blazor.Editor Id="@configKey.ToString()" @key="@configKey" Field="() => Value" Value="@Value"
+                           ValueChanged="@ValueChanged" LicenseKey="gpl"
+                           ScriptSrc="/lib/tinymce/tinymce.min.js"
+                           Conf="@Conf"
+    />
+}
+
+<style scoped>
+    .tinymce-wrapper {
+        width: 100%;
+    }
+</style>
+
+@code {
+    [Inject] protected IJSRuntime JsRuntime { get; set; } = default!;
+
+    Guid? configKey = Guid.NewGuid();
+    TinyMCE.Blazor.Editor editor;
+
+    protected virtual Dictionary<string, object>? Conf { get; set; }
+
+    protected override bool TryParseValueFromString(string? value, [MaybeNullWhen(false)] out string result, [NotNullWhen(false)] out string? validationErrorMessage)
+    {
+        result = Value;
+        validationErrorMessage = null;
+        return true;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Conf = new Dictionary<string, object>()
+            {
+                // { "selector", "textarea" },
+                { "plugins", "preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap emoticons accordion" },
+                { "editimage_cors_hosts", new[] { "picsum.photos" } },
+                { "menubar", "file edit view insert format tools table help" },
+                { "toolbar", "undo redo | accordion accordionremove | blocks fontfamily fontsize | bold italic underline strikethrough | align numlist bullist | link image | table media | lineheight outdent indent | forecolor backcolor removeformat | charmap emoticons | code fullscreen preview | save print | pagebreak anchor codesample | ltr rtl" },
+                // {
+                //     "content_langs", new object[]
+                //     {
+                //         new Dictionary<string, object> { { "title", "English" }, { "code", "en" } },
+                //         new Dictionary<string, object> { { "title", "Spanish" }, { "code", "es" } },
+                //         new Dictionary<string, object> { { "title", "French" }, { "code", "fr" } },
+                //         new Dictionary<string, object> { { "title", "German" }, { "code", "de" } },
+                //         new Dictionary<string, object> { { "title", "Portuguese" }, { "code", "pt" } },
+                //         new Dictionary<string, object> { { "title", "Chinese" }, { "code", "zh" } },
+                //     }
+                // },
+                { "autosave_ask_before_unload", true },
+                { "autosave_interval", "30s" },
+                { "autosave_prefix", "{path}{query}-{id}-" },
+                { "autosave_restore_when_empty", false },
+                { "autosave_retention", "2m" },
+                { "image_advtab", true },
+                { "importcss_append", true },
+                // { "file_picker_callback", "filePickerCallback" },
+                // { "height", 600 },
+                { "image_caption", true },
+                { "quickbars_selection_toolbar", "bold italic | quicklink h2 h3 blockquote quickimage quicktable" },
+                // { "noneditable_class", "mceNonEditable" },
+                // { "toolbar_mode", "sliding" },
+                // { "contextmenu", "link image table" },
+                // { "skin", useDarkMode ? "oxide-dark" : "oxide" },
+                // { "content_css", useDarkMode ? "dark" : "default" },
+                // { "content_style", "body { font-family:Helvetica,Arial,sans-serif; font-size:16px }" },
+                // TODO: how to config images_upload_handler ?
+                // { "images_upload_handler", "images_upload_handler" }
+            };
+            await SetLanguageAsync();
+
+            // TODO: too fast will got error, can fix this? : [Error: System.ArgumentException: There is no tracked object with id '2'. Perhaps the DotNetObjectReference instance was already disposed. (Parameter 'dotNetObjectId')]
+            await Task.Delay(100);
+            await SetThemeAsync();
+            await InvokeAsync(StateHasChanged);
+            ThemeStore.ThemeModeChanged += ThemeStoreOnThemeModeChanged;
+        }
+    }
+
+    private async void ThemeStoreOnThemeModeChanged(object? sender, EventArgs e)
+    {
+        await Task.Delay(100);
+        await SetThemeAsync();
+        configKey = Guid.NewGuid();
+        await InvokeAsync(StateHasChanged);
+    }
+
+
+    protected virtual async Task SetThemeAsync()
+    {
+        bool isDark = ThemeStore.ThemeMode == DesignThemeModes.Dark;
+        if (ThemeStore.ThemeMode == DesignThemeModes.System)
+        {
+            isDark = await JsRuntime.InvokeAsync<bool>("eval", "window.matchMedia('(prefers-color-scheme: dark)').matches");
+        }
+
+        Conf["content_css"] = isDark ? "dark" : "default";
+        Conf["skin"] = isDark ? "oxide-dark" : "oxide";
+    }
+
+    protected virtual async Task SetLanguageAsync()
+    {
+        var selectedLanguageName = await JsRuntime.InvokeAsync<string>(
+            "localStorage.getItem",
+            "Abp.SelectedLanguage"
+        );
+
+        var langs = await LanguageProvider.GetLanguagesAsync();
+
+        if (!langs.Any())
+        {
+            return;
+        }
+
+        if (!selectedLanguageName.IsNullOrWhiteSpace())
+        {
+            var currentLanguage = langs.FirstOrDefault(l => l.UiCultureName == selectedLanguageName);
+
+            if (currentLanguage != null)
+            {
+                Conf["language"] = LanguageMap(currentLanguage.CultureName);
+            }
+        }
+    }
+
+
+    protected virtual string LanguageMap(string lang)
+    {
+        if (lang == "zh-Hans")
+        {
+            return "zh_CN";
+        }
+
+        return lang;
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        base.Dispose(disposing);
+        if (disposing)
+        {
+            ThemeStore.ThemeModeChanged -= ThemeStoreOnThemeModeChanged;
+        }
+    }
+
+}

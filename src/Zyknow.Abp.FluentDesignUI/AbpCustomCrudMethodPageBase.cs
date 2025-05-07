@@ -243,10 +243,10 @@ public abstract class AbpCustomCrudMethodPageBase<
     {
         try
         {
+            await CheckDeletePolicyAsync();
             entities = entities.ToList();
             var ids = entities.Select(e => e.Id).ToList();
             await OnDeletingEntitiesAsync(entities);
-            await CheckDeletePolicyAsync();
 
             foreach (var key in ids)
             {
@@ -314,7 +314,7 @@ public abstract class AbpCustomCrudMethodPageBase<
         try
         {
             await CheckCreatePolicyAsync();
-
+        
             NewEntity = new TCreateViewModel();
             await ShowCreateDialogAsync();
         }

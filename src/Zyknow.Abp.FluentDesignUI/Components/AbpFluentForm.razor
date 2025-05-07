@@ -151,9 +151,13 @@ else
                     var res = await SubmitValidClick.Invoke();
                     if (res == null)
                         return;
-
                     else
-                        await Dialog?.CloseAsync(res);
+                    {
+                        if (Dialog != null)
+                        {
+                            await Dialog.CloseAsync(res);
+                        }
+                    }
                 }
                 else
                 {

@@ -407,3 +407,4 @@ samples/BookStore/src/BookStore.HttpApi.Host/wwwroot/libs/
 Simple/Simple.db
 Simple/Simple.db-shm
 Simple/Simple.db-wal
+/Simple/src/Simple.Blazor.Client/wwwroot/lib/tinymce/*
