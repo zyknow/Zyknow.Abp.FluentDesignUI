@@ -4,11 +4,11 @@
     <!-- Core Framework Versions -->
     <ABPPackageVersion>9.0.0</ABPPackageVersion>
     <MicrosoftAspNetCorePackageVersion>9.0.0</MicrosoftAspNetCorePackageVersion>
-    <MicrosoftAspNetCoreWebPackageVersion>9.0.3</MicrosoftAspNetCoreWebPackageVersion>
+    <MicrosoftAspNetCoreWebPackageVersion>9.0.4</MicrosoftAspNetCoreWebPackageVersion>
     <MicrosoftExtensionsPackageVersion>9.0.0</MicrosoftExtensionsPackageVersion>
     <MicrosoftEntityFrameworkCorePackageVersion>9.0.0</MicrosoftEntityFrameworkCorePackageVersion>
     <!-- UI Component Versions -->
-    <FluentBlazorPackageVersion>4.11.7</FluentBlazorPackageVersion>
+    <FluentBlazorPackageVersion>4.11.9</FluentBlazorPackageVersion>
     <!-- Logging and Monitoring Versions -->
     <SerilogPackageVersion>9.0.0</SerilogPackageVersion>
     <SerilogSinksAsyncPackageVersion>2.1.0</SerilogSinksAsyncPackageVersion>
@@ -21,6 +21,7 @@
     <PackageVersion Include="AspNetCore.HealthChecks.UI" Version="$(HealthChecksPackageVersion)" />
     <PackageVersion Include="AspNetCore.HealthChecks.UI.Client" Version="$(HealthChecksPackageVersion)" />
     <PackageVersion Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="$(HealthChecksPackageVersion)" />
+    <PackageVersion Include="BlazorMonaco" Version="3.3.0" />
     <PackageVersion Include="BlazorPro.BlazorSize" Version="$(ABPPackageVersion)" />
     <!-- Microsoft.AspNetCore Related Packages -->
     <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="$(MicrosoftAspNetCoreWebPackageVersion)" />
