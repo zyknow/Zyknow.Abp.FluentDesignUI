@@ -214,8 +214,10 @@ public abstract class AbpCustomCrudMethodPageBase<
 
     protected virtual async Task OnDeletedEntitiesAsync(IEnumerable<TGetListOutputDto> entities)
     {
+        // TODO: way nee this delay?
+        await Task.Delay(100);
+        
         await GetEntitiesAsync();
-        await InvokeAsync(StateHasChanged);
         await Message.Success(L["SuccessfullyDeleted"]);
     }
 
