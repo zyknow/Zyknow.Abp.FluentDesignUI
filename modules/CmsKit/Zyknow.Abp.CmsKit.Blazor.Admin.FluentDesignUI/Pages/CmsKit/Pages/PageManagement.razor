@@ -1,0 +1,156 @@
+﻿@page "/Cms/Pages"
+@attribute [Authorize(CmsKitAdminPermissions.Pages.Default)]
+@using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
+@using Volo.CmsKit.Admin.Blogs
+@using Volo.CmsKit.Blogs
+@using Volo.CmsKit.Permissions
+@using TKey = Guid
+@using TDto = Volo.CmsKit.Admin.Pages.PageDto
+@using TGetListInput = Volo.CmsKit.Admin.Pages.GetPagesInputDto
+@using TCreateDto = Volo.CmsKit.Admin.Pages.CreatePageInputDto
+@using TUpdateDto = Volo.CmsKit.Admin.Pages.UpdatePageInputDto
+@using TResource = Volo.CmsKit.Localization.CmsKitResource
+@using TAppService = Volo.CmsKit.Admin.Pages.IPageAdminAppService
+@inherits AbpCrudPageBase<TAppService, TDto, TDto, TKey, TGetListInput, TCreateDto, TUpdateDto>
+
+<FluentAdaptiveCard>
+    <AbpPageHeader Title="@L["Pages"]" BreadcrumbItems="@BreadcrumbItems" Toolbar="@Toolbar"/>
+
+    <AbpSearch Loading="@Loading" @bind-PrimarySearchValue="GetListInput.Filter"
+               OnSearch="SearchEntitiesAsync"></AbpSearch>
+
+    <AbpExtensibleDataGrid Loading="@Loading"
+                           TKey="TKey"
+                           TItem="TDto"
+                           EnableSelected="true"
+                           PrimarySelectedDeletesBtnVisible="@HasDeletePermission"
+                           OnDeleteSelected="DeleteEntitiesAsync"
+                           DeleteSelectedDisplayPropertyConfirmExpression="@(r => r.Title)"
+                           Entities="Entities"
+                           OnChange="@OnDataGridReadAsync"
+                           Pagination="@Pagination"
+                           Columns="@PageManagementTableColumns">
+    </AbpExtensibleDataGrid>
+</FluentAdaptiveCard>
+
+@code
+{
+    protected PageToolbar Toolbar { get; } = new();
+
+    [Inject] protected IBlogFeatureAdminAppService BlogFeatureAppService { get; set; }
+
+    protected List<FluentTableColumn> PageManagementTableColumns => TableColumns.Get<PageManagement>();
+
+    public PageManagement()
+    {
+        LocalizationResource = typeof(TResource);
+
+        CreatePolicyName = CmsKitAdminPermissions.Blogs.Create;
+        UpdatePolicyName = CmsKitAdminPermissions.Blogs.Update;
+        DeletePolicyName = CmsKitAdminPermissions.Blogs.Delete;
+    }
+
+    protected override ValueTask SetBreadcrumbItemsAsync()
+    {
+        BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Menu:CMS"], icon: new Size16.News()));
+        BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Pages"]));
+
+        return base.SetBreadcrumbItemsAsync();
+    }
+
+    protected override string GetDeleteConfirmationMessage(TDto entity)
+    {
+        return string.Format(L["PageDeletionConfirmationMessage"]);
+    }
+
+    protected override ValueTask SetToolbarItemsAsync()
+    {
+        Toolbar.AddButton(L["NewPage"],
+            OpenCreateDialogAsync,
+            new Size20.Add(),
+            requiredPolicyName: CreatePolicyName);
+        return base.SetToolbarItemsAsync();
+    }
+
+    protected override ValueTask SetEntityActionsAsync()
+    {
+        EntityActions
+            .Get<PageManagement>()
+            .AddRange([
+                new FluentEntityAction
+                {
+                    Text = L["Edit"],
+                    Visible = (data) => HasUpdatePermission,
+                    Clicked = async (data) => { await OpenEditDialogAsync(data.As<TDto>()); }
+                },
+                new FluentEntityAction
+                {
+                    Text = L["Delete"],
+                    Color = "red",
+                    Visible = (data) => HasDeletePermission,
+                    Clicked = async (data) => await DeleteEntityAsync(data.As<TDto>()),
+                    ConfirmationMessage = (data) => GetDeleteConfirmationMessage(data.As<TDto>())
+                }
+            ]);
+
+        return base.SetEntityActionsAsync();
+    }
+
+    protected override ValueTask SetTableColumnsAsync()
+    {
+        PageManagementTableColumns
+            .AddRange([
+                new FluentTableColumn
+                {
+                    Title = L["Title"],
+                    Sortable = true,
+                    Data = nameof(TDto.Title),
+                    PropertyName = nameof(TDto.Title)
+                },
+                new FluentTableColumn
+                {
+                    Title = L["SLUG"],
+                    Sortable = true,
+                    Data = nameof(TDto.Slug),
+                    PropertyName = nameof(TDto.Slug)
+                },
+                new FluentTableColumn
+                {
+                    Title = L["IsHomePage"],
+                    Sortable = true,
+                    Data = nameof(TDto.IsHomePage),
+                    PropertyName = nameof(TDto.IsHomePage),
+                    IsCheckIcon = true
+                },
+                new FluentTableColumn
+                {
+                    Title = L["CreationTime"],
+                    Sortable = true,
+                    Data = nameof(TDto.CreationTime),
+                    PropertyName = nameof(TDto.CreationTime)
+                },
+                new FluentTableColumn
+                {
+                    Title = L["LastModificationTime"],
+                    Sortable = true,
+                    Data = nameof(TDto.LastModificationTime),
+                    PropertyName = nameof(TDto.LastModificationTime)
+                }
+            ]);
+
+        PageManagementTableColumns.Add(new FluentTableColumn
+        {
+            Title = L["Actions"],
+            Actions = EntityActions.Get<PageManagement>()
+        });
+
+        return base.SetTableColumnsAsync();
+    }
+
+
+    protected override Task ShowCreateDialogAsync()
+        => throw new NotImplementedException();
+
+    protected override Task ShowEditDialogAsync()
+        => throw new NotImplementedException();
+}
