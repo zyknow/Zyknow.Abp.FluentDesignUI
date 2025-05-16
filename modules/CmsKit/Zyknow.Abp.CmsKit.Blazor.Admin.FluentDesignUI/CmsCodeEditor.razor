@@ -1,0 +1,33 @@
+﻿<StandaloneCodeEditor Id="@($@"code-editor-{Id}")" ConstructionOptions="EditorConstructionOptions"/>
+
+<style>
+    div[id^="code-editor-"]{
+        height: 100%;
+    }
+</style>
+
+@code {
+    [Parameter] public Action<StandaloneCodeEditor, StandaloneEditorConstructionOptions> ConstructionOptions { get; set; }
+
+    [Parameter] public string Id { get; set; } = Guid.NewGuid().ToString();
+
+    StandaloneEditorConstructionOptions EditorConstructionOptions(StandaloneCodeEditor editor)
+    {
+        var options = new StandaloneEditorConstructionOptions
+        {
+            Theme = "vs-dark",
+            AutomaticLayout = true
+        };
+        ConstructionOptions?.Invoke(editor, options);
+
+        return options;
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+        }
+    }
+
+}

@@ -1,0 +1,76 @@
+﻿@page "/Cms/GlobalResources"
+@using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
+@using Volo.CmsKit.Admin.GlobalResources
+@using Volo.CmsKit.Localization
+@inherits AbpComponentBase
+<FluentAdaptiveCard>
+    <AbpPageHeader Title="@L["GlobalResources"]" BreadcrumbItems="@BreadcrumbItems"/>
+    <FluentTabs Style="height: 100%">
+        <FluentTab Style="height: 100%" Label="@L["Script"]">
+            <CmsCodeEditor ConstructionOptions="@((editor, opt) =>
+                                                {
+                                                    _scriptEditor = editor;
+                                                    opt.Language = "javascript";
+                                                    opt.Value = EditEntity.Script;
+                                                })"></CmsCodeEditor>
+        </FluentTab>
+        <FluentTab Label="@L["Style"]" Style="height: 100%">
+            <CmsCodeEditor ConstructionOptions="@((editor, opt) =>
+                                                {
+                                                    _styleEditor = editor;
+                                                    opt.Language = "css";
+                                                    opt.Value = EditEntity.Style;
+                                                })"></CmsCodeEditor>
+        </FluentTab>
+    </FluentTabs>
+
+
+    <FluentStack HorizontalAlignment="HorizontalAlignment.End">
+        <FluentButton Style="margin-right: 14px" Appearance="Appearance.Accent" OnClick="SaveChanges">@L["SaveChanges"]</FluentButton>
+    </FluentStack>
+
+</FluentAdaptiveCard>
+
+@code {
+
+    [Inject] public IGlobalResourceAdminAppService GlobalResourceAdminAppService { get; set; }
+    protected List<AbpBreadcrumbItem> BreadcrumbItems = new();
+    GlobalResourcesUpdateDto EditEntity { get; set; } = new GlobalResourcesUpdateDto();
+    StandaloneCodeEditor _styleEditor;
+    StandaloneCodeEditor _scriptEditor;
+
+    public GlobalResourceManagement()
+    {
+        LocalizationResource = typeof(CmsKitResource);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await SetBreadcrumbItemsAsync();
+        
+        var res = await GlobalResourceAdminAppService.GetAsync();
+        EditEntity.Script = res.ScriptContent;
+        EditEntity.Style = res.StyleContent;
+    }
+    
+    protected async ValueTask SetBreadcrumbItemsAsync()
+    {
+        BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Menu:CMS"], icon: new Size16.News()));
+        BreadcrumbItems.Add(new AbpBreadcrumbItem(L["GlobalResources"]));
+    }
+
+    async Task SaveChanges()
+    {
+        try
+        {
+            EditEntity.Script = await _scriptEditor.GetValue();
+            EditEntity.Style = await _styleEditor.GetValue();
+            await GlobalResourceAdminAppService.SetGlobalResourcesAsync(EditEntity);
+        }
+        catch (Exception e)
+        {
+            await HandleErrorAsync(e);
+        }
+    }
+
+}

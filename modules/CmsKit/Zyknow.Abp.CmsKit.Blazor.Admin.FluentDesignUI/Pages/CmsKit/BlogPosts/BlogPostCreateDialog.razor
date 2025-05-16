@@ -34,24 +34,20 @@
                 <FluentLabel>@ResModel.FileName</FluentLabel>
             </FluentStack>
 
-
             <FluentAutocomplete
                 Required
                 Name="blogs"
+                AutoComplete="off"
                 Field="@(new FieldIdentifier(Content, nameof(Content.BlogId)))"
-                MaximumSelectedOptions="1"
-                OptionText="@(dto => $@"{dto.Name}")"
-                Width="300px"
-                SelectedOptions="SelectedBlogs"
-                SelectedOptionsChanged="@(blogs =>
-                                        {
-                                            SelectedBlogs = blogs;
-                                            Content.BlogId = blogs?.FirstOrDefault()?.Id ?? Guid.Empty;
-                                        })"
-                ImmediateDelay="200"
-                TOption="BlogDto"
+                Autofocus="true"
                 Label="@L["Blogs"]"
-                OnOptionsSearch="@OnOptionsSearch"></FluentAutocomplete>
+                TOption="BlogDto"
+                ImmediateDelay="200"
+                Width="300px"
+                OnOptionsSearch="@OnOptionsSearch"
+                Multiple="false"
+                OptionText="@(dto => $@"{dto.Name}")"
+                @bind-SelectedOption="SelectedBlog"/>
 
             <FluentTextField Style="width: 100%" Label="@L["BlogPostTitle"]" Value="@Content.Title"
                              ValueChanged="@SetTitle"/>
@@ -105,7 +101,7 @@
 
     protected bool CanPublish = false;
 
-    protected IEnumerable<BlogDto>? SelectedBlogs { get; set; }
+    protected BlogDto? SelectedBlog { get; set; }
 
     public BlogPostCreateResultModel ResModel { get; set; } = new();
 

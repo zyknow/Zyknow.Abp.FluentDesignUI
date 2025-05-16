@@ -1,0 +1,113 @@
+﻿@using Localization.Resources.AbpUi
+@using Volo.CmsKit.Admin.Pages
+@using TInput = Volo.CmsKit.Admin.Menus.MenuItemUpdateInput
+@using TResource = Volo.CmsKit.Localization.CmsKitResource
+@inherits Zyknow.Abp.FluentDesignUI.AbpDialogFormBase<TInput, TResource>
+
+<AbpFluentForm
+    HeaderText="@HeaderText"
+    Content="@Content"
+    @ref="FormRef"
+    SubmitValidClick="SubmitClick"
+    CancelClick="CancelClick"
+    Localize="@LH.Localize">
+
+    <FluentTabs @bind-ActiveTabId="tabId">
+        <FluentTab Id="Url" Label="@L["Url"]">
+        </FluentTab>
+        <FluentTab Id="Page" Label="@L["Page"]">
+        </FluentTab>
+    </FluentTabs>
+
+    <FluentStack Orientation="Orientation.Vertical" VerticalGap="0" Style="margin-top: 20px">
+
+        @if (tabId == "Page")
+        {
+            <FluentAutocomplete
+                Required
+                Name="PageId"
+                AutoComplete="off"
+                Field="@(new FieldIdentifier(Content, nameof(Content.PageId)))"
+                Autofocus="true"
+                Label="@L["PageId"]"
+                TOption="PageDto"
+                ImmediateDelay="200"
+                Width="300px"
+                OnOptionsSearch="@OnOptionsSearch"
+                Multiple="false"
+                OptionText="@(dto => $@"{dto.Title}")"
+                @bind-SelectedOption="SelectedPage"/>
+        }
+        else
+        {
+            <FluentTextField Required="true" Label="@L["Url"]" Disabled="@(Content.PageId != null)"
+                             @bind-Value="Content.Url"></FluentTextField>
+            <FluentValidationMessage For="@(() => Content.Url)"></FluentValidationMessage>
+        }
+
+
+        <FluentDivider Style="width: 100%;margin-top: 10px;margin-bottom: 10px"
+                       Orientation="Orientation.Horizontal"></FluentDivider>
+
+        <FluentTextField Required="true" Label="@L["DisplayName"]"
+                         @bind-Value="Content.DisplayName"></FluentTextField>
+        <FluentValidationMessage For="@(() => Content.DisplayName)"></FluentValidationMessage>
+
+
+        <FluentTextField Label="@L["Icon"]"
+                         @bind-Value="Content.Icon"></FluentTextField>
+        <FluentValidationMessage For="@(() => Content.Icon)"></FluentValidationMessage>
+
+        <FluentTextField Label="@L["Target"]"
+                         @bind-Value="Content.Target"></FluentTextField>
+        <FluentValidationMessage For="@(() => Content.Target)"></FluentValidationMessage>
+
+        <FluentTextField Label="@L["ElementId"]"
+                         @bind-Value="Content.ElementId"></FluentTextField>
+        <FluentValidationMessage For="@(() => Content.ElementId)"></FluentValidationMessage>
+
+        <FluentTextField Label="@L["CssClass"]"
+                         @bind-Value="Content.CssClass"></FluentTextField>
+        <FluentValidationMessage For="@(() => Content.CssClass)"></FluentValidationMessage>
+
+        <FluentCheckbox @bind-Value="Content.IsActive" Label="@L["IsActive"]"
+                        Style="margin-top: 10px"></FluentCheckbox>
+
+    </FluentStack>
+
+</AbpFluentForm>
+
+<style>
+    fluent-text-field {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+</style>
+
+@code {
+    AbpFluentForm<TInput> FormRef { get; set; }
+
+    [Parameter] public string EntityDisplayName { get; set; }
+
+    [Inject] protected IStringLocalizer<AbpUiResource> UL { get; set; }
+
+    [Inject] protected IPageAdminAppService PageAdminAppService { get; set; }
+
+    PageDto SelectedPage { get; set; }
+
+    string tabId = "Url";
+
+    string HeaderText => $@"{UL["Edit"]}{L["Menus"]} - {EntityDisplayName}";
+
+    private async Task OnOptionsSearch(OptionsSearchEventArgs<PageDto> arg)
+    {
+        arg.Text = arg.Text.Trim();
+        var result = await PageAdminAppService.GetListAsync(new GetPagesInputDto()
+        {
+            Filter = arg.Text,
+            MaxResultCount = 100
+        });
+        arg.Items = result.Items;
+    }
+
+}

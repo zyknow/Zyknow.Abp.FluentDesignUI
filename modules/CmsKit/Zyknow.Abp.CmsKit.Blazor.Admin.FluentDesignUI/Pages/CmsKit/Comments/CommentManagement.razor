@@ -1,6 +1,194 @@
 ﻿@page "/Cms/Comments"
-<h3>CommentManagement</h3>
+@attribute [Authorize(CmsKitAdminPermissions.Comments.Default)]
+@using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
+@using Volo.Abp.Application.Dtos
+@using Volo.CmsKit.Admin.Blogs
+@using Volo.CmsKit.Blogs
+@using Volo.CmsKit.Permissions
+@using TKey = Guid
+@using TGetListOutputDto = Volo.CmsKit.Admin.Comments.CommentWithAuthorDto
+@using TGetListInput = Volo.CmsKit.Admin.Comments.CommentGetListInput
+@using TResource = Volo.CmsKit.Localization.CmsKitResource
+@using TAppService = Volo.CmsKit.Admin.Comments.ICommentAdminAppService
+@inherits AbpGetListPageBase<TGetListOutputDto, TKey, TGetListInput>
+
+<FluentAdaptiveCard>
+    <AbpPageHeader Title="@L["Comments"]" BreadcrumbItems="@BreadcrumbItems"/>
+
+    <AbpSearch Loading="@Loading" PrimaryInputVisible="false"
+               OnSearch="SearchEntitiesAsync" ChildrenFilterVisible="true">
+        <FluentStack>
+            <div>
+                <FluentDateTimePicker @bind-Value="@GetListInput.CreationStartDate"
+                                      Label="@L["StartDate"]"></FluentDateTimePicker>
+            </div>
+            <div>
+                <FluentDateTimePicker @bind-Value="@GetListInput.CreationEndDate"
+                                      Label="@L["EndDate"]"></FluentDateTimePicker>
+            </div>
+
+            <div>
+                <FluentTextField @bind-Value="@GetListInput.Author"
+                                 Placeholder="@L["Username"]"
+                                 Label="@L["Username"]"/>
+            </div>
+
+            <div>
+                <FluentTextField @bind-Value="@GetListInput.EntityType"
+                                 Placeholder="@L["EntityType"]"
+                                 Label="@L["EntityType"]"/>
+            </div>
+        </FluentStack>
+    </AbpSearch>
+
+    <AbpExtensibleDataGrid Loading="@Loading"
+                           TKey="TKey"
+                           TItem="TGetListOutputDto"
+                           EnableSelected="true"
+                           PrimarySelectedDeletesBtnVisible="@HasDeletePermission"
+                           OnDeleteSelected="DeleteEntitiesAsync"
+                           GetItemKey="x=> x.Id"
+                           DeleteSelectedDisplayPropertyConfirmExpression="@(r => r.Text)"
+                           Entities="Entities"
+                           OnChange="@OnDataGridReadAsync"
+                           Pagination="@Pagination"
+                           Columns="@CommentManagementTableColumns">
+    </AbpExtensibleDataGrid>
+</FluentAdaptiveCard>
+
+@code
+{
+    protected bool HasDeletePermission;
+    protected PageToolbar Toolbar { get; } = new();
+
+    [Inject] protected TAppService AppService { get; set; }
+
+    protected List<FluentTableColumn> CommentManagementTableColumns => TableColumns.Get<CommentManagement>();
+
+    public CommentManagement()
+    {
+        LocalizationResource = typeof(TResource);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        HasDeletePermission = await AuthorizationService.IsGrantedAsync(CmsKitAdminPermissions.Comments.Delete);
+        await base.OnInitializedAsync();
+    }
+
+    protected override ValueTask SetBreadcrumbItemsAsync()
+    {
+        BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Menu:CMS"], icon: new Size16.News()));
+        BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Comments"]));
+
+        return base.SetBreadcrumbItemsAsync();
+    }
+
+    protected override ValueTask SetEntityActionsAsync()
+    {
+        EntityActions
+            .Get<CommentManagement>()
+            .AddRange([
+                new FluentEntityAction
+                {
+                    Text = L["Detail"],
+                    Clicked = async (data) => { }
+                },
+                new FluentEntityAction
+                {
+                    Text = L["Delete"],
+                    Color = "red",
+                    Visible = (data) => HasDeletePermission,
+                    Clicked = async (data) => { }
+                }
+            ]);
+
+        return base.SetEntityActionsAsync();
+    }
+
+    protected override ValueTask SetTableColumnsAsync()
+    {
+        CommentManagementTableColumns
+            .AddRange([
+                new FluentTableColumn
+                {
+                    Title = L["Username"],
+                    Sortable = false,
+                    Data = nameof(TGetListOutputDto.Author),
+                    PropertyName = nameof(TGetListOutputDto.Author)
+                },
+                new FluentTableColumn
+                {
+                    Title = L["EntityType"],
+                    Sortable = true,
+                    Data = nameof(TGetListOutputDto.EntityType),
+                    PropertyName = nameof(TGetListOutputDto.EntityType)
+                },
+                new FluentTableColumn
+                {
+                    Title = L["URL"],
+                    Sortable = true,
+                    Data = nameof(TGetListOutputDto.Url),
+                    PropertyName = nameof(TGetListOutputDto.Url)
+                },
+                new FluentTableColumn
+                {
+                    Title = L["Text"],
+                    Sortable = true,
+                    Data = nameof(TGetListOutputDto.Text),
+                    PropertyName = nameof(TGetListOutputDto.Text)
+                },
+                new FluentTableColumn
+                {
+                    Title = L["CreationTime"],
+                    Sortable = true,
+                    Data = nameof(TGetListOutputDto.CreationTime),
+                    PropertyName = nameof(TGetListOutputDto.CreationTime)
+                },
+            ]);
+
+        CommentManagementTableColumns.Add(new FluentTableColumn
+        {
+            Title = L["Actions"],
+            Actions = EntityActions.Get<CommentManagement>()
+        });
+
+        return base.SetTableColumnsAsync();
+    }
+}
 
 @code {
-    
+
+    protected override async Task<IPagedResult<TGetListOutputDto>> AppServiceGetListAsync(TGetListInput input)
+    {
+        var res = await AppService.GetListAsync(input);
+        return res;
+    }
+
+    protected virtual async Task DeleteEntitiesAsync(IEnumerable<TGetListOutputDto> entities)
+    {
+        if (!HasDeletePermission)
+            return;
+
+        entities = entities.ToList();
+        var ids = entities.Select(e => e.Id).ToList();
+
+        if (ids.IsNullOrEmpty()) return;
+
+        try
+        {
+            foreach (var key in ids)
+            {
+                await AppServiceDeleteAsync(key);
+            }
+        }
+        catch (Exception ex)
+        {
+            await HandleErrorAsync(ex);
+        }
+    }
+
+    protected Task AppServiceDeleteAsync(Guid id) => AppService.DeleteAsync(id);
+
 }
+

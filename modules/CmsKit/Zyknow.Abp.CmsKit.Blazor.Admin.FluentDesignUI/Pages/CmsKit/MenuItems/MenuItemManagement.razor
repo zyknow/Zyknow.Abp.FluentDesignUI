@@ -1,0 +1,209 @@
+﻿@page "/Cms/Menus/Items"
+@using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
+@using Volo.Abp.Application.Dtos
+@using Volo.CmsKit.Admin.Menus
+@using Volo.CmsKit.Menus
+@using Volo.CmsKit.Permissions
+@using TKey = Guid
+@using TDto = Volo.CmsKit.Menus.MenuItemDto
+@using TGetListInput = Object
+@using TCreateDto = Volo.CmsKit.Admin.Menus.MenuItemCreateInput
+@using TUpdateDto = Volo.CmsKit.Admin.Menus.MenuItemUpdateInput
+@using TResource = Volo.CmsKit.Localization.CmsKitResource
+@using TAppService = Volo.CmsKit.Admin.Menus.IMenuItemAdminAppService
+@inherits AbpCustomCrudMethodPageBase<TAppService, TDto, TKey, TGetListInput, TCreateDto, TUpdateDto>
+<FluentAdaptiveCard>
+    <AbpPageHeader Title="@L["Menus"]" BreadcrumbItems="@BreadcrumbItems" Toolbar="@Toolbar"/>
+
+    <FluentTreeView Items="@TreeEntities">
+        <ItemTemplate>
+            <FluentStack VerticalAlignment="VerticalAlignment.Center"
+                         HorizontalAlignment="HorizontalAlignment.SpaceBetween">
+                <FluentStack VerticalAlignment="VerticalAlignment.Center">
+                    <FluentIcon Value="@(new Size20.DocumentOnePage())"></FluentIcon>
+                    <FluentLabel>@context.Text</FluentLabel>
+                </FluentStack>
+                <AbpEntityActions TItem="TDto"
+                                  Context="@Entities.First(x => x.Id == Guid.Parse(context.Id))"
+                                  Actions="Actions"></AbpEntityActions>
+            </FluentStack>
+        </ItemTemplate>
+    </FluentTreeView>
+
+</FluentAdaptiveCard>
+
+@code {
+    protected PageToolbar Toolbar { get; } = new();
+
+    protected List<TreeViewItem<TDto>> TreeEntities = [];
+
+    protected TDto? NewEntityParent { get; set; }
+
+    protected List<FluentEntityAction> Actions = [];
+
+    public MenuItemManagement()
+    {
+        LocalizationResource = typeof(TResource);
+        ObjectMapperContext = typeof(AbpCmsKitBlazorAdminFluentDesignModule);
+
+        CreatePolicyName = CmsKitAdminPermissions.Menus.Create;
+        UpdatePolicyName = CmsKitAdminPermissions.Menus.Update;
+        DeletePolicyName = CmsKitAdminPermissions.Menus.Delete;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await GetEntitiesAsync();
+    }
+
+    protected override async ValueTask SetEntityActionsAsync()
+    {
+        EntityActions
+            .Get<MenuItemManagement>()
+            .AddRange([
+                new FluentEntityAction
+                {
+                    Text = L["Edit"],
+                    Visible = (data) => HasUpdatePermission,
+                    Clicked = async (data) => { await OpenEditDialogAsync(data.As<TDto>()); }
+                },
+                new FluentEntityAction
+                {
+                    Text = L["AddSubMenuItem"],
+                    Visible = (data) => HasCreatePermission,
+                    Clicked = async (data) =>
+                    {
+                        var entity = data.As<TDto>();
+                        NewEntityParent = entity;
+                        await OpenCreateDialogAsync();
+                    }
+                },
+                new FluentEntityAction
+                {
+                    Text = L["Delete"],
+                    Color = "red",
+                    Visible = (data) => HasDeletePermission,
+                    Clicked = async (data) => await DeleteEntityAsync(data.As<TDto>()),
+                    ConfirmationMessage = (data) => GetDeleteConfirmationMessage(data.As<TDto>())
+                }
+            ]);
+
+        Actions = EntityActions.Get<MenuItemManagement>();
+    }
+
+    protected override async ValueTask SetBreadcrumbItemsAsync()
+    {
+        BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Menu:CMS"], icon: new Size16.News()));
+        BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Menus"]));
+    }
+
+    protected override ValueTask SetToolbarItemsAsync()
+    {
+        Toolbar.AddButton(L["NewMenuItem"],
+            async () =>
+            {
+                NewEntityParent = null;
+                await OpenCreateDialogAsync();
+            }, new Size20.Add(),
+            requiredPolicyName: CreatePolicyName);
+
+        return base.SetToolbarItemsAsync();
+    }
+
+
+    protected override Task ShowCreateDialogAsync()
+    {
+        NewEntity.ParentId = NewEntityParent?.Id;
+        return ShowDialogAsync(@<MenuItemCreateDialog Content="@NewEntity"
+                                                      ParentDisplayName="@NewEntityParent?.DisplayName"
+                                                      SubmitClick="CreateEntityAsync"/>);
+    }
+
+    protected override Task ShowEditDialogAsync()
+    {
+        return ShowDialogAsync(@<MenuItemEditDialog Content="@EditingEntity"
+                                                    EntityDisplayName="@EditingEntity.DisplayName"
+                                                    SubmitClick="UpdateEntityAsync"/>);
+    }
+
+    protected override async Task<IPagedResult<MenuItemDto>> GetEntitiesAsync()
+    {
+        try
+        {
+            Loading = true;
+            await InvokeAsync(StateHasChanged);
+            Entities = (await AppService.GetListAsync()).Items;
+            TreeEntities = MapToEntityTree(Entities);
+
+            return new PagedResultDto<TDto>(Entities.Count, Entities);
+        }
+        catch (Exception ex)
+        {
+            await HandleErrorAsync(ex);
+            return null;
+        }
+        finally
+        {
+            Loading = false;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    protected virtual List<TreeViewItem<TDto>> MapToEntityTree(IReadOnlyList<TDto> entities, Guid? parentId = null)
+    {
+        var treeItems = new List<TreeViewItem<TDto>>();
+
+        foreach (var entity in entities.Where(x => x.ParentId == parentId))
+        {
+            var treeItem = new TreeViewItem<TDto>
+            {
+                Id = entity.Id.ToString(),
+                Text = entity.DisplayName,
+                Data = entity,
+                Expanded = true,
+            };
+            treeItems.Add(treeItem);
+        }
+
+        foreach (var treeViewItem in treeItems)
+        {
+            var children = MapToEntityTree(entities, Guid.Parse(treeViewItem.Id));
+            if (children.Count > 0)
+            {
+                treeViewItem.Items = children;
+            }
+        }
+
+        return treeItems;
+    }
+
+    protected override async Task<IPagedResult<TDto>> AppServiceGetListAsync(TGetListInput input)
+    {
+        var items = (await AppService.GetListAsync()).Items;
+        return new PagedResultDto<TDto>(items.Count, items);
+    }
+
+    protected override async Task<TDto> AppServiceGetAsync(TKey id)
+    {
+        var entity = await AppService.GetAsync(id);
+
+        return entity;
+    }
+
+    protected override Task AppServiceCreateAsync(TCreateDto input)
+    {
+        return AppService.CreateAsync(input);
+    }
+
+    protected override Task AppServiceUpdateAsync(TKey id, TUpdateDto input)
+    {
+        return AppService.UpdateAsync(id, input);
+    }
+
+    protected override Task AppServiceDeleteAsync(TKey id)
+    {
+        return AppService.DeleteAsync(id);
+    }
+
+}

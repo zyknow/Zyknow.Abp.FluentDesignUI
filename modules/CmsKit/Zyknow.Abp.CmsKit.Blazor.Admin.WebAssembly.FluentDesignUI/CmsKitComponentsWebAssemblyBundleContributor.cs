@@ -6,6 +6,9 @@ public class CmsKitComponentsWebAssemblyBundleContributor : IBundleContributor
 {
     public void AddScripts(BundleContext context)
     {
+        context.Add("_content/BlazorMonaco/jsInterop.js");
+        context.Add("_content/BlazorMonaco/lib/monaco-editor/min/vs/loader.js");
+        context.Add("_content/BlazorMonaco/lib/monaco-editor/min/vs/editor/editor.main.js");
     }
 
     public void AddStyles(BundleContext context)
