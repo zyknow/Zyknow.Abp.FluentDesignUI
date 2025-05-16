@@ -63,7 +63,7 @@
                                   SelectedItems="@SelectEntities"
                                   SelectFromEntireRow="false"
                                   SelectMode="DataGridSelectMode.Multiple"
-                                  Property="@(dto => SelectEntities.Any(e => e.Id.Equals(dto.Id)))"
+                                  Property="@(dto => SelectEntities.Any(e => GetItemKey(e).Equals(GetItemKey(dto))))"
                                   SelectAllChanged="OnSelectAllChanged"
                                   SelectAll="@SelectedAll"
                                   OnSelect="OnSelect"/>
@@ -78,22 +78,10 @@
                             <TemplateColumn TGridItem="TItem" Title="@column.Title"
                                             Width="@(column.Width.IsNullOrWhiteSpace() && ActionType == ActionType.Dropdown ? "120px" : column.Width)"
                                             Align="Align.Center">
-                                <EntityActions @ref="EntityActionsRef" TItem="@TItem" Type="@ActionType">
-                                    @foreach (var action in column.Actions)
-                                    {
-                                        <EntityAction ParentActions="@EntityActionsRef"
-                                                      TItem="@TItem"
-                                                      Color="@action.Color?.ToString()"
-                                                      Clicked="@(async () => await action.Clicked(context))"
-                                                      Appearance="@(action.Appearance ?? Appearance.Accent)"
-                                                      Icon="@action.Icon"
-                                                      ConfirmationMessage="action.ConfirmationMessage != null ? () => action.ConfirmationMessage.Invoke(context) : null"
-                                                      Visible="@(action.Visible?.Invoke(context) ?? true)"
-                                                      Text="@action.Text"
-                                                      Disabled="@action.Disabled">
-                                        </EntityAction>
-                                    }
-                                </EntityActions>
+
+                                <AbpEntityActions TItem="TItem"
+                                                  Context="@context"
+                                                  Actions="column.Actions"></AbpEntityActions>
                             </TemplateColumn>
                         }
                         else

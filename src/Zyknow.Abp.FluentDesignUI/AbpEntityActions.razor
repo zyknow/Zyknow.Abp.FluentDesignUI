@@ -1,0 +1,29 @@
+﻿@using Zyknow.Abp.FluentDesignUI.Components
+@typeparam TItem
+<EntityActions @ref="EntityActionsRef" TItem="@TItem" Type="@ActionType">
+    @foreach (var action in Actions)
+    {
+        <EntityAction ParentActions="@EntityActionsRef"
+                      TItem="@TItem"
+                      Color="@action.Color?.ToString()"
+                      Clicked="@(async () => await action.Clicked(Context))"
+                      Appearance="@(action.Appearance ?? Appearance.Accent)"
+                      Icon="@action.Icon"
+                      ConfirmationMessage="action.ConfirmationMessage != null ? () => action.ConfirmationMessage.Invoke(Context) : null"
+                      Visible="@(action.Visible?.Invoke(Context) ?? true)"
+                      Text="@action.Text"
+                      Disabled="@action.Disabled">
+        </EntityAction>
+    }
+</EntityActions>
+
+@code {
+
+    [Parameter] public List<FluentEntityAction> Actions { get; set; } = [];
+    [Parameter] public TItem Context { get; set; }
+    [Parameter] public ActionType ActionType { get; set; } = ActionType.Dropdown;
+
+    protected EntityActions<TItem> EntityActionsRef;
+
+
+}

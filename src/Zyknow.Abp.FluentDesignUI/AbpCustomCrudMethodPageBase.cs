@@ -128,7 +128,7 @@ public abstract class AbpCustomCrudMethodPageBase<
     TListViewModel,
     TCreateViewModel,
     TUpdateViewModel>
-    : AbpComponentBase
+    : AbpGetListPageBase<TGetListOutputDto, TKey, TGetListInput, TListViewModel>
     where TAppService : IApplicationService
     where TGetOutputDto : IEntityDto<TKey>
     where TGetListOutputDto : IEntityDto<TKey>
@@ -141,27 +141,9 @@ public abstract class AbpCustomCrudMethodPageBase<
 {
     [Inject] protected TAppService AppService { get; set; }
 
-    [Inject] protected IStringLocalizer<AbpUiResource> UiLocalizer { get; set; }
-
-    [Inject] protected IAbpEnumLocalizer AbpEnumLocalizer { get; set; }
-
-    [Inject] protected IDialogService DialogService { get; set; }
-
-    protected bool Loading = false;
-    protected TGetListInput GetListInput = new();
-    protected IReadOnlyList<TListViewModel> Entities = Array.Empty<TListViewModel>();
     protected TCreateViewModel NewEntity = new();
     protected TKey EditingEntityId;
     protected TUpdateViewModel EditingEntity = new();
-
-    protected List<AbpBreadcrumbItem> BreadcrumbItems = new();
-    protected TableEntityActionsColumn<TListViewModel> EntityActionsColumn;
-    protected FluentEntityActionDictionary EntityActions { get; set; } = new();
-    protected FluentTableColumnDictionary TableColumns { get; set; } = new();
-
-    public AbpExtensibleDataGrid<TListViewModel, TKey> AbpExtensibleDataGridRef { get; set; }
-
-    protected AbpFluentPaginationState Pagination { get; set; } = new();
 
     protected string CreatePolicyName { get; set; }
     protected string UpdatePolicyName { get; set; }
@@ -174,11 +156,7 @@ public abstract class AbpCustomCrudMethodPageBase<
     protected override async Task OnInitializedAsync()
     {
         await SetPermissionsAsync();
-        await SetEntityActionsAsync();
-        await SetTableColumnsAsync();
-        await SetToolbarItemsAsync();
-        await SetBreadcrumbItemsAsync();
-        await InvokeAsync(StateHasChanged);
+        await base.OnInitializedAsync();
     }
 
     protected virtual async Task SetPermissionsAsync()
@@ -199,8 +177,6 @@ public abstract class AbpCustomCrudMethodPageBase<
         }
     }
 
-    protected abstract Task<IPagedResult<TGetListOutputDto>> AppServiceGetListAsync(TGetListInput input);
-
     protected abstract Task<TGetOutputDto> AppServiceGetAsync(TKey id);
 
     protected abstract Task AppServiceCreateAsync(TCreateInput input);
@@ -208,31 +184,6 @@ public abstract class AbpCustomCrudMethodPageBase<
     protected abstract Task AppServiceUpdateAsync(TKey id, TUpdateInput input);
 
     protected abstract Task AppServiceDeleteAsync(TKey id);
-
-    protected virtual async Task<IPagedResult<TGetListOutputDto>> GetEntitiesAsync()
-    {
-        try
-        {
-            Loading = true;
-            await InvokeAsync(StateHasChanged);
-            await UpdateGetListInputAsync();
-            var result = await AppServiceGetListAsync(GetListInput);
-            Entities = MapToListViewModel(result.Items);
-            await Pagination.SetTotalItemCountAsync((int)result.TotalCount);
-
-            return result;
-        }
-        catch (Exception ex)
-        {
-            await HandleErrorAsync(ex);
-            return null;
-        }
-        finally
-        {
-            Loading = false;
-            await InvokeAsync(StateHasChanged);
-        }
-    }
 
     protected virtual Task OnDeletingEntitiesAsync(IEnumerable<TGetListOutputDto> entities)
     {
@@ -268,43 +219,6 @@ public abstract class AbpCustomCrudMethodPageBase<
         await Message.Success(L["SuccessfullyDeleted"]);
     }
 
-
-    private IReadOnlyList<TListViewModel> MapToListViewModel(IReadOnlyList<TGetListOutputDto> dtos)
-    {
-        if (typeof(TGetListOutputDto) == typeof(TListViewModel))
-        {
-            return dtos.As<IReadOnlyList<TListViewModel>>();
-        }
-
-        return ObjectMapper.Map<IReadOnlyList<TGetListOutputDto>, List<TListViewModel>>(dtos);
-    }
-
-    protected virtual Task UpdateGetListInputAsync()
-    {
-        Pagination.SetPageRequest(GetListInput);
-        return Task.CompletedTask;
-    }
-
-    protected virtual async Task SearchEntitiesAsync()
-    {
-        await Pagination.SetCurrentPageIndexAsync(0);
-
-        await GetEntitiesAsync();
-
-        await InvokeAsync(StateHasChanged);
-    }
-
-    protected virtual async Task<IPagedResult<TGetListOutputDto>> OnDataGridReadAsync(
-        GridItemsProviderRequest<TGetListOutputDto> e)
-    {
-        Pagination.Sorting = e.GetSortByProperties()
-            .Select(c => c.PropertyName + (c.Direction == SortDirection.Descending ? " DESC" : ""))
-            .JoinAsString(",");
-
-        var res = await GetEntitiesAsync();
-        return res;
-    }
-
     protected abstract Task ShowCreateDialogAsync();
 
     protected abstract Task ShowEditDialogAsync();
@@ -314,7 +228,7 @@ public abstract class AbpCustomCrudMethodPageBase<
         try
         {
             await CheckCreatePolicyAsync();
-        
+
             NewEntity = new TCreateViewModel();
             await ShowCreateDialogAsync();
         }
@@ -471,42 +385,6 @@ public abstract class AbpCustomCrudMethodPageBase<
         await CheckPolicyAsync(DeletePolicyName);
     }
 
-    /// <summary>
-    /// Calls IAuthorizationService.CheckAsync for the given <paramref name="policyName"/>.
-    /// Throws <see cref="AbpAuthorizationException"/> if given policy was not granted for the current user.
-    ///
-    /// Does nothing if <paramref name="policyName"/> is null or empty.
-    /// </summary>
-    /// <param name="policyName">A policy name to check</param>
-    protected virtual async Task CheckPolicyAsync([CanBeNull] string policyName)
-    {
-        if (string.IsNullOrEmpty(policyName))
-        {
-            return;
-        }
-
-        await AuthorizationService.CheckAsync(policyName);
-    }
-
-    protected virtual ValueTask SetBreadcrumbItemsAsync()
-    {
-        return ValueTask.CompletedTask;
-    }
-
-    protected virtual ValueTask SetEntityActionsAsync()
-    {
-        return ValueTask.CompletedTask;
-    }
-
-    protected virtual ValueTask SetTableColumnsAsync()
-    {
-        return ValueTask.CompletedTask;
-    }
-
-    protected virtual ValueTask SetToolbarItemsAsync()
-    {
-        return ValueTask.CompletedTask;
-    }
 
     protected virtual Task<IDialogReference> ShowDialogAsync(RenderFragment render,
         Action<DialogParameters> paraAction = null)
@@ -514,48 +392,5 @@ public abstract class AbpCustomCrudMethodPageBase<
         var dialogPara = new DialogParameters();
         paraAction?.Invoke(dialogPara);
         return DialogService.ShowDialogAsync(render, dialogPara);
-    }
-
-    protected virtual IEnumerable<FluentTableColumn> GetExtensionTableColumns(string moduleName, string entityType)
-    {
-        var properties = ModuleExtensionConfigurationHelper.GetPropertyConfigurations(moduleName, entityType);
-        foreach (var propertyInfo in properties)
-        {
-            if (propertyInfo.IsAvailableToClients && propertyInfo.UI.OnTable.IsVisible)
-            {
-                if (propertyInfo.Name.EndsWith("_Text"))
-                {
-                    var lookupPropertyName = propertyInfo.Name.RemovePostFix("_Text");
-                    var lookupPropertyDefinition = properties.SingleOrDefault(t => t.Name == lookupPropertyName);
-                    yield return new FluentTableColumn
-                    {
-                        Title = lookupPropertyDefinition.GetLocalizedDisplayName(StringLocalizerFactory),
-                        Data = $"ExtraProperties[{propertyInfo.Name}]"
-                    };
-                }
-                else
-                {
-                    var column = new FluentTableColumn
-                    {
-                        Title = propertyInfo.GetLocalizedDisplayName(StringLocalizerFactory),
-                        Data = $"ExtraProperties[{propertyInfo.Name}]"
-                    };
-
-                    if (propertyInfo.IsDate() || propertyInfo.IsDateTime())
-                    {
-                        column.DisplayFormat = propertyInfo.GetDateEditInputFormatOrNull();
-                    }
-
-                    if (propertyInfo.Type.IsEnum)
-                    {
-                        column.ValueConverter = (val) =>
-                            AbpEnumLocalizer.GetString(propertyInfo.Type,
-                                val.As<ExtensibleObject>().ExtraProperties[propertyInfo.Name]);
-                    }
-
-                    yield return column;
-                }
-            }
-        }
     }
 }

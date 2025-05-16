@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.Reflection;
+using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
 using Microsoft.FluentUI.AspNetCore.Components;
 using System.Text.RegularExpressions;
@@ -8,13 +9,12 @@ using Volo.Abp.AspNetCore.Components.Web.Extensibility.TableColumns;
 
 namespace Zyknow.Abp.FluentDesignUI.Components;
 
-public partial class AbpExtensibleDataGrid<TItem, TKey> : FluentComponentBase where TItem : IEntityDto<TKey>
+// public partial class AbpExtensibleDataGrid<TItem, TKey> : FluentComponentBase where TItem : IEntityDto<TKey>
+public partial class AbpExtensibleDataGrid<TItem, TKey> : FluentComponentBase
 {
     protected const string DataFieldAttributeName = "Data";
 
     protected Regex ExtensionPropertiesRegex = new Regex(@"ExtraProperties\[(.*?)\]");
-
-    protected Dictionary<string, TableEntityActionsColumn<TItem>> ActionColumns = new();
 
     [Parameter] public ActionType ActionType { get; set; } = ActionType.Dropdown;
 
@@ -45,6 +45,18 @@ public partial class AbpExtensibleDataGrid<TItem, TKey> : FluentComponentBase wh
 
     [Parameter] public bool PrimarySelectedDeletesBtnVisible { get; set; } = false;
 
+    [Parameter]
+    public Func<TItem, TKey> GetItemKey { get; set; } =
+        (item) =>
+        {
+            if (item is IEntityDto<TKey> entityDto)
+            {
+                return entityDto.Id;
+            }
+
+            throw new ArgumentException("GetItemKey is not IEntityDto<TKey>, please set GetItemKey");
+        };
+
     [Inject] public IDialogService DialogService { get; set; }
 
 
@@ -62,13 +74,13 @@ public partial class AbpExtensibleDataGrid<TItem, TKey> : FluentComponentBase wh
     {
         get
         {
-            var entityIds = Entities.Select(x => x.Id).ToList();
-            if (!SelectEntities.Any(x => entityIds.Contains(x.Id)))
+            var entityIds = Entities.Select(x => GetItemKey(x)).ToList();
+            if (!SelectEntities.Any(x => entityIds.Contains(GetItemKey(x))))
             {
                 return false;
             }
 
-            var selectedIds = SelectEntities.Select(x => x.Id).ToList();
+            var selectedIds = SelectEntities.Select(x => GetItemKey(x)).ToList();
             if (entityIds.All(x => selectedIds.Contains(x)))
             {
                 return true;
@@ -116,13 +128,13 @@ public partial class AbpExtensibleDataGrid<TItem, TKey> : FluentComponentBase wh
 
         if (obj.Value)
         {
-            var entities = Entities.Where(x => !SelectEntities.Any(y => y.Id.Equals(x.Id)));
+            var entities = Entities.Where(x => !SelectEntities.Any(y => GetItemKey(y).Equals(GetItemKey(x))));
             SelectEntities.AddIfNotContains(entities);
         }
         else
         {
-            var entityIds = Entities.Select(x => x.Id).ToList();
-            SelectEntities.RemoveAll(x => entityIds.Contains(x.Id));
+            var entityIds = Entities.Select(x => GetItemKey(x)).ToList();
+            SelectEntities.RemoveAll(x => entityIds.Contains(GetItemKey(x)));
         }
 
         await SelectEntitiesChanged.InvokeAsync(SelectEntities);
@@ -134,7 +146,7 @@ public partial class AbpExtensibleDataGrid<TItem, TKey> : FluentComponentBase wh
     {
         if (obj.Selected)
         {
-            if (SelectEntities.Any(x => x.Id.Equals(obj.Item.Id)))
+            if (SelectEntities.Any(x => GetItemKey(x).Equals(GetItemKey(obj.Item))))
             {
                 return;
             }
@@ -143,7 +155,7 @@ public partial class AbpExtensibleDataGrid<TItem, TKey> : FluentComponentBase wh
         }
         else
         {
-            SelectEntities.RemoveAll(x => x.Id.Equals(obj.Item.Id));
+            SelectEntities.RemoveAll(x => GetItemKey(x).Equals(GetItemKey(obj.Item)));
         }
 
         await SelectEntitiesChanged.InvokeAsync(SelectEntities);
