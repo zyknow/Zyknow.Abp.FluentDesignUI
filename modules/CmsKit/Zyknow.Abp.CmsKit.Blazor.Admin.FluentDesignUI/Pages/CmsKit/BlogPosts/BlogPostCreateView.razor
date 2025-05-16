@@ -1,15 +1,99 @@
 ﻿@page "/Cms/BlogPosts/Create"
-@inherits Volo.Abp.AspNetCore.Components.AbpComponentBase
+@using Localization.Resources.AbpUi
 @using Volo.Abp.Content
+@using TInput = Volo.CmsKit.Admin.Blogs.CreateBlogPostDto
+@using TResource = Volo.CmsKit.Localization.CmsKitResource
+@inherits AbpComponentBase
 @using Volo.CmsKit.Admin.Blogs
 @using Volo.CmsKit.Admin.MediaDescriptors
 @using Volo.CmsKit.Admin.Tags
+@using Volo.CmsKit.Permissions
 @using Volo.CmsKit.Blogs
 
 <FluentAdaptiveCard>
     <div style="margin-bottom: 10px">
-        <BlogPostCreateDialog Content="@(new CreateBlogPostDto())"
-                              SubmitClick="@CreateEntityAsync"></BlogPostCreateDialog>
+        <AbpFluentForm HeaderText="@L["NewBlogPost"]"
+                       Content="@CreateEntity"
+                       @ref="FormRef"
+                       TInput="TInput"
+                       SubmitValidClick="@CreateEntityAsync"
+                       Localize="@LH.Localize">
+
+            <ChildContent>
+                <FluentStack Orientation="Orientation.Vertical">
+                    <FluentInputFile
+                        DragDropZoneVisible="false"
+                        Mode="InputFileMode.Stream"
+                        AnchorId="UploadStream"
+                        Accept=".jpg, .jpeg, .png, .webp, .gif"
+                        OnFileUploaded="@OnCoverUploadedAsync"/>
+
+                    <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center"
+                                 Style="margin-bottom: 10px">
+                        <FluentButton Appearance="Appearance.Accent" Id="UploadStream">
+                            @L["CoverImage"] 16:9
+                        </FluentButton>
+                        <FluentLabel>@FileName</FluentLabel>
+                    </FluentStack>
+
+                    <FluentAutocomplete
+                        Required
+                        Name="blogs"
+                        AutoComplete="off"
+                        Field="@(new FieldIdentifier(CreateEntity, nameof(CreateEntity.BlogId)))"
+                        Autofocus="true"
+                        Label="@L["Blogs"]"
+                        TOption="BlogDto"
+                        ImmediateDelay="200"
+                        Width="300px"
+                        OnOptionsSearch="@OnOptionsSearch"
+                        Multiple="false"
+                        OptionText="@(dto => $@"{dto.Name}")"
+                        @bind-SelectedOption="SelectedBlog"/>
+
+                    <FluentTextField Style="width: 100%" Label="@L["BlogPostTitle"]" Value="@CreateEntity.Title"
+                                     ValueChanged="@SetTitle"/>
+                    <FluentValidationMessage For="@(() => CreateEntity.Title)"/>
+
+                    <FluentTextField Style="width: 100%" Label="@L["BlogPostSlug"]" @bind-Value="@CreateEntity.Slug"/>
+                    <FluentValidationMessage For="@(() => CreateEntity.Slug)"/>
+
+                    <FluentTextField Style="width: 100%" Label="@L["BlogPostShortDescription"]"
+                                     @bind-Value="@CreateEntity.ShortDescription"/>
+                    <FluentValidationMessage For="@(() => CreateEntity.ShortDescription)"/>
+
+                    <FluentTextField Style="width: 100%" Label="@($@"{@L["CmsKit.Tags"]} - ({@L["TagsHelpText"]})")"
+                                     @bind-Value="@TagNameString"/>
+
+                    <ExtensionProperties TEntityType="TInput" TResourceType="TResource"
+                                         Entity="@CreateEntity" LH="@LH"/>
+
+                    <CmsKitEditor @bind-Value="@CreateEntity.Content"></CmsKitEditor>
+
+                </FluentStack>
+            </ChildContent>
+
+
+            <Footer>
+                <FluentStack HorizontalAlignment="HorizontalAlignment.End" VerticalAlignment="VerticalAlignment.Bottom">
+                    <FluentButton Loading="@FormRef.Loading" Appearance="Appearance.Outline"
+                                  OnClick="@(() =>
+                                           {
+                                               Status = BlogPostStatus.Draft;
+                                               FormRef.OnSubmitBtnClickAsync();
+                                           })">@L["SaveAsDraft"]</FluentButton>
+                    @if (CanPublish)
+                    {
+                        <FluentButton Loading="@FormRef.Loading" Appearance="Appearance.Accent"
+                                      OnClick="@(() =>
+                                               {
+                                                   Status = BlogPostStatus.Published;
+                                                   FormRef.OnSubmitBtnClickAsync();
+                                               })">@L["Publish"]</FluentButton>
+                    }
+                </FluentStack>
+            </Footer>
+        </AbpFluentForm>
     </div>
 </FluentAdaptiveCard>
 
@@ -19,36 +103,89 @@
     [Inject] protected IBlogPostAdminAppService AppService { get; set; }
     [Inject] protected IMediaDescriptorAdminAppService MediaDescriptorAdminAppService { get; set; }
     [Inject] protected NavigationManager NavigationManager { get; set; }
+    [Inject] protected IBlogAdminAppService BlogAdminAppService { get; set; }
+    [Inject] protected IStringLocalizer<AbpUiResource> UL { get; set; }
+    [Inject] protected IAuthorizationService AuthorizationService { get; set; }
+    [Inject] protected AbpBlazorMessageLocalizerHelper<TResource> LH { get; set; }
 
-    protected async Task<DialogResult?> CreateEntityAsync(BlogPostCreateResultModel res)
+    protected bool CanPublish = false;
+
+    protected BlogDto? SelectedBlog { get; set; }
+
+    AbpFluentForm<TInput> FormRef { get; set; }
+
+    public CreateBlogPostDto CreateEntity { get; set; } = new CreateBlogPostDto();
+    public string TagNameString { get; set; }
+    public FileStream? CoverImageStream { get; set; }
+
+    public BlogPostStatus Status { get; set; }
+    public string? FileName { get; set; }
+
+
+    public BlogPostCreateView()
     {
+        LocalizationResource = typeof(TResource);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        CanPublish = (await AuthorizationService.AuthorizeAsync(CmsKitAdminPermissions.BlogPosts.Publish)).Succeeded;
+    }
+
+    private async Task OnOptionsSearch(OptionsSearchEventArgs<BlogDto> arg)
+    {
+        arg.Text = arg.Text.Trim();
+        var result = await BlogAdminAppService.GetListAsync(new BlogGetListInput
+        {
+            Filter = arg.Text,
+            MaxResultCount = 100
+        });
+        arg.Items = result.Items;
+    }
+
+    protected void SetTitle(string? title)
+    {
+        CreateEntity.Title = title;
+        CreateEntity.Slug = title?.ToLower().Replace(" ", "-");
+    }
+
+    async Task OnCoverUploadedAsync(FluentInputFileEventArgs file)
+    {
+        var localFile = Path.GetTempFileName() + file.Name;
+        FileName = file.Name;
+        CoverImageStream = new(localFile, FileMode.Create);
+        await file.Stream!.CopyToAsync(CoverImageStream);
+    }
+
+
+    protected async Task<DialogResult?> CreateEntityAsync()
+    {
+        CreateEntity.BlogId = SelectedBlog!.Id;
         try
         {
-            var createInput = res.Dto;
-
             BlogPostDto createdDto = default!;
-            if (res.CoverImageStream != null && res.CoverImageStream.Length > 0)
+            if (CoverImageStream != null && CoverImageStream.Length > 0)
             {
                 var mediaDto = await MediaDescriptorAdminAppService.CreateAsync("BlogPost", new CreateMediaInputWithStream()
                 {
-                    File = new RemoteStreamContent(res.CoverImageStream),
-                    Name = res.FileName,
+                    File = new RemoteStreamContent(CoverImageStream),
+                    Name = FileName,
                 });
 
-                createInput.CoverImageMediaId = mediaDto.Id;
-                res.Dispose();
+                CreateEntity.CoverImageMediaId = mediaDto.Id;
+                await CoverImageStream.DisposeAsync();
             }
 
-            if (res.Status == BlogPostStatus.Published)
+            if (Status == BlogPostStatus.Published)
             {
-                createdDto = await AppService.CreateAndPublishAsync(createInput);
+                createdDto = await AppService.CreateAndPublishAsync(CreateEntity);
             }
-            else if (res.Status == BlogPostStatus.Draft)
+            else if (Status == BlogPostStatus.Draft)
             {
-                createdDto = await AppService.CreateAsync(createInput);
+                createdDto = await AppService.CreateAsync(CreateEntity);
             }
 
-            var tagNames = res.TagNameString?.Split(",")?.ToList() ?? [];
+            var tagNames = TagNameString?.Split(",")?.ToList() ?? [];
 
             if (!tagNames.IsNullOrEmpty())
             {

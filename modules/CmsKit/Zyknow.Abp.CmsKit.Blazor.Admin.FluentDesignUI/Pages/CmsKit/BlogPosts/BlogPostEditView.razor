@@ -1,15 +1,71 @@
 ﻿@page "/Cms/BlogPosts/Edit/{Id:guid}"
 @inherits Volo.Abp.AspNetCore.Components.AbpComponentBase
+@using Localization.Resources.AbpUi
 @using Volo.Abp.Content
 @using Volo.CmsKit.Admin.Blogs
 @using Volo.CmsKit.Admin.MediaDescriptors
 @using Volo.CmsKit.Admin.Tags
 @using Volo.CmsKit.Blogs
+@using Volo.CmsKit.Tags
+@using TInput = Volo.CmsKit.Admin.Blogs.UpdateBlogPostDto
+@using TResource = Volo.CmsKit.Localization.CmsKitResource
 
 <FluentAdaptiveCard>
     <div style="margin-bottom: 10px">
-        <BlogPostEditDialog Content="@Entity"
-                            SubmitClick="@UpdateEntityAsync" EntityId="@Id"></BlogPostEditDialog>
+        <AbpFluentForm HeaderText="@(FormTitle)"
+                       Content="@UpdateEntity"
+                       @ref="FormRef"
+                       SubmitValidClick="@UpdateEntityAsync"
+                       Localize="@LH.Localize">
+
+            <ChildContent>
+                <FluentStack Orientation="Orientation.Vertical">
+                    @if (UpdateEntity.CoverImageMediaId != null)
+                    {
+                        <img src="@(@$"/api/cms-kit/media/{UpdateEntity.CoverImageMediaId}")" alt="Cover Image"
+                             width="100%"/>
+                        <FluentButton OnClick="RemoveCoverClick">@L["RemoveCoverImage"]</FluentButton>
+                    }
+                    else
+                    {
+                        <FluentInputFile
+                            DragDropZoneVisible="false"
+                            Mode="InputFileMode.Stream"
+                            AnchorId="UploadStream"
+                            Accept=".jpg, .jpeg, .png, .webp, .gif"
+                            OnFileUploaded="@OnCoverUploadedAsync"/>
+
+                        <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center"
+                                     Style="margin-bottom: 10px">
+                            <FluentButton Appearance="Appearance.Accent" Id="UploadStream">
+                                @L["CoverImage"] 16:9
+                            </FluentButton>
+                            <FluentLabel>@FileName</FluentLabel>
+                        </FluentStack>
+                    }
+
+
+                    <FluentTextField Style="width: 100%" Label="@L["BlogPostTitle"]" @bind-Value="@UpdateEntity.Title"/>
+                    <FluentValidationMessage For="@(() => UpdateEntity.Title)"/>
+
+                    <FluentTextField Style="width: 100%" Label="@L["BlogPostSlug"]" @bind-Value="@UpdateEntity.Slug"/>
+                    <FluentValidationMessage For="@(() => UpdateEntity.Slug)"/>
+
+                    <FluentTextField Style="width: 100%" Label="@L["BlogPostShortDescription"]"
+                                     @bind-Value="@UpdateEntity.ShortDescription"/>
+                    <FluentValidationMessage For="@(() => UpdateEntity.ShortDescription)"/>
+
+                    <FluentTextField Style="width: 100%" Label="@($@"{@L["CmsKit.Tags"]} - ({@L["TagsHelpText"]})")"
+                                     @bind-Value="@TagNameString"/>
+
+                    <ExtensionProperties TEntityType="TInput" TResourceType="TResource"
+                                         Entity="@UpdateEntity" LH="@LH"/>
+
+                    <CmsKitEditor @bind-Value="@UpdateEntity.Content"></CmsKitEditor>
+
+                </FluentStack>
+            </ChildContent>
+        </AbpFluentForm>
     </div>
 </FluentAdaptiveCard>
 
@@ -17,41 +73,80 @@
 
     [Parameter] public Guid Id { get; set; }
 
-    [Inject] protected IEntityTagAdminAppService EntityTagAdminAppService { get; set; }
     [Inject] protected IBlogPostAdminAppService AppService { get; set; }
     [Inject] protected IMediaDescriptorAdminAppService MediaDescriptorAdminAppService { get; set; }
     [Inject] protected NavigationManager NavigationManager { get; set; }
+    [Inject] protected IBlogAdminAppService BlogAdminAppService { get; set; }
+    [Inject] protected IStringLocalizer<AbpUiResource> UL { get; set; }
+    [Inject] protected IAuthorizationService AuthorizationService { get; set; }
+    [Inject] protected IEntityTagAdminAppService EntityTagAdminAppService { get; set; }
+    [Inject] protected ITagAppService TagAppService { get; set; }
 
-    public UpdateBlogPostDto Entity { get; set; }
+    [Inject] protected AbpBlazorMessageLocalizerHelper<TResource> LH { get; set; }
+
+    public UpdateBlogPostDto UpdateEntity { get; set; } = null!;
+
+    protected string FormTitle = "";
+
+    AbpFluentForm<TInput> FormRef { get; set; } = null!;
+
+    public string? TagNameString { get; set; }
+    public FileStream? CoverImageStream { get; set; }
+    public string? FileName { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         var post = await AppService.GetAsync(Id);
-        Entity = ObjectMapper.Map<BlogPostDto, UpdateBlogPostDto>(post);
+        UpdateEntity = ObjectMapper.Map<BlogPostDto, UpdateBlogPostDto>(post);
+        var tags = await TagAppService.GetAllRelatedTagsAsync("BlogPost", Id.ToString());
+        FormTitle = $"{L["Edit"]}{@L["BlogPosts"]} - {UpdateEntity.Title}";
+
+        if (!tags.IsNullOrEmpty())
+        {
+            TagNameString = string.Join(",", tags.Select(x => x.Name));
+        }
     }
 
-    protected async Task<DialogResult?> UpdateEntityAsync(BlogPostUpdateResultModel res)
+    async Task OnCoverUploadedAsync(FluentInputFileEventArgs file)
+    {
+        var localFile = Path.GetTempFileName() + file.Name;
+        FileName = file.Name;
+        CoverImageStream = new(localFile, FileMode.Create);
+        await file.Stream!.CopyToAsync(CoverImageStream);
+    }
+
+    private async Task RemoveCoverClick()
+    {
+        var removeConfirm = await Message.Confirm(
+            L["RemoveCoverImageConfirmationMessage"], L["Confirm"]);
+
+        if (removeConfirm)
+        {
+            UpdateEntity.CoverImageMediaId = null;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    protected async Task<DialogResult?> UpdateEntityAsync()
     {
         try
         {
-            var input = res.Dto;
-
             BlogPostDto entity = default!;
-            if (res.CoverImageStream != null && res.CoverImageStream.Length > 0)
+            if (CoverImageStream != null && CoverImageStream.Length > 0)
             {
                 var mediaDto = await MediaDescriptorAdminAppService.CreateAsync("BlogPost", new CreateMediaInputWithStream()
                 {
-                    File = new RemoteStreamContent(res.CoverImageStream),
-                    Name = res.FileName,
+                    File = new RemoteStreamContent(CoverImageStream),
+                    Name = FileName,
                 });
 
-                input.CoverImageMediaId = mediaDto.Id;
-                res.Dispose();
+                UpdateEntity.CoverImageMediaId = mediaDto.Id;
+                await CoverImageStream.DisposeAsync();
             }
 
-            entity = await AppService.UpdateAsync(Id, res.Dto);
+            entity = await AppService.UpdateAsync(Id, UpdateEntity);
 
-            var tagNames = res.TagNameString?.Split(",")?.ToList() ?? [];
+            var tagNames = TagNameString?.Split(",")?.ToList() ?? [];
 
             if (!tagNames.IsNullOrEmpty())
             {
