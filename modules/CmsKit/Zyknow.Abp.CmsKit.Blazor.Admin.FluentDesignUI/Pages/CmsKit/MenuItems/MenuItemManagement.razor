@@ -111,6 +111,11 @@
         return base.SetToolbarItemsAsync();
     }
 
+    protected override string GetDeleteConfirmationMessage(TDto entity)
+    {
+        return string.Format(L["MenuItemDeletionConfirmationMessage"]);
+    }
+
 
     protected override Task ShowCreateDialogAsync()
     {
