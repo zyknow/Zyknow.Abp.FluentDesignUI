@@ -1,0 +1,34 @@
+﻿@using Volo.CmsKit.Admin.Tags
+@using Volo.CmsKit.Tags
+@using TInput = Volo.CmsKit.Admin.Tags.TagCreateDto
+@using TResource = Volo.CmsKit.Localization.CmsKitResource
+@inherits Zyknow.Abp.FluentDesignUI.AbpDialogFormBase<TInput, TResource>
+
+<AbpFluentForm
+    HeaderText="@HeaderText"
+    Content="@Content"
+    SubmitValidClick="SubmitClick"
+    CancelClick="CancelClick"
+    Localize="@LH.Localize">
+
+    <FluentSelect TOption="TagDefinitionDto" Items="@definitions" OptionValue="@(x => x.EntityType)"
+                  @bind-Value="Content.EntityType" Label="@L["EntityType"]" OptionText="@(x => x.DisplayName)"/>
+
+    <FluentTextField @bind-Value="Content.Name" Label="@L["Name"]"/>
+
+</AbpFluentForm>
+
+@code {
+    private List<TagDefinitionDto> definitions;
+
+    [Inject] protected ITagAdminAppService AppService { get; set; }
+    public string HeaderText => L["CreateTag"];
+
+    protected override async Task OnInitializedAsync()
+    {
+        definitions = await AppService.GetTagDefinitionsAsync();
+        if (Content.EntityType.IsNullOrWhiteSpace())
+            Content.EntityType = "BlogPost";
+    }
+
+}

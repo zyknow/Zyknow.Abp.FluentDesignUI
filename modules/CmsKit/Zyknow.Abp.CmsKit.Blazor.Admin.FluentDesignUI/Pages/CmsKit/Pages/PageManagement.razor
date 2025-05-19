@@ -37,17 +37,15 @@
 {
     protected PageToolbar Toolbar { get; } = new();
 
-    [Inject] protected IBlogFeatureAdminAppService BlogFeatureAppService { get; set; }
-
     protected List<FluentTableColumn> PageManagementTableColumns => TableColumns.Get<PageManagement>();
 
     public PageManagement()
     {
         LocalizationResource = typeof(TResource);
 
-        CreatePolicyName = CmsKitAdminPermissions.Blogs.Create;
-        UpdatePolicyName = CmsKitAdminPermissions.Blogs.Update;
-        DeletePolicyName = CmsKitAdminPermissions.Blogs.Delete;
+        CreatePolicyName = CmsKitAdminPermissions.Pages.Create;
+        UpdatePolicyName = CmsKitAdminPermissions.Pages.Update;
+        DeletePolicyName = CmsKitAdminPermissions.Pages.Delete;
     }
 
     protected override ValueTask SetBreadcrumbItemsAsync()
@@ -82,6 +80,24 @@
                     Text = L["Edit"],
                     Visible = (data) => HasUpdatePermission,
                     Clicked = async (data) => { await ToEditAsync(data.As<TDto>()); }
+                },
+                new FluentEntityAction
+                {
+                    Text = L["SetAsHomePage"],
+                    Visible = (data) => HasUpdatePermission,
+                    Clicked = async (data) =>
+                    {
+                        var entity = data.As<TDto>();
+                        try
+                        {
+                            await AppService.SetAsHomePageAsync(entity.Id);
+                            await GetEntitiesAsync();
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrorAsync(e);
+                        }
+                    }
                 },
                 new FluentEntityAction
                 {
@@ -145,5 +161,17 @@
         });
 
         return base.SetTableColumnsAsync();
+    }
+
+    protected override Task ToCreateActionAsync()
+    {
+        NavigationManager.NavigateTo("/Cms/Pages/Create");
+        return Task.CompletedTask;
+    }
+
+    protected override Task ToEditActionAsync()
+    {
+        NavigationManager.NavigateTo(@$"/Cms/Pages/Update/{EditingEntityId}");
+        return Task.CompletedTask;
     }
 }

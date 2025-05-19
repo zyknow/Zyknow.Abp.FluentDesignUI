@@ -13,7 +13,11 @@
 @inherits AbpGetListPageBase<TGetListOutputDto, TKey, TGetListInput>
 
 <FluentAdaptiveCard>
-    <AbpPageHeader Title="@L["Comments"]" BreadcrumbItems="@BreadcrumbItems"/>
+
+    @if (!IsInCommentInfoView)
+    {
+        <AbpPageHeader Title="@L["Comments"]" BreadcrumbItems="@BreadcrumbItems"/>
+    }
 
     <AbpSearch Loading="@Loading" PrimaryInputVisible="false"
                OnSearch="SearchEntitiesAsync" ChildrenFilterVisible="true">
@@ -33,11 +37,15 @@
                                  Label="@L["Username"]"/>
             </div>
 
-            <div>
-                <FluentTextField @bind-Value="@GetListInput.EntityType"
-                                 Placeholder="@L["EntityType"]"
-                                 Label="@L["EntityType"]"/>
-            </div>
+            @if (!IsInCommentInfoView)
+            {
+                <div>
+                    <FluentTextField @bind-Value="@GetListInput.EntityType"
+                                     Placeholder="@L["EntityType"]"
+                                     Label="@L["EntityType"]"/>
+                </div>
+            }
+
         </FluentStack>
     </AbpSearch>
 
@@ -60,6 +68,10 @@
 {
     protected bool HasDeletePermission;
     protected PageToolbar Toolbar { get; } = new();
+
+    [Parameter] public bool IsInCommentInfoView { get; set; }
+
+    [Parameter] public Guid? RepliedCommentId { get; set; }
 
     [Inject] protected TAppService AppService { get; set; }
 
@@ -92,7 +104,11 @@
                 new FluentEntityAction
                 {
                     Text = L["Detail"],
-                    Clicked = async (data) => { }
+                    Clicked = async (data) =>
+                    {
+                        var entity = data.As<TGetListOutputDto>();
+                        NavigationManager.NavigateTo($"/Cms/Comments/{entity.Id}");
+                    }
                 },
                 new FluentEntityAction
                 {
@@ -115,7 +131,8 @@
                     Title = L["Username"],
                     Sortable = false,
                     Data = nameof(TGetListOutputDto.Author),
-                    PropertyName = nameof(TGetListOutputDto.Author)
+                    PropertyName = nameof(TGetListOutputDto.Author),
+                    ValueConverter = v => (v as TGetListOutputDto)?.Author?.Name
                 },
                 new FluentTableColumn
                 {
@@ -161,6 +178,7 @@
 
     protected override async Task<IPagedResult<TGetListOutputDto>> AppServiceGetListAsync(TGetListInput input)
     {
+        input.RepliedCommentId = RepliedCommentId;
         var res = await AppService.GetListAsync(input);
         return res;
     }

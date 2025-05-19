@@ -191,8 +191,6 @@
 
         return base.SetTableColumnsAsync();
     }
-
-
 }
 
 @code {
@@ -215,14 +213,7 @@
         throw new NotImplementedException();
     }
 
-    protected override Task AppServiceDeleteAsync(Guid id) => AppService.DeleteAsync(id);
-
-    protected override Task ToCreateActionAsync()
-    {
-        throw new NotImplementedException();
-    }
-
-    protected override Task ToEditActionAsync()
+    protected override Task AppServiceDeleteAsync(Guid id)
     {
         throw new NotImplementedException();
     }

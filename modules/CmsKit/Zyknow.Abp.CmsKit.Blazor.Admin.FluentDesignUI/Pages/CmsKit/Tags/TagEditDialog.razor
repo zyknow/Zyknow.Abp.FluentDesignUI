@@ -1,0 +1,21 @@
+﻿@using Volo.CmsKit.Admin.Tags
+@using Volo.CmsKit.Tags
+@using TInput = Volo.CmsKit.Admin.Tags.TagUpdateDto
+@using TResource = Volo.CmsKit.Localization.CmsKitResource
+@inherits Zyknow.Abp.FluentDesignUI.AbpDialogFormBase<TInput, TResource>
+
+<AbpFluentForm
+    HeaderText="@HeaderText"
+    Content="@Content"
+    SubmitValidClick="SubmitClick"
+    CancelClick="CancelClick"
+    Localize="@LH.Localize">
+    <FluentTextField @bind-Value="Content.Name" Label="@L["Name"]"/>
+
+</AbpFluentForm>
+
+@code {
+    public string HeaderText => $@"{L["Edit"]} - {EditEntityName}";
+
+    [Parameter] public string EditEntityName { get; set; }
+}

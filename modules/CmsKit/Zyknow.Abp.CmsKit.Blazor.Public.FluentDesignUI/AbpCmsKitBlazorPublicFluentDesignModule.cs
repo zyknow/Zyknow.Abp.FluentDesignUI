@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.Modularity;
 using Volo.CmsKit.Public;
+using Volo.CmsKit.Public.Comments;
 using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme;
 
 namespace Zyknow.Abp.CmsKit.Blazor.Public.FluentDesignUI;

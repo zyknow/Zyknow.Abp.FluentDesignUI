@@ -11,7 +11,7 @@
 @using TResource = Volo.CmsKit.Localization.CmsKitResource
 
 <FluentAdaptiveCard>
-    <div style="margin-bottom: 10px">
+    <div style="padding-bottom: 10px">
         <AbpFluentForm HeaderText="@(FormTitle)"
                        Content="@UpdateEntity"
                        @ref="FormRef"
@@ -127,48 +127,36 @@
         }
     }
 
-    protected async Task<DialogResult?> UpdateEntityAsync()
+    protected async Task UpdateEntityAsync()
     {
-        try
+        BlogPostDto entity = default!;
+        if (CoverImageStream != null && CoverImageStream.Length > 0)
         {
-            BlogPostDto entity = default!;
-            if (CoverImageStream != null && CoverImageStream.Length > 0)
+            var mediaDto = await MediaDescriptorAdminAppService.CreateAsync("BlogPost", new CreateMediaInputWithStream()
             {
-                var mediaDto = await MediaDescriptorAdminAppService.CreateAsync("BlogPost", new CreateMediaInputWithStream()
-                {
-                    File = new RemoteStreamContent(CoverImageStream),
-                    Name = FileName,
-                });
+                File = new RemoteStreamContent(CoverImageStream),
+                Name = FileName,
+            });
 
-                UpdateEntity.CoverImageMediaId = mediaDto.Id;
-                await CoverImageStream.DisposeAsync();
-            }
+            UpdateEntity.CoverImageMediaId = mediaDto.Id;
+            await CoverImageStream.DisposeAsync();
+        }
 
-            entity = await AppService.UpdateAsync(Id, UpdateEntity);
+        entity = await AppService.UpdateAsync(Id, UpdateEntity);
 
-            var tagNames = TagNameString?.Split(",")?.ToList() ?? [];
+        var tagNames = TagNameString?.Split(",")?.ToList() ?? [];
 
-            if (!tagNames.IsNullOrEmpty())
+        if (!tagNames.IsNullOrEmpty())
+        {
+            await EntityTagAdminAppService.SetEntityTagsAsync(new EntityTagSetDto()
             {
-                await EntityTagAdminAppService.SetEntityTagsAsync(new EntityTagSetDto()
-                {
-                    Tags = tagNames,
-                    EntityType = "BlogPost",
-                    EntityId = entity.Id.ToString()
-                });
-            }
+                Tags = tagNames,
+                EntityType = "BlogPost",
+                EntityId = entity.Id.ToString()
+            });
+        }
 
-            NavigationManager.NavigateTo("/Cms/BlogPosts");
-            return DialogResult.Ok(entity);
-        }
-        catch (Exception ex)
-        {
-            await HandleErrorAsync(ex);
-            return null;
-        }
-        finally
-        {
-        }
+        NavigationManager.NavigateTo("/Cms/BlogPosts");
     }
 
 

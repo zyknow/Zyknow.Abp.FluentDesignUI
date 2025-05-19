@@ -1,0 +1,130 @@
+﻿@page "/Cms/Tags"
+@attribute [Authorize(CmsKitAdminPermissions.Tags.Default)]
+@using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
+@using Volo.CmsKit.Permissions
+@using TKey = Guid
+@using TDto = Volo.CmsKit.Tags.TagDto
+@using TGetListInput = Volo.CmsKit.Admin.Tags.TagGetListInput
+@using TCreateDto = Volo.CmsKit.Admin.Tags.TagCreateDto
+@using TUpdateDto = Volo.CmsKit.Admin.Tags.TagUpdateDto
+@using TResource = Volo.CmsKit.Localization.CmsKitResource
+@using TAppService = Volo.CmsKit.Admin.Tags.ITagAdminAppService
+@inherits AbpCrudPageBase<TAppService, TDto, TDto, TKey, TGetListInput, TCreateDto, TUpdateDto>
+
+<FluentAdaptiveCard>
+    <AbpPageHeader Title="@L["Tags"]" BreadcrumbItems="@BreadcrumbItems" Toolbar="@Toolbar"/>
+
+    <AbpSearch Loading="@Loading" @bind-PrimarySearchValue="GetListInput.Filter"
+               OnSearch="SearchEntitiesAsync"></AbpSearch>
+
+    <AbpExtensibleDataGrid Loading="@Loading"
+                           TKey="TKey"
+                           TItem="TDto"
+                           EnableSelected="true"
+                           PrimarySelectedDeletesBtnVisible="@HasDeletePermission"
+                           OnDeleteSelected="DeleteEntitiesAsync"
+                           DeleteSelectedDisplayPropertyConfirmExpression="@(r => r.Name)"
+                           Entities="Entities"
+                           OnChange="@OnDataGridReadAsync"
+                           Pagination="@Pagination"
+                           Columns="@TagManagementTableColumns">
+    </AbpExtensibleDataGrid>
+</FluentAdaptiveCard>
+
+@code
+{
+    protected PageToolbar Toolbar { get; } = new();
+
+    protected List<FluentTableColumn> TagManagementTableColumns => TableColumns.Get<TagManagement>();
+
+    public TagManagement()
+    {
+        LocalizationResource = typeof(TResource);
+
+        CreatePolicyName = CmsKitAdminPermissions.Blogs.Create;
+        UpdatePolicyName = CmsKitAdminPermissions.Blogs.Update;
+        DeletePolicyName = CmsKitAdminPermissions.Blogs.Delete;
+    }
+
+    protected override ValueTask SetBreadcrumbItemsAsync()
+    {
+        BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Menu:CMS"], icon: new Size16.News()));
+        BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Tags"]));
+
+        return base.SetBreadcrumbItemsAsync();
+    }
+
+    protected override string GetDeleteConfirmationMessage(TDto entity)
+    {
+        return string.Format(L["PageDeletionConfirmationMessage"]);
+    }
+
+    protected override ValueTask SetToolbarItemsAsync()
+    {
+        Toolbar.AddButton(L["NewTag"],
+            ToCreateAsync,
+            new Size20.Add(),
+            requiredPolicyName: CreatePolicyName);
+        return base.SetToolbarItemsAsync();
+    }
+
+    protected override ValueTask SetEntityActionsAsync()
+    {
+        EntityActions
+            .Get<TagManagement>()
+            .AddRange([
+                new FluentEntityAction
+                {
+                    Text = L["Edit"],
+                    Visible = (data) => HasUpdatePermission,
+                    Clicked = async (data) => { await ToEditAsync(data.As<TDto>()); }
+                },
+                new FluentEntityAction
+                {
+                    Text = L["Delete"],
+                    Color = "red",
+                    Visible = (data) => HasDeletePermission,
+                    Clicked = async (data) => await DeleteEntityAsync(data.As<TDto>()),
+                    ConfirmationMessage = (data) => GetDeleteConfirmationMessage(data.As<TDto>())
+                }
+            ]);
+
+        return base.SetEntityActionsAsync();
+    }
+
+    protected override ValueTask SetTableColumnsAsync()
+    {
+        TagManagementTableColumns
+            .AddRange([
+                new FluentTableColumn
+                {
+                    Title = L["EntityType"],
+                    Sortable = true,
+                    Data = nameof(TDto.EntityType),
+                    PropertyName = nameof(TDto.EntityType)
+                },
+                new FluentTableColumn
+                {
+                    Title = L["Name"],
+                    Sortable = true,
+                    Data = nameof(TDto.Name),
+                    PropertyName = nameof(TDto.Name)
+                }
+            ]);
+
+        TagManagementTableColumns.Add(new FluentTableColumn
+        {
+            Title = L["Actions"],
+            Actions = EntityActions.Get<TagManagement>()
+        });
+
+        return base.SetTableColumnsAsync();
+    }
+
+    protected override Task ToCreateActionAsync() => ShowDialogAsync(@<TagCreateDialog Content="@NewEntity"
+                                                                                       SubmitClick="CreateEntityAsync"/>);
+
+    protected override Task ToEditActionAsync() => ShowDialogAsync(@<TagEditDialog Content="@EditingEntity"
+                                                                                   EditEntityName="@EditingEntity.Name"
+                                                                                   SubmitClick="UpdateEntityAsync"/>);
+}

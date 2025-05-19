@@ -36,7 +36,9 @@
                 OnOptionsSearch="@OnOptionsSearch"
                 Multiple="false"
                 OptionText="@(dto => $@"{dto.Title}")"
-                @bind-SelectedOption="SelectedPage"/>
+                ValueText="@Content.PageId?.ToString()"
+                @bind-SelectedOption="SelectedPage"
+            />
         }
         else
         {
@@ -93,7 +95,17 @@
 
     [Inject] protected IPageAdminAppService PageAdminAppService { get; set; }
 
-    PageDto SelectedPage { get; set; }
+    PageDto? _selectedPage;
+
+    PageDto? SelectedPage
+    {
+        get => _selectedPage;
+        set
+        {
+            _selectedPage = value;
+            Content.PageId = value?.Id;
+        }
+    }
 
     string tabId = "Url";
 

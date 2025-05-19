@@ -11,7 +11,7 @@
 @using Volo.CmsKit.Blogs
 
 <FluentAdaptiveCard>
-    <div style="margin-bottom: 10px">
+    <div style="padding-bottom: 10px">
         <AbpFluentForm HeaderText="@L["NewBlogPost"]"
                        Content="@CreateEntity"
                        @ref="FormRef"
@@ -158,56 +158,45 @@
     }
 
 
-    protected async Task<DialogResult?> CreateEntityAsync()
+    protected async Task CreateEntityAsync()
     {
         CreateEntity.BlogId = SelectedBlog!.Id;
-        try
+
+        BlogPostDto createdDto = default!;
+        if (CoverImageStream != null && CoverImageStream.Length > 0)
         {
-            BlogPostDto createdDto = default!;
-            if (CoverImageStream != null && CoverImageStream.Length > 0)
+            var mediaDto = await MediaDescriptorAdminAppService.CreateAsync("BlogPost", new CreateMediaInputWithStream()
             {
-                var mediaDto = await MediaDescriptorAdminAppService.CreateAsync("BlogPost", new CreateMediaInputWithStream()
-                {
-                    File = new RemoteStreamContent(CoverImageStream),
-                    Name = FileName,
-                });
+                File = new RemoteStreamContent(CoverImageStream),
+                Name = FileName,
+            });
 
-                CreateEntity.CoverImageMediaId = mediaDto.Id;
-                await CoverImageStream.DisposeAsync();
-            }
-
-            if (Status == BlogPostStatus.Published)
-            {
-                createdDto = await AppService.CreateAndPublishAsync(CreateEntity);
-            }
-            else if (Status == BlogPostStatus.Draft)
-            {
-                createdDto = await AppService.CreateAsync(CreateEntity);
-            }
-
-            var tagNames = TagNameString?.Split(",")?.ToList() ?? [];
-
-            if (!tagNames.IsNullOrEmpty())
-            {
-                await EntityTagAdminAppService.SetEntityTagsAsync(new EntityTagSetDto()
-                {
-                    Tags = tagNames,
-                    EntityType = "BlogPost",
-                    EntityId = createdDto.Id.ToString()
-                });
-            }
-
-            NavigationManager.NavigateTo("/Cms/BlogPosts");
-            return DialogResult.Ok(createdDto);
+            CreateEntity.CoverImageMediaId = mediaDto.Id;
+            await CoverImageStream.DisposeAsync();
         }
-        catch (Exception ex)
+
+        if (Status == BlogPostStatus.Published)
         {
-            await HandleErrorAsync(ex);
-            return null;
+            createdDto = await AppService.CreateAndPublishAsync(CreateEntity);
         }
-        finally
+        else if (Status == BlogPostStatus.Draft)
         {
+            createdDto = await AppService.CreateAsync(CreateEntity);
         }
+
+        var tagNames = TagNameString?.Split(",")?.ToList() ?? [];
+
+        if (!tagNames.IsNullOrEmpty())
+        {
+            await EntityTagAdminAppService.SetEntityTagsAsync(new EntityTagSetDto()
+            {
+                Tags = tagNames,
+                EntityType = "BlogPost",
+                EntityId = createdDto.Id.ToString()
+            });
+        }
+
+        NavigationManager.NavigateTo("/Cms/BlogPosts");
     }
 
 

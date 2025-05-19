@@ -152,21 +152,11 @@
                                                    SubmitClick="@(() => UpdateFeaturesAsync(blog.Id, features))"/>);
     }
 
-    protected async Task<DialogResult?> UpdateFeaturesAsync(Guid blogId, List<BlogFeatureDto> features)
+    protected async Task UpdateFeaturesAsync(Guid blogId, List<BlogFeatureDto> features)
     {
-        try
+        foreach (var blogFeatureDto in ObjectMapper.Map<List<BlogFeatureDto>, List<BlogFeatureInputDto>>(features))
         {
-            foreach (var blogFeatureDto in ObjectMapper.Map<List<BlogFeatureDto>, List<BlogFeatureInputDto>>(features))
-            {
-                await BlogFeatureAppService.SetAsync(blogId, blogFeatureDto);
-            }
-
-            return DialogResult.Ok<object>(null);
-        }
-        catch (Exception e)
-        {
-            await HandleErrorAsync(e);
-            return null;
+            await BlogFeatureAppService.SetAsync(blogId, blogFeatureDto);
         }
     }
 

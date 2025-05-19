@@ -1,4 +1,5 @@
 ﻿@using Localization.Resources.AbpUi
+@using Volo.CmsKit.Admin.Comments
 @using Volo.CmsKit.Admin.Pages
 @using TInput = Volo.CmsKit.Admin.Menus.MenuItemUpdateInput
 @using TResource = Volo.CmsKit.Localization.CmsKitResource
@@ -93,7 +94,17 @@
 
     [Inject] protected IPageAdminAppService PageAdminAppService { get; set; }
 
-    PageDto SelectedPage { get; set; }
+    PageDto? _selectedPage;
+
+    PageDto? SelectedPage
+    {
+        get => _selectedPage;
+        set
+        {
+            _selectedPage = value;
+            Content.PageId = value?.Id;
+        }
+    }
 
     string tabId = "Url";
 

@@ -1,0 +1,44 @@
+﻿@using Volo.Abp.AspNetCore.Components.Messages
+@using Volo.Abp.AspNetCore.Components.Notifications
+@using Volo.Abp.Settings
+@using Volo.CmsKit.Admin.Comments
+@using Volo.CmsKit.Localization
+@inherits FluentAbpComponentBase<CmsKitResource>
+
+<AbpFluentForm Content="Settings" SubmitClick="UpdateSettingsAsync">
+    <FluentStack Orientation="Orientation.Vertical">
+        <FluentCheckbox Label="@L["CmsKitCommentOptions:RequireApprovement"]"
+                        @bind-Value="@Settings.CommentRequireApprovement"></FluentCheckbox>
+        <FluentLabel Typo="Typography.Subject">@L["CmsKitCommentOptions:RequireApprovementDescription"]</FluentLabel>
+    </FluentStack>
+</AbpFluentForm>
+
+@code {
+
+    [Inject] protected ICommentAdminAppService CommentAppService { get; set; }
+
+    [Inject] protected ISettingProvider SettingProvider { get; set; }
+
+    [Inject] protected IUiNotificationService UiNotificationService { get; set; }
+
+    CommentSettingsDto Settings { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Settings.CommentRequireApprovement = await SettingProvider.GetAsync<bool>("CmsKit.Comments.RequireApprovement");
+    }
+
+    private async Task UpdateSettingsAsync()
+    {
+        try
+        {
+            await CommentAppService.UpdateSettingsAsync(Settings);
+            await UiNotificationService.Success(L["SavedSuccessfully"]);
+        }
+        catch (Exception e)
+        {
+            await HandleErrorAsync(e);
+        }
+    }
+
+}

@@ -1,0 +1,68 @@
+﻿@page "/Cms/Comments/{Id:guid}"
+@using Volo.Abp.AspNetCore.Components.Notifications
+@using Volo.CmsKit.Admin.Comments
+@using Volo.CmsKit.Localization
+@using TResource = Volo.CmsKit.Localization.CmsKitResource
+@inherits FluentAbpComponentBase<TResource>
+
+
+<FluentAdaptiveCard>
+    @if (Comment != null)
+    {
+        <div class="fluent-border-card">
+            <FluentGrid Spacing="2" Justify="JustifyContent.FlexStart">
+                <FluentGridItem xs="4">
+                    <FluentLabel Weight="FontWeight.Bold">@L["EntityType"] :</FluentLabel>
+                </FluentGridItem>
+                <FluentGridItem xs="8">
+                    @Comment.EntityType
+                </FluentGridItem>
+                <FluentDivider Style="width: 100%"/>
+                <FluentGridItem xs="4">
+                    <FluentLabel Weight="FontWeight.Bold">@L["EntityId"] :</FluentLabel>
+                </FluentGridItem>
+                <FluentGridItem xs="8">
+                    @Comment.EntityId
+                </FluentGridItem>
+                <FluentDivider Style="width: 100%"/>
+                <FluentGridItem xs="4">
+                    <FluentLabel Weight="FontWeight.Bold">@L["CreationTime"] :</FluentLabel>
+                </FluentGridItem>
+                <FluentGridItem xs="8">
+                    @Comment.CreationTime
+                </FluentGridItem>
+                <FluentDivider Style="width: 100%"/>
+                <FluentGridItem xs="4">
+                    <FluentLabel Weight="FontWeight.Bold">@L["Username"] :</FluentLabel>
+                </FluentGridItem>
+                <FluentGridItem xs="8">
+                    @Comment.Author
+                </FluentGridItem>
+                <FluentDivider Style="width: 100%"/>
+                <FluentGridItem xs="4">
+                    <FluentLabel Weight="FontWeight.Bold">@L["Text"] :</FluentLabel>
+                </FluentGridItem>
+                <FluentGridItem xs="8">
+                    @Comment.Text
+                </FluentGridItem>
+            </FluentGrid>
+        </div>
+
+
+        <CommentManagement IsInCommentInfoView="true" RepliedCommentId="@Comment.RepliedCommentId"></CommentManagement>
+    }
+</FluentAdaptiveCard>
+
+@code {
+    [Parameter] public Guid Id { get; set; }
+
+    [Inject] protected ICommentAdminAppService CommentAppService { get; set; }
+
+    CommentWithAuthorDto? Comment { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Comment = await CommentAppService.GetAsync(Id);
+    }
+
+}

@@ -1,0 +1,78 @@
+﻿@using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
+@using Volo.CmsKit.Admin.Pages
+@using Volo.CmsKit.Permissions
+@using TKey = Guid
+@using TInput = Volo.CmsKit.Admin.Pages.UpdatePageInputDto
+@using TResource = Volo.CmsKit.Localization.CmsKitResource
+@using TAppService = Volo.CmsKit.Admin.Pages.IPageAdminAppService
+@attribute [Authorize(CmsKitAdminPermissions.Pages.Update)]
+@inherits FluentAbpComponentBase<TResource>
+@page "/Cms/Pages/Update/{Id:guid}"
+<FluentAdaptiveCard>
+    <AbpFluentForm HeaderText="@L["Page"]"
+                   Content="@UpdateEntity"
+                   @ref="FormRef"
+                   TInput="TInput"
+                   SubmitValidClick="@UpdateEntityAsync"
+                   Localize="@LH.Localize">
+
+        <FluentTextField @bind-Value="UpdateEntity.Title" Label="@L["Title"]"/>
+        <FluentTextField @bind-Value="UpdateEntity.Slug" Label="@L["Slug"]"/>
+        <FluentSelect TOption="string" Items="@LayoutConstants.GetLayoutsSelectList()"
+                      @bind-Value="UpdateEntity.LayoutName" Label="@L["SelectLayout"]"/>
+
+        <FluentTabs Style="height: 100%">
+            <FluentTab Label="@L["Content"]">
+                <CmsKitEditor @bind-Value="@UpdateEntity.Content"></CmsKitEditor>
+            </FluentTab>
+            <FluentTab Style="height: 400px" Label="@L["Script"]">
+                <CmsCodeEditor ConstructionOptions="@((editor, opt) =>
+                                                    {
+                                                        _scriptEditor = editor;
+                                                        opt.Language = "javascript";
+                                                        opt.Value = UpdateEntity.Script;
+                                                    })"></CmsCodeEditor>
+            </FluentTab>
+            <FluentTab Label="@L["Style"]" Style="height: 400px">
+                <CmsCodeEditor ConstructionOptions="@((editor, opt) =>
+                                                    {
+                                                        _styleEditor = editor;
+                                                        opt.Language = "css";
+                                                        opt.Value = UpdateEntity.Style;
+                                                    })"></CmsCodeEditor>
+            </FluentTab>
+        </FluentTabs>
+
+    </AbpFluentForm>
+</FluentAdaptiveCard>
+
+@code {
+
+    [Inject] protected TAppService AppService { get; set; }
+
+
+    [Parameter] public TKey Id { get; set; }
+
+    AbpFluentForm<TInput> FormRef { get; set; }
+
+    public TInput UpdateEntity { get; set; } = new();
+    StandaloneCodeEditor _styleEditor;
+    StandaloneCodeEditor _scriptEditor;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        var entity = await AppService.GetAsync(Id);
+        UpdateEntity = ObjectMapper.Map<PageDto, TInput>(entity);
+    }
+
+    protected async Task UpdateEntityAsync()
+    {
+        UpdateEntity.Script = await _scriptEditor.GetValue();
+        UpdateEntity.Style = await _styleEditor.GetValue();
+        await AppService.UpdateAsync(Id, UpdateEntity);
+        NavigationManager.NavigateTo("/Cms/Pages");
+    }
+
+
+}
