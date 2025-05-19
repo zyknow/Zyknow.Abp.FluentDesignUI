@@ -64,7 +64,7 @@ else
     /// if return null value then the dialog will not be closed.
     /// </summary>
     [Parameter]
-    public Func<Task<DialogResult?>> SubmitValidClick { get; set; }
+    public Func<Task> SubmitValidClick { get; set; }
 
     [Parameter] public EventCallback SubmitClick { get; set; }
 
@@ -148,15 +148,10 @@ else
             {
                 if (SubmitValidClick != null)
                 {
-                    var res = await SubmitValidClick.Invoke();
-                    if (res == null)
-                        return;
-                    else
+                    await SubmitValidClick.Invoke();
+                    if (Dialog != null)
                     {
-                        if (Dialog != null)
-                        {
-                            await Dialog.CloseAsync(res);
-                        }
+                        await Dialog.CloseAsync(DialogResult.Ok(Content));
                     }
                 }
                 else
@@ -165,7 +160,7 @@ else
                     {
                         await SubmitClick.InvokeAsync();
                         if (Dialog != null)
-                            await Dialog?.CloseAsync(DialogResult.Ok(Content));
+                            await Dialog.CloseAsync(DialogResult.Ok(Content));
                     }
                 }
             }

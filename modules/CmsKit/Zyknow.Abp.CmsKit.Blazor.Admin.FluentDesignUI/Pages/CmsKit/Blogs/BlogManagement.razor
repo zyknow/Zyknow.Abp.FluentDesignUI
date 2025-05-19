@@ -76,7 +76,7 @@
     protected override ValueTask SetToolbarItemsAsync()
     {
         Toolbar.AddButton(L["NewBlog"],
-            OpenCreateDialogAsync,
+            ToCreateAsync,
             new Size20.Add(),
             requiredPolicyName: CreatePolicyName);
         return base.SetToolbarItemsAsync();
@@ -91,7 +91,7 @@
                 {
                     Text = L["Edit"],
                     Visible = (data) => HasUpdatePermission,
-                    Clicked = async (data) => { await OpenEditDialogAsync(data.As<TDto>()); }
+                    Clicked = async (data) => { await ToEditAsync(data.As<TDto>()); }
                 },
                 new FluentEntityAction
                 {
@@ -170,9 +170,9 @@
         }
     }
 
-    protected override Task ShowCreateDialogAsync()
+    protected override Task ToCreateActionAsync()
         => ShowDialogAsync(@<BlogCreateDialog Content="@NewEntity" SubmitClick="CreateEntityAsync"/>);
 
-    protected override Task ShowEditDialogAsync()
+    protected override Task ToEditActionAsync()
         => ShowDialogAsync(@<BlogEditDialog Content="@EditingEntity" SubmitClick="UpdateEntityAsync"/>);
 }

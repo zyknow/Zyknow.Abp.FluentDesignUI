@@ -217,12 +217,12 @@
 
     protected override Task AppServiceDeleteAsync(Guid id) => AppService.DeleteAsync(id);
 
-    protected override Task ShowCreateDialogAsync()
+    protected override Task ToCreateActionAsync()
     {
         throw new NotImplementedException();
     }
 
-    protected override Task ShowEditDialogAsync()
+    protected override Task ToEditActionAsync()
     {
         throw new NotImplementedException();
     }

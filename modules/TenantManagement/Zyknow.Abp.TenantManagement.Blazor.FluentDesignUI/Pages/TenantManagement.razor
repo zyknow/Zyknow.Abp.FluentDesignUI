@@ -80,7 +80,7 @@
             new Size20.Settings(),
             requiredPolicyName: FeatureManagementPermissions.ManageHostFeatures);
         Toolbar.AddButton(L["NewTenant"],
-            OpenCreateDialogAsync,
+            ToCreateAsync,
             new Size20.Add(),
             requiredPolicyName: CreatePolicyName);
 
@@ -96,7 +96,7 @@
                 {
                     Text = L["Edit"],
                     Visible = (data) => HasUpdatePermission,
-                    Clicked = async (data) => { await OpenEditDialogAsync(data.As<TenantDto>()); }
+                    Clicked = async (data) => { await ToEditAsync(data.As<TenantDto>()); }
                 },
                 new FluentEntityAction
                 {
@@ -150,9 +150,9 @@
     protected virtual Task ShowFeatureDialogAsync(FeatureManagementDialogInput input)
         => ShowDialogAsync(@<FeatureManagementDialog Content="@input"/>);
 
-    protected override Task ShowCreateDialogAsync()
+    protected override Task ToCreateActionAsync()
         => ShowDialogAsync(@<TenantCreateDialog Content="@NewEntity" SubmitClick="CreateEntityAsync"/>);
 
-    protected override Task ShowEditDialogAsync()
+    protected override Task ToEditActionAsync()
         => ShowDialogAsync(@<TenantEditDialog Content="@EditingEntity" SubmitClick="UpdateEntityAsync"/>);
 }

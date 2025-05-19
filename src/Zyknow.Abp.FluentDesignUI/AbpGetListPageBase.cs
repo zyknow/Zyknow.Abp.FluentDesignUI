@@ -22,18 +22,17 @@ public abstract class
 public abstract class AbpGetListPageBase<TGetListOutputDto, TKey, TGetListInput, TListViewModel> : AbpComponentBase
     where TGetListInput : new()
 {
-    [Inject] protected IStringLocalizer<AbpUiResource> UiLocalizer { get; set; }
+    [Inject] protected IStringLocalizer<AbpUiResource> UiLocalizer { get; set; } = null!;
 
-    [Inject] protected IAbpEnumLocalizer AbpEnumLocalizer { get; set; }
+    [Inject] protected IAbpEnumLocalizer AbpEnumLocalizer { get; set; } = null!;
 
-    [Inject] protected IDialogService DialogService { get; set; }
+    [Inject] protected IDialogService DialogService { get; set; } = null!;
 
     protected bool Loading = false;
     protected TGetListInput GetListInput = new();
-    protected IReadOnlyList<TListViewModel> Entities = Array.Empty<TListViewModel>();
+    protected IReadOnlyList<TListViewModel> Entities = [];
 
     protected List<AbpBreadcrumbItem> BreadcrumbItems = new();
-    protected TableEntityActionsColumn<TListViewModel> EntityActionsColumn;
     protected FluentEntityActionDictionary EntityActions { get; set; } = new();
     protected FluentTableColumnDictionary TableColumns { get; set; } = new();
 
@@ -77,7 +76,7 @@ public abstract class AbpGetListPageBase<TGetListOutputDto, TKey, TGetListInput,
 
     protected virtual Task UpdateGetListInputAsync()
     {
-        Pagination.SetPageRequest(GetListInput);
+        Pagination.SetPageRequest(GetListInput!);
         return Task.CompletedTask;
     }
 
@@ -144,15 +143,20 @@ public abstract class AbpGetListPageBase<TGetListOutputDto, TKey, TGetListInput,
 
     protected virtual IEnumerable<FluentTableColumn> GetExtensionTableColumns(string moduleName, string entityType)
     {
-        var properties = ModuleExtensionConfigurationHelper.GetPropertyConfigurations(moduleName, entityType);
+        var properties = ModuleExtensionConfigurationHelper.GetPropertyConfigurations(moduleName, entityType).ToList();
         foreach (var propertyInfo in properties)
         {
-            if (propertyInfo.IsAvailableToClients && propertyInfo.UI.OnTable.IsVisible)
+            if (propertyInfo is { IsAvailableToClients: true, UI.OnTable.IsVisible: true })
             {
                 if (propertyInfo.Name.EndsWith("_Text"))
                 {
                     var lookupPropertyName = propertyInfo.Name.RemovePostFix("_Text");
                     var lookupPropertyDefinition = properties.SingleOrDefault(t => t.Name == lookupPropertyName);
+                    if (lookupPropertyDefinition == null)
+                    {
+                        continue;
+                    }
+
                     yield return new FluentTableColumn
                     {
                         Title = lookupPropertyDefinition.GetLocalizedDisplayName(StringLocalizerFactory),
@@ -176,7 +180,8 @@ public abstract class AbpGetListPageBase<TGetListOutputDto, TKey, TGetListInput,
                     {
                         column.ValueConverter = (val) =>
                             AbpEnumLocalizer.GetString(propertyInfo.Type,
-                                val.As<ExtensibleObject>().ExtraProperties[propertyInfo.Name]);
+                                val.As<ExtensibleObject>().ExtraProperties[propertyInfo.Name] ??
+                                throw new InvalidOperationException());
                     }
 
                     yield return column;

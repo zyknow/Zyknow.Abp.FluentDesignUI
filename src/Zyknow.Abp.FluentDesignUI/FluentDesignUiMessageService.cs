@@ -11,29 +11,29 @@ namespace Zyknow.Abp.FluentDesignUI;
 public class FluentDesignUiMessageService(IStringLocalizer<AbpUiResource> localizer)
     : IUiMessageService, IScopedDependency
 {
-    [Inject] public IDialogService DialogService { get; set; }
+    [Inject] public IDialogService DialogService { get; set; } = null!;
 
-    public async Task Info(string message, string title = null, Action<UiMessageOptions> options = null)
+    public async Task Info(string message, string? title = null, Action<UiMessageOptions>? options = null)
     {
         DialogService.ShowInfo(message, title ?? localizer["Info"], localizer["Confirm"]);
     }
 
-    public async Task Success(string message, string title = null, Action<UiMessageOptions> options = null)
+    public async Task Success(string message, string? title = null, Action<UiMessageOptions>? options = null)
     {
         DialogService.ShowSuccess(message, title ?? localizer["Success"], localizer["Confirm"]);
     }
 
-    public async Task Warn(string message, string title = null, Action<UiMessageOptions> options = null)
+    public async Task Warn(string message, string? title = null, Action<UiMessageOptions>? options = null)
     {
         DialogService.ShowWarning(message, title ?? localizer["Warn"], localizer["Confirm"]);
     }
 
-    public async Task Error(string message, string title = null, Action<UiMessageOptions> options = null)
+    public async Task Error(string message, string? title = null, Action<UiMessageOptions>? options = null)
     {
         DialogService.ShowError(message, title ?? localizer["Error"], localizer["Confirm"]);
     }
 
-    public async Task<bool> Confirm(string message, string title = null, Action<UiMessageOptions> options = null)
+    public async Task<bool> Confirm(string message, string? title = null, Action<UiMessageOptions>? options = null)
     {
         var res = await DialogService.ShowConfirmationAsync(
             message,

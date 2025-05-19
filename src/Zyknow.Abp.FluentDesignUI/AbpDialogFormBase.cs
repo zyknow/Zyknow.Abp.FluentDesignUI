@@ -36,7 +36,7 @@ public class AbpDialogFormBase<TInput, TResource> : AbpDialogOnlyFormBase<TInput
         LocalizationResource = typeof(TResource);
     }
 
-    [Parameter] public virtual Func<Task<DialogResult?>> SubmitClick { get; set; }
+    [Parameter] public virtual Func<Task> SubmitClick { get; set; }
 
     [Parameter] public EventCallback CancelClick { get; set; }
 
@@ -51,7 +51,7 @@ public class AbpDialogFormBase<TResult, TInput, TResource> : AbpDialogOnlyFormBa
         LocalizationResource = typeof(TResource);
     }
 
-    [Parameter] public new Func<TResult, Task<DialogResult?>> SubmitClick { get; set; }
+    [Parameter] public new Func<TResult, Task> SubmitClick { get; set; }
 
     [Parameter] public EventCallback CancelClick { get; set; }
 

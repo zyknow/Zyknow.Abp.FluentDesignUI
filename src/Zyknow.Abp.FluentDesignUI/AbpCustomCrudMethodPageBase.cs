@@ -139,15 +139,15 @@ public abstract class AbpCustomCrudMethodPageBase<
     where TCreateViewModel : class, new()
     where TUpdateViewModel : class, new()
 {
-    [Inject] protected TAppService AppService { get; set; }
+    [Inject] protected TAppService AppService { get; set; } = default!;
 
     protected TCreateViewModel NewEntity = new();
-    protected TKey EditingEntityId;
+    protected TKey EditingEntityId = default!;
     protected TUpdateViewModel EditingEntity = new();
 
-    protected string CreatePolicyName { get; set; }
-    protected string UpdatePolicyName { get; set; }
-    protected string DeletePolicyName { get; set; }
+    protected string? CreatePolicyName { get; set; }
+    protected string? UpdatePolicyName { get; set; }
+    protected string? DeletePolicyName { get; set; }
 
     public bool HasCreatePermission { get; set; }
     public bool HasUpdatePermission { get; set; }
@@ -216,23 +216,29 @@ public abstract class AbpCustomCrudMethodPageBase<
     {
         // TODO: way nee this delay?
         await Task.Delay(100);
-        
+
         await GetEntitiesAsync();
         await Message.Success(L["SuccessfullyDeleted"]);
     }
 
-    protected abstract Task ShowCreateDialogAsync();
+    protected virtual Task ToCreateActionAsync()
+    {
+        return Task.CompletedTask;
+    }
 
-    protected abstract Task ShowEditDialogAsync();
+    protected virtual Task ToEditActionAsync()
+    {
+        return Task.CompletedTask;
+    }
 
-    protected virtual async Task OpenCreateDialogAsync()
+    protected virtual async Task ToCreateAsync()
     {
         try
         {
             await CheckCreatePolicyAsync();
 
             NewEntity = new TCreateViewModel();
-            await ShowCreateDialogAsync();
+            await ToCreateActionAsync();
         }
         catch (Exception ex)
         {
@@ -240,7 +246,7 @@ public abstract class AbpCustomCrudMethodPageBase<
         }
     }
 
-    protected virtual async Task OpenEditDialogAsync(TListViewModel entity)
+    protected virtual async Task ToEditAsync(TListViewModel entity)
     {
         try
         {
@@ -250,12 +256,20 @@ public abstract class AbpCustomCrudMethodPageBase<
 
             EditingEntityId = entity.Id;
             EditingEntity = MapToEditingEntity(entityDto);
-            await ShowEditDialogAsync();
+            await ToEditActionAsync();
         }
         catch (Exception ex)
         {
             await HandleErrorAsync(ex);
         }
+    }
+
+    protected virtual Task<IDialogReference> ShowDialogAsync(RenderFragment render,
+        Action<DialogParameters>? paraAction = null)
+    {
+        var dialogPara = new DialogParameters();
+        paraAction?.Invoke(dialogPara);
+        return DialogService.ShowDialogAsync(render, dialogPara);
     }
 
     protected virtual TUpdateViewModel MapToEditingEntity(TGetOutputDto entityDto)
@@ -283,23 +297,15 @@ public abstract class AbpCustomCrudMethodPageBase<
         return ObjectMapper.Map<TUpdateViewModel, TUpdateInput>(updateViewModel);
     }
 
-    protected virtual async Task<DialogResult?> CreateEntityAsync()
+    protected virtual async Task CreateEntityAsync()
     {
-        try
-        {
-            var createInput = MapToCreateInput(NewEntity);
-            await AppServiceCreateAsync(createInput);
-            await OnCreatedEntityAsync();
-            return DialogResult.Ok(NewEntity);
-        }
-        catch (Exception ex)
-        {
-            await HandleErrorAsync(ex);
-            return null;
-        }
+        var createInput = MapToCreateInput(NewEntity);
+        await OnCreatingEntityAsync();
+        await AppServiceCreateAsync(createInput);
+        await OnCreatedEntityAsync();
     }
 
-    protected virtual Task OnCreatingEntityAsync(FluentEditForm form)
+    protected virtual Task OnCreatingEntityAsync()
     {
         return Task.CompletedTask;
     }
@@ -310,24 +316,14 @@ public abstract class AbpCustomCrudMethodPageBase<
         await GetEntitiesAsync();
     }
 
-    protected virtual async Task<DialogResult?> UpdateEntityAsync()
+    protected virtual async Task UpdateEntityAsync()
     {
-        try
-        {
-            await OnUpdatingEntityAsync();
+        await CheckUpdatePolicyAsync();
+        await OnUpdatingEntityAsync();
+        var updateInput = MapToUpdateInput(EditingEntity);
+        await AppServiceUpdateAsync(EditingEntityId, updateInput);
 
-            await CheckUpdatePolicyAsync();
-            var updateInput = MapToUpdateInput(EditingEntity);
-            await AppServiceUpdateAsync(EditingEntityId, updateInput);
-
-            await OnUpdatedEntityAsync();
-            return DialogResult.Ok(EditingEntity);
-        }
-        catch (Exception ex)
-        {
-            await HandleErrorAsync(ex);
-            return null;
-        }
+        await OnUpdatedEntityAsync();
     }
 
     protected virtual Task OnUpdatingEntityAsync()
@@ -385,14 +381,5 @@ public abstract class AbpCustomCrudMethodPageBase<
     protected virtual async Task CheckDeletePolicyAsync()
     {
         await CheckPolicyAsync(DeletePolicyName);
-    }
-
-
-    protected virtual Task<IDialogReference> ShowDialogAsync(RenderFragment render,
-        Action<DialogParameters> paraAction = null)
-    {
-        var dialogPara = new DialogParameters();
-        paraAction?.Invoke(dialogPara);
-        return DialogService.ShowDialogAsync(render, dialogPara);
     }
 }

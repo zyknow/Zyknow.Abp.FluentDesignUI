@@ -67,24 +67,24 @@
         }
     }
 
-    protected override Task OpenCreateDialogAsync()
+    protected override Task ToCreateAsync()
     {
         NewUserRoles = Roles.Select(x => new AssignedRoleViewModel
         {
             Name = x.Name,
             IsAssigned = x.IsDefault
         }).ToArray();
-        return base.OpenCreateDialogAsync();
+        return base.ToCreateAsync();
     }
 
-    protected override Task OnCreatingEntityAsync(FluentEditForm form)
+    protected override Task OnCreatingEntityAsync()
     {
         // apply roles before saving
         NewEntity.RoleNames = NewUserRoles.Where(x => x.IsAssigned).Select(x => x.Name).ToArray();
-        return base.OnCreatingEntityAsync(form);
+        return base.OnCreatingEntityAsync();
     }
 
-    protected override async Task OpenEditDialogAsync(IdentityUserDto entity)
+    protected override async Task ToEditAsync(IdentityUserDto entity)
     {
         try
         {
@@ -96,7 +96,7 @@
                 IsAssigned = userRoleNames.Contains(x.Name)
             }).ToArray();
 
-            await base.OpenEditDialogAsync(entity);
+            await base.ToEditAsync(entity);
         }
         catch (Exception ex)
         {
@@ -134,7 +134,7 @@
     protected override ValueTask SetToolbarItemsAsync()
     {
         Toolbar.AddButton(L["NewUser"],
-            OpenCreateDialogAsync,
+            ToCreateAsync,
             new Size20.Add(),
             requiredPolicyName: CreatePolicyName);
 
@@ -150,7 +150,7 @@
                 {
                     Text = L["Edit"],
                     Visible = (data) => HasUpdatePermission,
-                    Clicked = async (data) => { await OpenEditDialogAsync(data.As<IdentityUserDto>()); }
+                    Clicked = async (data) => { await ToEditAsync(data.As<IdentityUserDto>()); }
                 },
                 new()
                 {
@@ -277,11 +277,11 @@
     protected virtual Task ShowPermissionDialogAsync(PermissionManagementDialogInput input)
         => ShowDialogAsync(@<PermissionManagementDialog Content="@input"/>, opt => { opt.Width = "700px"; });
 
-    protected override Task ShowCreateDialogAsync()
+    protected override Task ToCreateActionAsync()
         => ShowDialogAsync(@<IdentityUserCreateDialog AssignRoles="NewUserRoles" Content="@NewEntity"
                                                       SubmitClick="CreateEntityAsync"/>);
 
-    protected override Task ShowEditDialogAsync()
+    protected override Task ToEditActionAsync()
         => ShowDialogAsync(@<IdentityUserEditDialog AssignRoles="EditUserRoles" Content="@EditingEntity"
                                                     SubmitClick="UpdateEntityAsync"/>);
 
