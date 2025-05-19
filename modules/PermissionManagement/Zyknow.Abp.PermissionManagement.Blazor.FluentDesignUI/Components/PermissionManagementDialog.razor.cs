@@ -44,29 +44,19 @@ public partial class PermissionManagementDialog
         await ShowAsync(Content.ProviderName, Content.ProviderKey, Content.EntityDisplayName);
     }
 
-    private async Task<DialogResult> SaveAsync()
+    private async Task SaveAsync()
     {
-        try
+        var updateDto = new UpdatePermissionsDto
         {
-            var updateDto = new UpdatePermissionsDto
-            {
-                Permissions = _groups
-                    .SelectMany(g => g.Permissions)
-                    .Select(p => new UpdatePermissionDto { IsGranted = p.IsGranted, Name = p.Name })
-                    .ToArray()
-            };
+            Permissions = _groups
+                .SelectMany(g => g.Permissions)
+                .Select(p => new UpdatePermissionDto { IsGranted = p.IsGranted, Name = p.Name })
+                .ToArray()
+        };
 
-            await PermissionAppService.UpdateAsync(Content.ProviderName, Content.ProviderKey, updateDto);
+        await PermissionAppService.UpdateAsync(Content.ProviderName, Content.ProviderKey, updateDto);
 
-            await CurrentApplicationConfigurationCacheResetService.ResetAsync();
-
-            return DialogResult.Ok("");
-        }
-        catch (Exception ex)
-        {
-            await HandleErrorAsync(ex);
-            return DialogResult.Cancel();
-        }
+        await CurrentApplicationConfigurationCacheResetService.ResetAsync();
     }
 
     protected virtual async Task CancelAsync()

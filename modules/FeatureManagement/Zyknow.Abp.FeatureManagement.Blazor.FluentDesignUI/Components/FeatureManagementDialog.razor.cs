@@ -96,32 +96,21 @@ public partial class FeatureManagementDialog
     }
 
 
-    protected virtual async Task<DialogResult> SaveAsync()
+    protected virtual async Task SaveAsync()
     {
-        try
+        var features = new UpdateFeaturesDto
         {
-            var features = new UpdateFeaturesDto
+            Features = Groups.SelectMany(g => g.Features).Select(f => new UpdateFeatureDto
             {
-                Features = Groups.SelectMany(g => g.Features).Select(f => new UpdateFeatureDto
-                {
-                    Name = f.Name,
-                    Value = f.ValueType is ToggleStringValueType ? ToggleValues[f.Name].ToString() :
-                        f.ValueType is SelectionStringValueType ? SelectionStringValues[f.Name] : f.Value
-                }).ToList()
-            };
+                Name = f.Name,
+                Value = f.ValueType is ToggleStringValueType ? ToggleValues[f.Name].ToString() :
+                    f.ValueType is SelectionStringValueType ? SelectionStringValues[f.Name] : f.Value
+            }).ToList()
+        };
 
-            await FeatureAppService.UpdateAsync(Content.ProviderName, Content.ProviderKey, features);
+        await FeatureAppService.UpdateAsync(Content.ProviderName, Content.ProviderKey, features);
 
-            await CurrentApplicationConfigurationCacheResetService.ResetAsync();
-
-            return DialogResult.Ok("");
-
-        }
-        catch (Exception ex)
-        {
-            await HandleErrorAsync(ex);
-            return DialogResult.Ok("");
-        }
+        await CurrentApplicationConfigurationCacheResetService.ResetAsync();
     }
 
     protected virtual string GetNormalizedGroupName(string name)
