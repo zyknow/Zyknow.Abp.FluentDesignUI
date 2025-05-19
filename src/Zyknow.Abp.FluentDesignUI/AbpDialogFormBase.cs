@@ -10,7 +10,7 @@ public class AbpDialogOnlyFormBase<TInput> : AbpDialogOnlyFormBase<TInput, Defau
 {
 }
 
-public class AbpDialogOnlyFormBase<TInput, TResource> : AbpComponentBase, IDialogContentComponent<TInput>
+public class AbpDialogOnlyFormBase<TInput, TResource> : FluentAbpComponentBase<TResource>, IDialogContentComponent<TInput>
 {
     public AbpDialogOnlyFormBase()
     {

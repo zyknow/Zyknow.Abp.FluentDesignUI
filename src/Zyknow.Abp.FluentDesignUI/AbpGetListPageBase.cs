@@ -19,14 +19,10 @@ public abstract class
 {
 }
 
-public abstract class AbpGetListPageBase<TGetListOutputDto, TKey, TGetListInput, TListViewModel> : AbpComponentBase
+public abstract class AbpGetListPageBase<TGetListOutputDto, TKey, TGetListInput, TListViewModel> : FluentAbpComponentBase
     where TGetListInput : new()
 {
     [Inject] protected IStringLocalizer<AbpUiResource> UiLocalizer { get; set; } = null!;
-
-    [Inject] protected IAbpEnumLocalizer AbpEnumLocalizer { get; set; } = null!;
-
-    [Inject] protected IDialogService DialogService { get; set; } = null!;
 
     protected bool Loading = false;
     protected TGetListInput GetListInput = new();
