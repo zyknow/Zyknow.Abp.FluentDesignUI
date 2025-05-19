@@ -93,8 +93,6 @@
 </AbpFluentForm>
 
 @code {
-    [Inject] protected IDialogService DialogService { get; set; }
-    [Inject] protected AbpBlazorMessageLocalizerHelper<AccountResource> LH { get; set; }
     [Inject] protected ISettingProvider SettingProvider { get; set; }
     [Inject] protected IAuthenticationSchemeProvider SchemeProvider { get; set; }
     [Inject] protected IOptions<AbpAccountOptions> AccountOptions { get; set; }

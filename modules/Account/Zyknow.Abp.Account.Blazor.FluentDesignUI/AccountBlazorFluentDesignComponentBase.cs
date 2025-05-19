@@ -5,19 +5,13 @@ using Volo.Abp.AspNetCore.Components.Messages;
 using Volo.Abp.AspNetCore.Components.Notifications;
 using Volo.Abp.AspNetCore.ExceptionHandling;
 using Volo.Abp.ExceptionHandling;
+using Zyknow.Abp.FluentDesignUI;
 
 namespace Zyknow.Abp.Account.Blazor.FluentDesignUI;
 
-public abstract class AccountBlazorFluentDesignComponentBase : AbpComponentBase
+public abstract class AccountBlazorFluentDesignComponentBase : FluentAbpComponentBase<AccountResource>
 {
-    protected AccountBlazorFluentDesignComponentBase()
-    {
-        LocalizationResource = typeof(AccountResource);
-    }
-
     [Inject] protected IAccountAppService AccountAppService { get; set; }
-
-    [Inject] protected NavigationManager NavigationManager { get; set; }
 
     [Inject] protected IUiMessageService UiMessageService { get; set; }
 

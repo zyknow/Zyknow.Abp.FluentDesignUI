@@ -18,7 +18,6 @@
 </FluentStack>
 
 @code {
-    [Inject] protected IDialogService DialogService { get; set; }
     [Inject] protected IStringLocalizer<AbpMultiTenancyResource> TL { get; set; }
     
     protected virtual async Task ShowSwitchTenancyDialogAsync()

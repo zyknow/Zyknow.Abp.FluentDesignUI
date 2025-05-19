@@ -101,7 +101,6 @@
     [Inject] protected IOptions<IdentityOptions> IdentityOptions { get; set; }
     [Inject] protected IOptions<AbpMultiTenancyOptions> MultiTenancyOptions { get; set; }
     [Inject] protected ITenantResolveResultAccessor TenantResolveResultAccessor { get; set; }
-    [Inject] protected AbpBlazorMessageLocalizerHelper<AccountResource> LH { get; set; }
 
 
     [SupplyParameterFromQuery] protected string? ReturnUrl { get; set; }
