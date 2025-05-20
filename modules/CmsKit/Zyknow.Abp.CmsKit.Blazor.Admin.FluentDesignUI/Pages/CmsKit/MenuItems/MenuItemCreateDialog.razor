@@ -57,7 +57,6 @@
         <FluentValidationMessage For="@(() => Content.DisplayName)"></FluentValidationMessage>
 
         <FluentAutocomplete
-            Required
             Name="RequiredPermissionName"
             AutoComplete="off"
             Field="@(new FieldIdentifier(Content, nameof(Content.RequiredPermissionName)))"

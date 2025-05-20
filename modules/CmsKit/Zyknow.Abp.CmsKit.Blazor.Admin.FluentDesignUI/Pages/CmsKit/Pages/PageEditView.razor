@@ -16,10 +16,15 @@
                    SubmitValidClick="@UpdateEntityAsync"
                    Localize="@LH.Localize">
 
-        <FluentTextField @bind-Value="UpdateEntity.Title" Label="@L["Title"]"/>
-        <FluentTextField @bind-Value="UpdateEntity.Slug" Label="@L["Slug"]"/>
-        <FluentSelect TOption="string" Items="@LayoutConstants.GetLayoutsSelectList()"
+        <FluentTextField Required @bind-Value="UpdateEntity.Title" Label="@L["Title"]"/>
+        <FluentValidationMessage For="@(() => UpdateEntity.Title)"></FluentValidationMessage>
+
+        <FluentTextField Required @bind-Value="UpdateEntity.Slug" Label="@L["Slug"]"/>
+        <FluentValidationMessage For="@(() => UpdateEntity.Slug)"></FluentValidationMessage>
+
+        <FluentSelect Required TOption="string" Items="@LayoutConstants.GetLayoutsSelectList()"
                       @bind-Value="UpdateEntity.LayoutName" Label="@L["SelectLayout"]"/>
+        <FluentValidationMessage For="@(() => UpdateEntity.LayoutName)"></FluentValidationMessage>
 
         <FluentTabs Style="height: 100%">
             <FluentTab Label="@L["Content"]">

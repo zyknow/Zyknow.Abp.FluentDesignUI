@@ -51,14 +51,14 @@
                         OptionText="@(dto => $@"{dto.Name}")"
                         @bind-SelectedOption="SelectedBlog"/>
 
-                    <FluentTextField Style="width: 100%" Label="@L["BlogPostTitle"]" Value="@CreateEntity.Title"
+                    <FluentTextField Required Style="width: 100%" Label="@L["Title"]" Value="@CreateEntity.Title"
                                      ValueChanged="@SetTitle"/>
                     <FluentValidationMessage For="@(() => CreateEntity.Title)"/>
 
-                    <FluentTextField Style="width: 100%" Label="@L["BlogPostSlug"]" @bind-Value="@CreateEntity.Slug"/>
+                    <FluentTextField Required Style="width: 100%" Label="@L["Slug"]" @bind-Value="@CreateEntity.Slug"/>
                     <FluentValidationMessage For="@(() => CreateEntity.Slug)"/>
 
-                    <FluentTextField Style="width: 100%" Label="@L["BlogPostShortDescription"]"
+                    <FluentTextField Style="width: 100%" Label="@L["ShortDescription"]"
                                      @bind-Value="@CreateEntity.ShortDescription"/>
                     <FluentValidationMessage For="@(() => CreateEntity.ShortDescription)"/>
 

@@ -10,7 +10,8 @@
     SubmitValidClick="SubmitClick"
     CancelClick="CancelClick"
     Localize="@LH.Localize">
-    <FluentTextField @bind-Value="Content.Name" Label="@L["Name"]"/>
+    <FluentTextField Required @bind-Value="Content.Name" Label="@L["Name"]"/>
+    <FluentValidationMessage For="@(() => Content.Name)"></FluentValidationMessage>
 
 </AbpFluentForm>
 

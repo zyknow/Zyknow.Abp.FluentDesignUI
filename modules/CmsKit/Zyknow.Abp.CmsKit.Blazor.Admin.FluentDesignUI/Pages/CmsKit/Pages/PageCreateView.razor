@@ -15,10 +15,15 @@
                    SubmitValidClick="@CreateEntityAsync"
                    Localize="@LH.Localize">
 
-        <FluentTextField @bind-Value="CreateEntity.Title" Label="@L["Title"]"/>
-        <FluentTextField @bind-Value="CreateEntity.Slug" Label="@L["Slug"]"/>
-        <FluentSelect TOption="string" Items="@LayoutConstants.GetLayoutsSelectList()"
+        <FluentTextField Required @bind-Value="CreateEntity.Title" Label="@L["Title"]"/>
+        <FluentValidationMessage For="@(() => CreateEntity.Title)"></FluentValidationMessage>
+
+        <FluentTextField Required @bind-Value="CreateEntity.Slug" Label="@L["Slug"]"/>
+        <FluentValidationMessage For="@(() => CreateEntity.Slug)"></FluentValidationMessage>
+
+        <FluentSelect Required TOption="string" Items="@LayoutConstants.GetLayoutsSelectList()"
                       @bind-Value="CreateEntity.LayoutName" Label="@L["SelectLayout"]"/>
+        <FluentValidationMessage For="@(() => CreateEntity.LayoutName)"></FluentValidationMessage>
 
         <FluentTabs Style="height: 100%">
             <FluentTab Label="@L["Content"]">
@@ -44,6 +49,7 @@
 
     </AbpFluentForm>
 </FluentAdaptiveCard>
+
 @code {
 
     [Inject] protected TAppService AppService { get; set; }

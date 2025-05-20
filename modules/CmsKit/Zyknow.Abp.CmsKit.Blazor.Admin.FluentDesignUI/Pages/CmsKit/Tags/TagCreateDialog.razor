@@ -11,10 +11,11 @@
     CancelClick="CancelClick"
     Localize="@LH.Localize">
 
-    <FluentSelect TOption="TagDefinitionDto" Items="@_definitions" OptionValue="@(x => x.EntityType)"
+    <FluentSelect Required TOption="TagDefinitionDto" Items="@_definitions" OptionValue="@(x => x.EntityType)"
                   @bind-Value="Content.EntityType" Label="@L["EntityType"]" OptionText="@(x => x.DisplayName)"/>
-
-    <FluentTextField @bind-Value="Content.Name" Label="@L["Name"]"/>
+    <FluentValidationMessage For="@(() => Content.EntityType)"></FluentValidationMessage>
+    <FluentTextField Required @bind-Value="Content.Name" Label="@L["Name"]"/>
+    <FluentValidationMessage For="@(() => Content.Name)"></FluentValidationMessage>
 
 </AbpFluentForm>
 
@@ -22,7 +23,7 @@
     private List<TagDefinitionDto> _definitions = new();
 
     [Inject] protected ITagAdminAppService AppService { get; set; } = null!;
-    public string HeaderText => L["CreateTag"];
+    public string HeaderText => L["NewTag"];
 
     protected override async Task OnInitializedAsync()
     {

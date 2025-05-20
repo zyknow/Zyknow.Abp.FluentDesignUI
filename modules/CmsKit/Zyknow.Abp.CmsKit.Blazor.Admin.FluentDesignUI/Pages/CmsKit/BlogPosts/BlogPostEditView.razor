@@ -45,13 +45,13 @@
                     }
 
 
-                    <FluentTextField Style="width: 100%" Label="@L["BlogPostTitle"]" @bind-Value="@UpdateEntity.Title"/>
+                    <FluentTextField Required Style="width: 100%" Label="@L["Title"]" @bind-Value="@UpdateEntity.Title"/>
                     <FluentValidationMessage For="@(() => UpdateEntity.Title)"/>
 
-                    <FluentTextField Style="width: 100%" Label="@L["BlogPostSlug"]" @bind-Value="@UpdateEntity.Slug"/>
+                    <FluentTextField Required Style="width: 100%" Label="@L["Slug"]" @bind-Value="@UpdateEntity.Slug"/>
                     <FluentValidationMessage For="@(() => UpdateEntity.Slug)"/>
 
-                    <FluentTextField Style="width: 100%" Label="@L["BlogPostShortDescription"]"
+                    <FluentTextField Style="width: 100%" Label="@L["ShortDescription"]"
                                      @bind-Value="@UpdateEntity.ShortDescription"/>
                     <FluentValidationMessage For="@(() => UpdateEntity.ShortDescription)"/>
 
