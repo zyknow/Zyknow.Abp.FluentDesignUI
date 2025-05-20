@@ -17,16 +17,22 @@
 
     <FluentTreeView Items="@TreeEntities">
         <ItemTemplate>
-            <FluentStack VerticalAlignment="VerticalAlignment.Center"
-                         HorizontalAlignment="HorizontalAlignment.SpaceBetween">
-                <FluentStack VerticalAlignment="VerticalAlignment.Center">
-                    <FluentIcon Value="@(new Size20.DocumentOnePage())"></FluentIcon>
-                    <FluentLabel>@context.Text</FluentLabel>
+            @{
+                var data = (context as TreeViewItem<TDto>)!.Data;
+                <FluentStack VerticalAlignment="VerticalAlignment.Center"
+                             HorizontalAlignment="HorizontalAlignment.SpaceBetween">
+                    <FluentStack VerticalAlignment="VerticalAlignment.Center">
+                        <FluentIcon Value="@(new Size20.DocumentOnePage())"></FluentIcon>
+                        <FluentLabel>@context.Text</FluentLabel>
+                        <FluentIcon Value="@(_liveIcons[data.IsActive])"></FluentIcon>
+
+                    </FluentStack>
+                    <AbpEntityActions TItem="TDto"
+                                      Context="@data"
+                                      Actions="Actions"></AbpEntityActions>
                 </FluentStack>
-                <AbpEntityActions TItem="TDto"
-                                  Context="@Entities.First(x => x.Id == Guid.Parse(context.Id))"
-                                  Actions="Actions"></AbpEntityActions>
-            </FluentStack>
+            }
+
         </ItemTemplate>
     </FluentTreeView>
 
@@ -50,6 +56,13 @@
         UpdatePolicyName = CmsKitAdminPermissions.Menus.Update;
         DeletePolicyName = CmsKitAdminPermissions.Menus.Delete;
     }
+
+    Dictionary<bool, Icon> _liveIcons = new()
+    {
+        { true, new Size20.Live() },
+        { false, new Size20.LiveOff() }
+    };
+
 
     protected override async Task OnInitializedAsync()
     {

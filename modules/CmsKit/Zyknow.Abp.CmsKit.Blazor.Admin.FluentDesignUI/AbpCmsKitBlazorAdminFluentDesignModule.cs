@@ -13,7 +13,8 @@ namespace Zyknow.Abp.CmsKit.Blazor.Admin.FluentDesignUI;
 [DependsOn(
     typeof(CmsKitAdminApplicationContractsModule),
     typeof(AbpAutoMapperModule),
-    typeof(AbpAspNetCoreComponentsWebFluentDesignThemeModule)
+    typeof(AbpAspNetCoreComponentsWebFluentDesignThemeModule),
+    typeof(AbpGroupComponentAbstractFluentDesignModule)
 )]
 public class AbpCmsKitBlazorAdminFluentDesignModule : AbpModule
 {

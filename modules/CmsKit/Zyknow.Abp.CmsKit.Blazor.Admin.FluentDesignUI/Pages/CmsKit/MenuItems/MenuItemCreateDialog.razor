@@ -1,4 +1,5 @@
 ﻿@using Localization.Resources.AbpUi
+@using Volo.CmsKit.Admin.Menus
 @using Volo.CmsKit.Admin.Pages
 @using TInput = Volo.CmsKit.Admin.Menus.MenuItemCreateInput
 @using TResource = Volo.CmsKit.Localization.CmsKitResource
@@ -12,7 +13,7 @@
     CancelClick="CancelClick"
     Localize="@LH.Localize">
 
-    <FluentTabs @bind-ActiveTabId="tabId">
+    <FluentTabs @bind-ActiveTabId="_tabId">
         <FluentTab Id="Url" Label="@L["Url"]">
         </FluentTab>
         <FluentTab Id="Page" Label="@L["Page"]">
@@ -21,7 +22,7 @@
 
     <FluentStack Orientation="Orientation.Vertical" VerticalGap="0" Style="margin-top: 20px">
 
-        @if (tabId == "Page")
+        @if (_tabId == "Page")
         {
             <FluentAutocomplete
                 Required
@@ -30,10 +31,10 @@
                 Field="@(new FieldIdentifier(Content, nameof(Content.PageId)))"
                 Autofocus="true"
                 Label="@L["PageId"]"
-                TOption="PageDto"
+                TOption="PageLookupDto"
                 ImmediateDelay="200"
-                Width="300px"
-                OnOptionsSearch="@OnOptionsSearch"
+                OptionStyle="min-width: 400px;"
+                OnOptionsSearch="@OnPageSearch"
                 Multiple="false"
                 OptionText="@(dto => $@"{dto.Title}")"
                 ValueText="@Content.PageId?.ToString()"
@@ -54,6 +55,23 @@
         <FluentTextField Required="true" Label="@L["DisplayName"]"
                          @bind-Value="Content.DisplayName"></FluentTextField>
         <FluentValidationMessage For="@(() => Content.DisplayName)"></FluentValidationMessage>
+
+        <FluentAutocomplete
+            Required
+            Name="RequiredPermissionName"
+            AutoComplete="off"
+            Field="@(new FieldIdentifier(Content, nameof(Content.RequiredPermissionName)))"
+            Autofocus="true"
+            Label="@L["RequiredPermissionName"]"
+            TOption="PermissionLookupDto"
+            ImmediateDelay="200"
+            OptionStyle="min-width: 400px;"
+            OnOptionsSearch="@OnPermissionsSearch"
+            Multiple="false"
+            OptionText="@(dto => $@"{dto.Name}")"
+            @bind-ValueText="@Content.RequiredPermissionName"
+        />
+
 
 
         <FluentTextField Label="@L["Icon"]"
@@ -95,9 +113,11 @@
 
     [Inject] protected IPageAdminAppService PageAdminAppService { get; set; }
 
-    PageDto? _selectedPage;
+    [Inject] protected IMenuItemAdminAppService MenuItemAdminAppService { get; set; }
 
-    PageDto? SelectedPage
+    PageLookupDto? _selectedPage;
+
+    PageLookupDto? SelectedPage
     {
         get => _selectedPage;
         set
@@ -107,17 +127,27 @@
         }
     }
 
-    string tabId = "Url";
+    string _tabId = "Url";
 
     string HeaderText => $@"{UL["Create"]}{L["Menus"]} {(!ParentDisplayName.IsNullOrWhiteSpace() ? $@"- {L["ParentNode"]} : {ParentDisplayName}" : "")}";
 
-    private async Task OnOptionsSearch(OptionsSearchEventArgs<PageDto> arg)
+    private async Task OnPageSearch(OptionsSearchEventArgs<PageLookupDto> arg)
     {
         arg.Text = arg.Text.Trim();
-        var result = await PageAdminAppService.GetListAsync(new GetPagesInputDto()
+        var result = await MenuItemAdminAppService.GetPageLookupAsync(new()
         {
             Filter = arg.Text,
             MaxResultCount = 100
+        });
+        arg.Items = result.Items;
+    }
+
+    private async Task OnPermissionsSearch(OptionsSearchEventArgs<PermissionLookupDto> arg)
+    {
+        arg.Text = arg.Text.Trim();
+        var result = await MenuItemAdminAppService.GetPermissionLookupAsync(new()
+        {
+            Filter = arg.Text
         });
         arg.Items = result.Items;
     }

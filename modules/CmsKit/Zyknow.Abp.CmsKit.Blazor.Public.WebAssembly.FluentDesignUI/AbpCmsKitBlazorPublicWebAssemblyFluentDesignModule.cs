@@ -1,6 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.AutoMapper;
+using Volo.Abp.GlobalFeatures;
 using Volo.Abp.Modularity;
+using Volo.CmsKit.GlobalFeatures;
 using Volo.CmsKit.Public;
 using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme;
 using Zyknow.Abp.AspnetCore.Components.WebAssembly.FluentDesignTheme;
@@ -15,4 +17,5 @@ namespace Zyknow.Abp.CmsKit.Blazor.Public.WebAssembly.FluentDesignUI;
 )]
 public class AbpCmsKitBlazorPublicWebAssemblyFluentDesignModule : AbpModule
 {
+
 } 
