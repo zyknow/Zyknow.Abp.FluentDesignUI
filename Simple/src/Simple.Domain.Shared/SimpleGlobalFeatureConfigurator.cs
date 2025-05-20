@@ -1,4 +1,5 @@
-﻿using Volo.Abp.Threading;
+﻿using Volo.Abp.GlobalFeatures;
+using Volo.Abp.Threading;
 
 namespace Simple;
 
@@ -8,12 +9,6 @@ public static class SimpleGlobalFeatureConfigurator
 
     public static void Configure()
     {
-        OneTimeRunner.Run(() =>
-        {
-                /* You can configure (enable/disable) global features of the used modules here.
-                 * Please refer to the documentation to learn more about the Global Features System:
-                 * https://docs.abp.io/en/abp/latest/Global-Features
-                 */
-            });
+        OneTimeRunner.Run(() => { GlobalFeatureManager.Instance.Modules.CmsKit().EnableAll(); });
     }
 }
