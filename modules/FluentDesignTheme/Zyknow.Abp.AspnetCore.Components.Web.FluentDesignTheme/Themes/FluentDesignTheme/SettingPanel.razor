@@ -112,7 +112,7 @@
         await CookieService.SetAsync("RenderMode", renderMode, cookieOptions);
         await CookieService.SetAsync("Prerender", prerender.ToString(), cookieOptions);
         // TODO: way need this delay?
-        await Task.Delay(50);
+        await Task.Delay(200);
         NavigationManager.Refresh(forceReload: true);
     }
 
