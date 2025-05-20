@@ -10,7 +10,7 @@
             <CascadingValue Value="routeData">
                 <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(DefaultLayout)">
                     <NotAuthorized>
-                        @if (!context.User.Identity.IsAuthenticated)
+                        @if (!context.User.Identity!.IsAuthenticated)
                         {
                             <RedirectToLogin/>
                         }

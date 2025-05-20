@@ -46,7 +46,7 @@
             NavigationManager.LocationChanged += NavigationManagerOnLocationChanged;
         }
 
-        NavigationManagerOnLocationChanged(null, null);
+        NavigationManagerOnLocationChanged(null, null!);
     }
 
     private void NavigationManagerOnLocationChanged(object? sender, LocationChangedEventArgs e)
@@ -58,7 +58,7 @@
 
         if (NavigationManager.Uri.Replace(NavigationManager.BaseUri, "").StartsWith(url))
         {
-            ExpandParentNavLink(Menu.GetParent());
+            _ = ExpandParentNavLink(Menu.GetParent());
         }
     }
 

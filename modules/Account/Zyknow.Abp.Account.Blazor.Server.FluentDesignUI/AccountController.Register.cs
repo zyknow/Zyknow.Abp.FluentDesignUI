@@ -9,9 +9,9 @@ public partial class AccountController
         string? externalLoginAuthSchema = null)
     {
         var user = await userManager.FindByIdAsync(userId.ToString());
-        await signInManager.SignInAsync(user, isPersistent: true, externalLoginAuthSchema);
+        await signInManager.SignInAsync(user!, isPersistent: true, externalLoginAuthSchema);
         // Clear the dynamic claims cache.
-        await identityDynamicClaimsPrincipalContributorCache.ClearAsync(user.Id, user.TenantId);
+        await identityDynamicClaimsPrincipalContributorCache.ClearAsync(user!.Id, user!.TenantId);
         return Redirect(returnUrl ?? "~/");
     }
     // [HttpGet("api/Account/RegisterExternalUser")]

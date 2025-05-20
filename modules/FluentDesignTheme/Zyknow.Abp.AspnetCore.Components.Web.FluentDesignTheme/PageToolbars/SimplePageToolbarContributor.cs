@@ -5,9 +5,9 @@ namespace Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.PageToolbars;
 
 public class SimplePageToolbarContributor(
     Type componentType,
-    Dictionary<string, object> arguments = null,
+    Dictionary<string, object>? arguments = null,
     int order = 0,
-    string requiredPolicyName = null)
+    string? requiredPolicyName = null)
     : IPageToolbarContributor
 {
     public Type ComponentType { get; } = componentType;
@@ -16,7 +16,7 @@ public class SimplePageToolbarContributor(
 
     public int Order { get; } = order;
 
-    public string RequiredPolicyName { get; } = requiredPolicyName;
+    public string? RequiredPolicyName { get; } = requiredPolicyName;
 
     public async Task ContributeAsync(PageToolbarContributionContext context)
     {

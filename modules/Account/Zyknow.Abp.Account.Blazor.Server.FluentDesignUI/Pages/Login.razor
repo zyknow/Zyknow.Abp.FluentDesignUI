@@ -20,7 +20,7 @@
 @using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Themes.FluentDesignTheme
 @inherits Zyknow.Abp.Account.Blazor.FluentDesignUI.AccountBlazorFluentDesignComponentBase
 
-<AbpFluentForm @ref="FormRef" Content="@Input" Localize="@LH.Localize" SubmitClick="LoginAsync">
+<AbpFluentForm @ref="_formRef" Content="@Input" Localize="@LH.Localize" SubmitClick="LoginAsync">
     <Header>
         <FluentStack HorizontalAlignment="HorizontalAlignment.SpaceBetween"
                      VerticalAlignment="VerticalAlignment.Center">
@@ -64,7 +64,7 @@
 
     <Footer>
         <FluentButton Disabled="@Loading" Style="height: 35px" Appearance="Appearance.Accent"
-                      OnClick="@FormRef.OnSubmitBtnClickAsync">@L["Login"]</FluentButton>
+                      OnClick="@_formRef.OnSubmitBtnClickAsync">@L["Login"]</FluentButton>
 
         @if (VisibleExternalProviders.Any())
         {
@@ -107,7 +107,7 @@
     [Inject] protected ITenantResolveResultAccessor TenantResolveResultAccessor { get; set; }
 
 
-    AbpFluentForm<LoginInput> FormRef;
+    AbpFluentForm<LoginInput> _formRef;
 
     protected virtual LoginInput Input { get; set; } = new();
 
@@ -142,7 +142,7 @@
                 [nameof(ReturnUrl)] = ReturnUrl,
                 [nameof(ReturnUrlHash)] = ReturnUrlHash,
                 // [nameof(__tenant)] = __tenant
-            });
+            }!);
 
         RegisterUrl = NavigationManager.GetUriWithQueryParameters("/Account/Register",
             new Dictionary<string, object>
@@ -150,7 +150,7 @@
                 [nameof(ReturnUrl)] = ReturnUrl,
                 [nameof(ReturnUrlHash)] = ReturnUrlHash,
                 // [nameof(__tenant)] = __tenant
-            });
+            }!);
 
         IsSelfRegistrationEnabled = await SettingProvider.IsTrueAsync(AccountSettingNames.IsSelfRegistrationEnabled);
         ExternalProviders = await GetExternalProviders();
@@ -218,7 +218,7 @@
                 new Dictionary<string, object>
                 {
                     ["ticket"] = ticket
-                });
+                }!);
             NavigationManager.NavigateTo(redirectUrl, forceLoad: true);
         }
         catch (Exception e)
@@ -235,9 +235,9 @@
             new Dictionary<string, object>
             {
                 ["provider"] = provider,
-                [nameof(ReturnUrl)] = Uri.EscapeDataString(ReturnUrl),
-                [nameof(ReturnUrlHash)] = Uri.EscapeDataString(ReturnUrlHash)
-            });
+                [nameof(ReturnUrl)] = Uri.EscapeDataString(ReturnUrl!),
+                [nameof(ReturnUrlHash)] = Uri.EscapeDataString(ReturnUrlHash!)
+            }!);
         NavigationManager.NavigateTo(redirectUrl, forceLoad: true);
         Loading = false;
     }

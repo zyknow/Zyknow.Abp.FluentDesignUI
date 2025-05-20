@@ -24,7 +24,9 @@ public abstract class AccountBlazorFluentDesignComponentBase : FluentAbpComponen
     {
         if (exception is ILocalizeErrorMessage || exception is IHasErrorCode)
         {
+#pragma warning disable CS0618 // 类型或成员已过时
             return ExceptionToErrorInfoConverter.Convert(exception, false).Message;
+#pragma warning restore CS0618 // 类型或成员已过时
         }
 
         return exception.Message;

@@ -3,9 +3,10 @@
 @inherits FluentInputBase<string?>
 @inject ILanguageProvider LanguageProvider
 @inject IThemeStore ThemeStore
+@* ReSharper disable once CSharpWarnings::CS8619 *@
 @if (!Conf.IsNullOrEmpty())
 {
-    <TinyMCE.Blazor.Editor Id="@configKey.ToString()" @key="@configKey" Field="() => Value" Value="@Value"
+    <TinyMCE.Blazor.Editor Id="@_configKey.ToString()" @key="@_configKey" Field="() => Value" Value="@Value"
                            ValueChanged="@ValueChanged" LicenseKey="gpl"
                            ScriptSrc="/lib/tinymce/tinymce.min.js"
                            Conf="@Conf"
@@ -21,8 +22,7 @@
 @code {
     [Inject] protected IJSRuntime JsRuntime { get; set; } = default!;
 
-    Guid? configKey = Guid.NewGuid();
-    TinyMCE.Blazor.Editor editor;
+    Guid? _configKey = Guid.NewGuid();
 
     protected virtual Dictionary<string, object> Conf { get; set; } = new();
 
@@ -89,7 +89,7 @@
     {
         await Task.Delay(100);
         await SetThemeAsync();
-        configKey = Guid.NewGuid();
+        _configKey = Guid.NewGuid();
         await InvokeAsync(StateHasChanged);
     }
 

@@ -30,7 +30,7 @@
                         @foreach (var menuItem in Menu.Items.Where(x => x.DisplayName != L["Logout"]))
                         {
                             <FluentButton Appearance="Appearance.Stealth"
-                                          OnClick="@(() => NavigateToAsync(menuItem.Url, menuItem.Target))">@menuItem.DisplayName</FluentButton>
+                                          OnClick="@(() => NavigateToAsync(menuItem.Url!, menuItem.Target))">@menuItem.DisplayName</FluentButton>
                         }
                     </FluentStack>
                 }
@@ -62,14 +62,14 @@
     [Inject] protected IOptions<AuthenticationOptions> AuthenticationOptions { get; set; }
     [Inject] IOptions<AbpFluentDesignThemeOptions> ThemeOptions { get; set; }
 
-    protected ApplicationMenu Menu { get; set; }
+    protected ApplicationMenu? Menu { get; set; }
     protected bool IsMobileStyle { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         Menu = await MenuManager.GetAsync(StandardMenus.User);
 
-        NavigationManager.LocationChanged += OnLocationChanged;
+        NavigationManager.LocationChanged += OnLocationChanged!;
     }
 
     protected virtual void OnLocationChanged(object sender, LocationChangedEventArgs e)
@@ -79,7 +79,7 @@
 
     public void Dispose()
     {
-        NavigationManager.LocationChanged -= OnLocationChanged;
+        NavigationManager.LocationChanged -= OnLocationChanged!;
     }
 
     string GetProfileFullName()
@@ -104,9 +104,9 @@
         NavigationManager.NavigateTo(AuthenticationOptions.Value.LoginUrl, forceLoad: true);
     }
 
-    private async Task NavigateToAsync(string uri, string target = null)
+    private async Task NavigateToAsync(string uri, string? target = null)
     {
-        uri = uri?.TrimStart('/', '~');
+        uri = uri?.TrimStart('/', '~')!;
         if (target == "_blank")
         {
             await JsRuntime.InvokeVoidAsync("open", uri, target);

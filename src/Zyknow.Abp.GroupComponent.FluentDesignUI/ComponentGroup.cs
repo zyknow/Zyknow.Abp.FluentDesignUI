@@ -25,7 +25,7 @@ public class ComponentGroup
 
     public object Parameter { get; set; }
 
-    public ComponentGroup(string id, string displayName,Type componentType, object parameter = null)
+    public ComponentGroup(string id, string displayName,Type componentType, object? parameter = null)
     {
         Id = id;
         DisplayName = displayName;

@@ -20,7 +20,7 @@
 @using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Themes.FluentDesignTheme
 @inherits Zyknow.Abp.Account.Blazor.FluentDesignUI.AccountBlazorFluentDesignComponentBase
 
-<AbpFluentForm @ref="FormRef" Content="@Input" Localize="@LH.Localize" SubmitClick="RegisterAsync">
+<AbpFluentForm @ref="_formRef" Content="@Input" Localize="@LH.Localize" SubmitClick="RegisterAsync">
     <Header>
         <FluentStack HorizontalAlignment="HorizontalAlignment.SpaceBetween"
                      VerticalAlignment="VerticalAlignment.Center">
@@ -67,7 +67,7 @@
         @if (EnableLocalRegister || IsExternalLogin)
         {
             <FluentButton Disabled="@Loading" Style="height: 35px" Appearance="Appearance.Accent"
-                          OnClick="@FormRef.OnSubmitBtnClickAsync">@L["Register"]</FluentButton>
+                          OnClick="@_formRef.OnSubmitBtnClickAsync">@L["Register"]</FluentButton>
         }
 
         @if (VisibleExternalProviders.Any())
@@ -117,7 +117,7 @@
 
     public string ExternalLoginScheme => IsExternalLoginOnly ? ExternalProviders?.SingleOrDefault()?.AuthenticationScheme : null;
 
-    AbpFluentForm<RegisterInput> FormRef;
+    AbpFluentForm<RegisterInput> _formRef;
     protected RegisterInput Input { get; set; } = new RegisterInput();
     protected virtual bool Loading { get; set; }
 
@@ -131,7 +131,7 @@
             {
                 ["returnUrl"] = ReturnUrl,
                 ["returnUrlHash"] = ReturnUrlHash
-            });
+            }!);
 
         if (!await CheckSelfRegistrationAsync())
         {
@@ -199,9 +199,9 @@
             new Dictionary<string, object>
             {
                 ["provider"] = provider,
-                [nameof(ReturnUrl)] = Uri.EscapeDataString(ReturnUrl),
-                [nameof(ReturnUrlHash)] = Uri.EscapeDataString(ReturnUrlHash)
-            });
+                [nameof(ReturnUrl)] = Uri.EscapeDataString(ReturnUrl!),
+                [nameof(ReturnUrlHash)] = Uri.EscapeDataString(ReturnUrlHash!)
+            }!);
         NavigationManager.NavigateTo(redirectUrl, forceLoad: true);
         Loading = false;
     }
@@ -230,7 +230,7 @@
                     Input.UserName = await UserManager.GetUserNameFromEmailAsync(Input.EmailAddress);
                 }
 
-                userId = await RegisterExternalUserAsync(externalLoginInfo, Input.UserName, Input.EmailAddress);
+                userId = await RegisterExternalUserAsync(externalLoginInfo!, Input.UserName, Input.EmailAddress);
             }
             else
             {
@@ -245,7 +245,7 @@
                         ["returnUrl"] = ReturnUrl,
                         ["returnUrlHash"] = ReturnUrlHash,
                         ["userId"] = userId
-                    });
+                    }!);
 
                 NavigationManager.NavigateTo(url, forceLoad: true);
             }

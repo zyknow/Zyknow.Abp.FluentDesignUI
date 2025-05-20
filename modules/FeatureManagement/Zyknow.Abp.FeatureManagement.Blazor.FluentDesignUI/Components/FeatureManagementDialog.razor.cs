@@ -22,7 +22,6 @@ public partial class FeatureManagementDialog
     [Inject] protected IFeatureAppService FeatureAppService { get; set; }
 
     [Inject] protected IUiMessageService UiMessageService { get; set; }
-    [Inject] protected IDialogService DialogService { get; set; }
 
     [Inject] protected IStringLocalizerFactory HtmlLocalizerFactory { get; set; }
 
@@ -59,7 +58,7 @@ public partial class FeatureManagementDialog
         try
         {
             _loading = true;
-            InvokeAsync(StateHasChanged);
+            await InvokeAsync(StateHasChanged);
 
             ToggleValues = new Dictionary<string, bool>();
             SelectionStringValues = new Dictionary<string, string>();
@@ -91,7 +90,7 @@ public partial class FeatureManagementDialog
         finally
         {
             _loading = false;
-            InvokeAsync(StateHasChanged);
+            await InvokeAsync(StateHasChanged);
         }
     }
 
@@ -136,7 +135,7 @@ public partial class FeatureManagementDialog
         }
         else
         {
-            await UiMessageService.Warn(L["Volo.Abp.FeatureManagement:InvalidFeatureValue", feature.DisplayName]);
+            await UiMessageService.Warn(L["Volo.Abp.FeatureManagement:InvalidFeatureValue", feature!.DisplayName]);
         }
     }
 

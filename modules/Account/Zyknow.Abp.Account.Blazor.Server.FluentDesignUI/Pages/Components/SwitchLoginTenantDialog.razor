@@ -51,7 +51,7 @@
                 // can not delete
                 // await CookieService.DeleteAsync("__tenant", "/");
                 
-                await CookieService.SetAsync("__tenant",null,new CookieOptions()
+                await CookieService.SetAsync("__tenant",null!,new CookieOptions()
                 {
                     Path = "/",
                     ExpireDate = DateTimeOffset.UtcNow.AddDays(30),
@@ -60,7 +60,7 @@
             else
             {
                 var tenant = await GetTenantAsync();
-                await CookieService.SetAsync("__tenant", tenant.TenantId.ToString(), new CookieOptions()
+                await CookieService.SetAsync("__tenant", tenant!.TenantId.ToString()!, new CookieOptions()
                 {
                     Path = "/",
                     ExpireDate = DateTimeOffset.UtcNow.AddDays(30),
@@ -89,7 +89,7 @@
 
         if (!tenant.IsActive)
         {
-            throw new UserFriendlyException(L["TenantNotActiveDetails", tenant.Name]);
+            throw new UserFriendlyException(L["TenantNotActiveDetails", tenant.Name!]);
         }
 
         return tenant;

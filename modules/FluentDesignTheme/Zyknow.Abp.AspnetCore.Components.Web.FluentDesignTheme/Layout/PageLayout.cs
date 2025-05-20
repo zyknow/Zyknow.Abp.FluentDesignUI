@@ -25,5 +25,5 @@ public class PageLayout : IScopedDependency, INotifyPropertyChanged
 
     public virtual ObservableCollection<PageToolbarItem> ToolbarItems { get; set; } = new();
 
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
 }

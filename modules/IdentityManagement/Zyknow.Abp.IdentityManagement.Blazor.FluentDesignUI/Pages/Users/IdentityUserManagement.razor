@@ -285,7 +285,7 @@
         => ShowDialogAsync(@<IdentityUserEditDialog AssignRoles="EditUserRoles" Content="@EditingEntity"
                                                     SubmitClick="UpdateEntityAsync"/>);
 
-    protected override Task<IDialogReference> ShowDialogAsync(RenderFragment render, Action<DialogParameters> paraAction = null)
+    protected override Task<IDialogReference> ShowDialogAsync(RenderFragment render, Action<DialogParameters>? paraAction = null)
     {
         var dialogPara = new DialogParameters();
         paraAction?.Invoke(dialogPara);

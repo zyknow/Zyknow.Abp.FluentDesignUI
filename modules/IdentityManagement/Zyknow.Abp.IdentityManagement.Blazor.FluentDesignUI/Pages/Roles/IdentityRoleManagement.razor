@@ -97,7 +97,7 @@
                     {
                         var role = data.As<IdentityRoleDto>();
                         await ShowPermissionDialogAsync(new PermissionManagementDialogInput(PermissionProviderName, role.Name));
-                        InvokeAsync(StateHasChanged);
+                        await InvokeAsync(StateHasChanged);
                     }
                 },
                 new()

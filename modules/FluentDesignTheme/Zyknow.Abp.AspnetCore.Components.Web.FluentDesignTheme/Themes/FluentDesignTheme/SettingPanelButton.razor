@@ -14,9 +14,8 @@
 
     async Task ShowPanelAsync()
     {
-        await DialogService.ShowPanelAsync<SettingPanel>(null, new DialogParameters<object>()
+        await DialogService.ShowPanelAsync<SettingPanel>(new DialogParameters()
         {
-            Content = null,
             Alignment = HorizontalAlignment.Right,
             Title = L["Settings"],
             PrimaryAction = null,
@@ -35,7 +34,7 @@
 
     private async void ThemeStoreOnThemeModeChanged(object? sender, EventArgs e)
     {
-        InvokeAsync(StateHasChanged);
+        await InvokeAsync(StateHasChanged);
     }
 
     public void Dispose()

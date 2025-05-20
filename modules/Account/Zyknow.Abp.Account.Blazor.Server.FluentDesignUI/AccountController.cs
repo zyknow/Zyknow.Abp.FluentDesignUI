@@ -13,7 +13,6 @@ public partial class AccountController(
     SignInManager<IdentityUser> signInManager,
     UserManager<IdentityUser> userManager,
     IOptions<IdentityOptions> identityOptions,
-    IAppUrlProvider appUrlProvider,
     IdentitySecurityLogManager identitySecurityLogManager,
     ISettingProvider settingProvider,
     IdentityDynamicClaimsPrincipalContributorCache identityDynamicClaimsPrincipalContributorCache,

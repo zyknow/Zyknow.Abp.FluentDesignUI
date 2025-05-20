@@ -39,7 +39,7 @@ public class CmsKitPublicMenuContributor : IMenuContributor
         }
     }
 
-    private void AddChildItems(MenuItemDto menuItem, List<MenuItemDto> source, IHasMenuItems parent = null)
+    private void AddChildItems(MenuItemDto menuItem, List<MenuItemDto> source, IHasMenuItems? parent = null)
     {
         var applicationMenuItem = CreateApplicationMenuItem(menuItem);
 

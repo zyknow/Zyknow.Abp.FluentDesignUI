@@ -7,9 +7,9 @@ public static class PageToolbarExtensions
 {
     public static PageToolbar AddComponent<TComponent>(
         this PageToolbar toolbar,
-        Dictionary<string, object> arguments = null,
+        Dictionary<string, object>? arguments = null,
         int order = 0,
-        string requiredPolicyName = null)
+        string? requiredPolicyName = null)
     {
         return toolbar.AddComponent(
             typeof(TComponent),
@@ -22,9 +22,9 @@ public static class PageToolbarExtensions
     public static PageToolbar AddComponent(
         this PageToolbar toolbar,
         Type componentType,
-        Dictionary<string, object> arguments = null,
+        Dictionary<string, object>? arguments = null,
         int order = 0,
-        string requiredPolicyName = null)
+        string? requiredPolicyName = null)
     {
         toolbar.Contributors.Add(
             new SimplePageToolbarContributor(
@@ -42,11 +42,11 @@ public static class PageToolbarExtensions
         this PageToolbar toolbar,
         string text,
         Func<Task> clicked,
-        object icon = null,
+        object? icon = null,
         Appearance appearance = Appearance.Accent,
         bool disabled = false,
         int order = 0,
-        string requiredPolicyName = null)
+        string? requiredPolicyName = null)
     {
         toolbar.AddComponent<ToolbarButton>(
             new Dictionary<string, object>
@@ -54,7 +54,7 @@ public static class PageToolbarExtensions
                     { nameof(ToolbarButton.Appearance), appearance},
                     { nameof(ToolbarButton.Text), text},
                     { nameof(ToolbarButton.Disabled), disabled},
-                    { nameof(ToolbarButton.Icon), icon},
+                    { nameof(ToolbarButton.Icon), icon!},
                     { nameof(ToolbarButton.Clicked),clicked},
             },
             order,

@@ -9,7 +9,7 @@ namespace Zyknow.Abp.PermissionManagement.Blazor.FluentDesignUI.Components;
 public class PermissionManagementDialogInput(
     string providerName,
     string? providerKey = null,
-    string entityDisplayName = null)
+    string? entityDisplayName = null)
 {
     public string ProviderName { get; set; } = providerName;
     public string? ProviderKey { get; set; } = providerKey;
@@ -41,7 +41,7 @@ public partial class PermissionManagementDialog
 
     protected override async Task OnInitializedAsync()
     {
-        await ShowAsync(Content.ProviderName, Content.ProviderKey, Content.EntityDisplayName);
+        await ShowAsync(Content.ProviderName, Content.ProviderKey!, Content.EntityDisplayName!);
     }
 
     private async Task SaveAsync()
@@ -63,7 +63,7 @@ public partial class PermissionManagementDialog
     {
     }
 
-    public async Task ShowAsync(string providerName, string providerKey, string entityDisplayName = null)
+    public async Task ShowAsync(string providerName, string providerKey, string? entityDisplayName = null)
     {
         _loading = true;
         await InvokeAsync(StateHasChanged);

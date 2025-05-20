@@ -31,7 +31,7 @@ public partial class AccountController
         using (await TicketLoginLocker.LockAsync(ticket))
         {
             var user = await userManager.FindByIdAsync(ticketCache.UserId.ToString());
-            await signInManager.SignInAsync(user, ticketCache.RememberMe);
+            await signInManager.SignInAsync(user!, ticketCache.RememberMe);
 
             await identitySecurityLogManager.SaveAsync(new IdentitySecurityLogContext()
             {
@@ -46,7 +46,7 @@ public partial class AccountController
 
             await loginTicketCache.RemoveAsync(ticket);
 
-            return await RedirectSafelyAsync(ticketCache.ReturnUrl, ticketCache.ReturnUrlHash);
+            return await RedirectSafelyAsync(ticketCache.ReturnUrl!, ticketCache.ReturnUrlHash);
         }
     }
 
@@ -66,7 +66,7 @@ public partial class AccountController
     }
 
     public virtual async Task<IActionResult> ExternalLoginCallbackAsync(string returnUrl = "",
-        string returnUrlHash = "", string remoteError = null)
+        string returnUrlHash = "", string? remoteError = null)
     {
         //TODO: Did not implemented Identity Server 4 sample for this method (see ExternalLoginCallback in Quickstart of IDS4 sample)
         /* Also did not implement these:
@@ -119,7 +119,9 @@ public partial class AccountController
         IdentityUser user;
         if (result.Succeeded)
         {
+#pragma warning disable CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
             user = await userManager.FindByLoginAsync(loginInfo.LoginProvider, loginInfo.ProviderKey);
+#pragma warning restore CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
             if (user != null)
             {
                 // Clear the dynamic claims cache.
@@ -143,7 +145,9 @@ public partial class AccountController
             });
         }
 
+#pragma warning disable CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
         user = await userManager.FindByEmailAsync(email);
+#pragma warning restore CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
         if (user == null)
         {
             return RedirectToPage("./Register", new
