@@ -9,7 +9,7 @@ public partial class SelectExtensionProperty<TEntity, TResourceType>
 
     public int SelectedValue
     {
-        get { return Entity.GetProperty<int>(PropertyInfo.Name); }
+        get => Entity.GetProperty<int>(PropertyInfo.Name);
         set { Entity.SetProperty(PropertyInfo.Name, value, false); }
     }
 
@@ -36,7 +36,7 @@ public partial class SelectExtensionProperty<TEntity, TResourceType>
 
         if (!Entity.HasProperty(PropertyInfo.Name))
         {
-            SelectedValue = (int)PropertyInfo.Type.GetEnumValues().GetValue(0);
+            SelectedValue = (int)PropertyInfo.Type.GetEnumValues().GetValue(0)!;
         }
     }
 }

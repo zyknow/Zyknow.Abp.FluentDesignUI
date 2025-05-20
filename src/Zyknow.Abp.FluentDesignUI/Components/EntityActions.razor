@@ -6,7 +6,7 @@
     {
         if (HasPrimaryAction)
         {
-            <FluentMenuButton IconStart="@Icon" Style="z-index: 10" @ref="ButtonRef" Text="@PrimaryAction.Text"
+            <FluentMenuButton IconStart="@Icon" Style="z-index: 10" @ref="_buttonRef" Text="@PrimaryAction.Text"
                               OnMenuChanged="@(async () => await PrimaryAction.ActionClickedAsync())"
                               ButtonAppearance="@PrimaryAction.Appearance">
                 @ChildContent
@@ -22,7 +22,8 @@
         }
         else
         {
-            <FluentMenuButton IconStart="@Icon" @ref="ButtonRef" Text="@ToggleText" ButtonAppearance="ToggleAppearance">
+            <FluentMenuButton IconStart="@Icon" @ref="_buttonRef" Text="@ToggleText"
+                              ButtonAppearance="ToggleAppearance">
                 @ChildContent
             </FluentMenuButton>
         }
@@ -36,7 +37,7 @@
 
 @code{
 
-    FluentMenuButton ButtonRef;
+    FluentMenuButton _buttonRef = null!;
 
     protected bool IconMenuOpen = false;
 
@@ -47,9 +48,9 @@
     {
         if (firstRender)
         {
-            if (ButtonRef?.Button != null)
-                ButtonRef.Button.StopPropagation = true;
-            InvokeAsync(StateHasChanged);
+            if (_buttonRef?.Button != null)
+                _buttonRef.Button.StopPropagation = true;
+            await InvokeAsync(StateHasChanged);
         }
     }
 

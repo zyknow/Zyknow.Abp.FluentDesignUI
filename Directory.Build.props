@@ -2,7 +2,7 @@
     <PropertyGroup>
         <LangVersion>latest</LangVersion>
         <Version>1.0.0-preview.1</Version>
-        <NoWarn>$(NoWarn);CS1591;NU1903;NU1902;NU1904;</NoWarn>
+        <NoWarn>$(NoWarn);CS1591;NU1903;NU1902;NU1904;CS1998;CS8618;CS8603;CS8601;CS0105;CS0168;BL0005</NoWarn>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
 

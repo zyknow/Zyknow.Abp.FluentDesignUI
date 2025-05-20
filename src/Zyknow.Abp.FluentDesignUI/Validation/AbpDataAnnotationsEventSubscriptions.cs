@@ -3,6 +3,9 @@ using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Reflection.Metadata;
+// ReSharper disable InconsistentNaming
+// ReSharper disable PrivateFieldCanBeConvertedToLocalVariable
+#pragma warning disable CS0067 // 事件从未使用过
 
 namespace Zyknow.Abp.FluentDesignUI.Validation;
 
@@ -43,7 +46,7 @@ internal class AbpDataAnnotationsEventSubscriptions : IDisposable
     {
         var fieldIdentifier = eventArgs.FieldIdentifier;
         _editContext.ClearValidationMessages(fieldIdentifier);
-        _contextValidator.ValidateField(_editContext, _messages, fieldIdentifier, _localize);
+        _contextValidator.ValidateField(_editContext, _messages, fieldIdentifier, _localize!);
         _editContext.NotifyValidationStateChanged();
     }
 
@@ -51,7 +54,7 @@ internal class AbpDataAnnotationsEventSubscriptions : IDisposable
         Justification = "Model types are expected to be defined in assemblies that do not get trimmed.")]
     private void OnValidationRequested(object? sender, ValidationRequestedEventArgs e)
     {
-        _contextValidator.Validate(_editContext, _messages, _localize);
+        _contextValidator.Validate(_editContext, _messages, _localize!);
     }
 
     public void Dispose()

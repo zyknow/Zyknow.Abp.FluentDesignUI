@@ -139,13 +139,15 @@ else
         {
             Loading = true;
             var validate = true;
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
             if (FormRef != null)
             {
-                validate = FormRef.EditContext.Validate();
+                validate = FormRef!.EditContext!.Validate();
             }
 
             if (validate)
             {
+                // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
                 if (SubmitValidClick != null)
                 {
                     await SubmitValidClick.Invoke();
@@ -175,10 +177,11 @@ else
         }
     }
 
-    public virtual async Task OnCancelBtnClickAsync()
+    protected virtual async Task OnCancelBtnClickAsync()
     {
         await CancelClick.InvokeAsync();
-        await Dialog?.CloseAsync();
+        if (Dialog != null)
+            await Dialog.CloseAsync();
     }
 
 }

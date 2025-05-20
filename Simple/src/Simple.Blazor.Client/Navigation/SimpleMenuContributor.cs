@@ -44,9 +44,11 @@ public class SimpleMenuContributor(IConfiguration configuration) : IMenuContribu
             administration.SetSubItemOrder(TenantManagementMenuNames.GroupName, 1);
         }
         else
+#pragma warning disable CS0162 // 检测到不可到达的代码
         {
             administration.TryRemoveMenuItem(TenantManagementMenuNames.GroupName);
         }
+#pragma warning restore CS0162 // 检测到不可到达的代码
 
         // administration.SetSubItemOrder(IdentityMenuNames.GroupName, 2);
         // administration.SetSubItemOrder(SettingManagementMenus.GroupName, 3);

@@ -1,13 +1,13 @@
 ﻿<StandaloneCodeEditor Id="@($@"code-editor-{Id}")" ConstructionOptions="EditorConstructionOptions"/>
 
 <style>
-    div[id^="code-editor-"]{
+    div[id^="code-editor-"] {
         height: 100%;
     }
 </style>
 
 @code {
-    [Parameter] public Action<StandaloneCodeEditor, StandaloneEditorConstructionOptions> ConstructionOptions { get; set; }
+    [Parameter] public Action<StandaloneCodeEditor, StandaloneEditorConstructionOptions> ConstructionOptions { get; set; } = null!;
 
     [Parameter] public string Id { get; set; } = Guid.NewGuid().ToString();
 
@@ -22,4 +22,5 @@
 
         return options;
     }
+
 }

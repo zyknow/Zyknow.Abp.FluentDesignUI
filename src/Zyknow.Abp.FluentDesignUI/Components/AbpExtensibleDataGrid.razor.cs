@@ -109,7 +109,7 @@ public partial class AbpExtensibleDataGrid<TItem, TKey> : FluentComponentBase
 
     protected virtual string GetConvertedFieldValue(TItem item, TableColumn columnDefinition)
     {
-        var convertedValue = columnDefinition.ValueConverter.Invoke(item);
+        var convertedValue = columnDefinition.ValueConverter!.Invoke(item!);
         if (!columnDefinition.DisplayFormat.IsNullOrEmpty())
         {
             return string.Format(columnDefinition.DisplayFormatProvider, columnDefinition.DisplayFormat,
@@ -128,7 +128,7 @@ public partial class AbpExtensibleDataGrid<TItem, TKey> : FluentComponentBase
 
         if (obj.Value)
         {
-            var entities = Entities.Where(x => !SelectEntities.Any(y => GetItemKey(y).Equals(GetItemKey(x))));
+            var entities = Entities.Where(x => !SelectEntities.Any(y => GetItemKey(y)!.Equals(GetItemKey(x))));
             SelectEntities.AddIfNotContains(entities);
         }
         else
@@ -146,7 +146,7 @@ public partial class AbpExtensibleDataGrid<TItem, TKey> : FluentComponentBase
     {
         if (obj.Selected)
         {
-            if (SelectEntities.Any(x => GetItemKey(x).Equals(GetItemKey(obj.Item))))
+            if (SelectEntities.Any(x => GetItemKey(x)!.Equals(GetItemKey(obj.Item))))
             {
                 return;
             }
@@ -155,7 +155,7 @@ public partial class AbpExtensibleDataGrid<TItem, TKey> : FluentComponentBase
         }
         else
         {
-            SelectEntities.RemoveAll(x => GetItemKey(x).Equals(GetItemKey(obj.Item)));
+            SelectEntities.RemoveAll(x => GetItemKey(x)!.Equals(GetItemKey(obj.Item)));
         }
 
         await SelectEntitiesChanged.InvokeAsync(SelectEntities);
@@ -200,8 +200,8 @@ public partial class AbpExtensibleDataGrid<TItem, TKey> : FluentComponentBase
 
     protected Task RefreshItemsAsync(GridItemsProviderRequest<TItem> request)
     {
-        var res = OnChange.Invoke(request);
-        if (res != null && res is Task task)
+        var res = OnChange?.Invoke(request);
+        if (res is { } task)
         {
             return task;
         }

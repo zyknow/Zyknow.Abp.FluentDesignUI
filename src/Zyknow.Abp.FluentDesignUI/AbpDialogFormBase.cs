@@ -10,14 +10,13 @@ public class AbpDialogOnlyFormBase<TInput> : AbpDialogOnlyFormBase<TInput, Defau
 {
 }
 
-public class AbpDialogOnlyFormBase<TInput, TResource> : FluentAbpComponentBase<TResource>, IDialogContentComponent<TInput>
+public class AbpDialogOnlyFormBase<TInput, TResource> : FluentAbpComponentBase<TResource>,
+    IDialogContentComponent<TInput>
 {
     public AbpDialogOnlyFormBase()
     {
         LocalizationResource = typeof(TResource);
     }
-
-    [Inject] protected AbpBlazorMessageLocalizerHelper<TResource> LH { get; set; }
 
     [Parameter] public TInput Content { get; set; }
 
@@ -51,7 +50,7 @@ public class AbpDialogFormBase<TResult, TInput, TResource> : AbpDialogOnlyFormBa
         LocalizationResource = typeof(TResource);
     }
 
-    [Parameter] public new Func<TResult, Task> SubmitClick { get; set; }
+    [Parameter] public Func<TResult, Task> SubmitClick { get; set; }
 
     [Parameter] public EventCallback CancelClick { get; set; }
 

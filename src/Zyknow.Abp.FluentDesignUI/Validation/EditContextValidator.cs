@@ -5,6 +5,13 @@ using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using Microsoft.AspNetCore.Components.Forms;
 
+// ReSharper disable ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+// ReSharper disable PossibleMultipleEnumeration
+// ReSharper disable InconsistentNaming
+#pragma warning disable CS8625 // 无法将 null 字面量转换为非 null 的引用类型。
+#pragma warning disable CS8620 // 由于引用类型的可为 null 性差异，实参不能用于形参。
+#pragma warning disable CS8604 // 引用类型参数可能为 null。
+
 #endregion
 
 namespace Zyknow.Abp.FluentDesignUI.Validation;
@@ -105,12 +112,13 @@ public class EditContextValidator : IEditContextValidator
             .SelectMany(x => x.MemberNames)
             .Distinct()
             .ToList();
-        
+
         foreach (var member in members)
         {
             var fieldIdentifier = new FieldIdentifier(model, member);
             ValidateField(editContext, messages, fieldIdentifier, messageLocalizer);
         }
+
         editContext.NotifyValidationStateChanged();
     }
 

@@ -4,7 +4,7 @@
 <FluentStack Orientation="@Orientation.Vertical" VerticalGap="8" @attributes="AdditionalAttributes">
     @foreach (var message in _messages)
     {
-        <FluentMessageBar Intent="@GetMessageIntent(message.Type)" AllowDismiss="true"  Title="@message.Title">
+        <FluentMessageBar Intent="@GetMessageIntent(message.Type)" AllowDismiss="true" Title="@message.Title">
             @message.Text
         </FluentMessageBar>
     }
@@ -16,13 +16,11 @@
 
     private readonly List<AlertMessage> _messages = new();
 
-    [Inject]
-    public IAlertManager AlertManager { get; set; }
-    
-    [Inject]
-    public NavigationManager NavigationManager { get; set; }
-    
-    
+    [Inject] public IAlertManager AlertManager { get; set; }
+
+    [Inject] public NavigationManager NavigationManager { get; set; }
+
+
     protected MessageIntent GetMessageIntent(AlertType type)
     {
         return type switch
@@ -35,17 +33,17 @@
             _ => MessageIntent.Info
         };
     }
-    
+
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        AlertManager.Alerts.CollectionChanged += Alerts_CollectionChanged;
-        NavigationManager.LocationChanged += NavigationManager_LocationChanged;
-        
+        AlertManager.Alerts.CollectionChanged += Alerts_CollectionChanged!;
+        NavigationManager.LocationChanged += NavigationManager_LocationChanged!;
+
         _messages.AddRange(AlertManager.Alerts);
     }
-    
+
     private void NavigationManager_LocationChanged(object sender, LocationChangedEventArgs e)
     {
         AlertManager.Alerts.Clear();
@@ -56,12 +54,13 @@
     {
         if (e.Action == NotifyCollectionChangedAction.Add)
         {
-            foreach (var item in e.NewItems)
+            foreach (var item in e.NewItems!)
             {
                 _messages.Add((AlertMessage)item);
             }
         }
+
         InvokeAsync(StateHasChanged);
     }
-    
+
 }

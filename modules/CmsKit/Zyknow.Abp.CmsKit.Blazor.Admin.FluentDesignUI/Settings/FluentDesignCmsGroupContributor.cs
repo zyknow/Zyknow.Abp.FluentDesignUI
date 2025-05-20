@@ -12,9 +12,9 @@ public class FluentDesignCmsGroupContributor : IGroupComponentContributor
 {
     public string GroupKey { get; } = "Setting";
 
-    public async Task<bool> CheckPermissionsAsync(GroupComponentCreationContext context)
+    public Task<bool> CheckPermissionsAsync(GroupComponentCreationContext context)
     {
-        return true;
+        return Task.FromResult(true);
     }
 
     public async Task ConfigureAsync(GroupComponentCreationContext context)

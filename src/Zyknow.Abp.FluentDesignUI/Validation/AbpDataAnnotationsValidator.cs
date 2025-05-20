@@ -41,7 +41,9 @@ public class AbpDataAnnotationsValidator : AbpComponentBase, IDisposable
     }
 
     /// <inheritdoc/>
+#pragma warning disable CS0108, CS0114
     protected virtual void Dispose(bool disposing)
+#pragma warning restore CS0108, CS0114
     {
     }
 

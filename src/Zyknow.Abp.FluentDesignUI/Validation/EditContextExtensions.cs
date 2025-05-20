@@ -4,6 +4,12 @@ using System.Collections;
 using System.Reflection;
 using Microsoft.AspNetCore.Components.Forms;
 
+// ReSharper disable ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+
+// ReSharper disable NullCoalescingConditionIsAlwaysNotNullAccordingToAPIContract
+// ReSharper disable InconsistentNaming
+#pragma warning disable CS8604 // 引用类型参数可能为 null。
+
 #endregion
 
 namespace Zyknow.Abp.FluentDesignUI.Validation;
@@ -13,12 +19,17 @@ namespace Zyknow.Abp.FluentDesignUI.Validation;
 /// </summary>
 internal static class EditContextExtensions
 {
-    private const BindingFlags INTERNAL_BINDING_FLAGS = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+    private const BindingFlags INTERNAL_BINDING_FLAGS =
+        BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+
     private const string FIELD_STATES = "_fieldStates";
     private const string FIELD_VALIDATION_MESSAGE_STORES = "_validationMessageStores";
     private static Func<EditContext, IDictionary> fieldStatesGetter;
     private static Func<object, HashSet<ValidationMessageStore>> validationMessageStoresGetter;
-    private static readonly MethodInfo clearMethodInfo = typeof(HashSet<ValidationMessageStore>).GetMethod(nameof(HashSet<ValidationMessageStore>.Clear), INTERNAL_BINDING_FLAGS);
+
+    private static readonly MethodInfo clearMethodInfo =
+        typeof(HashSet<ValidationMessageStore>).GetMethod(nameof(HashSet<ValidationMessageStore>.Clear),
+            INTERNAL_BINDING_FLAGS);
 
     /// <summary>
     /// Clears all validation messages from the <see cref="EditContext"/> of the given <see cref="FieldIdentifier"/>.
@@ -31,7 +42,8 @@ internal static class EditContextExtensions
     /// <param name="markAsUnmodified">
     /// Specifies whether the <see cref="EditContext"/> should be marked as unmodified. This will affect the assignment of css classes to a form's input controls in Blazor.
     /// </param>
-    public static void ClearValidationMessages(this EditContext editContext, FieldIdentifier fieldIdentifier, bool revalidate = false, bool markAsUnmodified = false)
+    public static void ClearValidationMessages(this EditContext editContext, FieldIdentifier fieldIdentifier,
+        bool revalidate = false, bool markAsUnmodified = false)
     {
         fieldStatesGetter ??= ExpressionCompiler.CreateFieldGetter<IDictionary>(editContext, FIELD_STATES);
 
@@ -42,7 +54,9 @@ internal static class EditContextExtensions
             if (kv.Key is FieldIdentifier fieldIdentifier2
                 && fieldIdentifier2.FieldName == fieldIdentifier.FieldName)
             {
-                validationMessageStoresGetter ??= ExpressionCompiler.CreateFieldGetter<HashSet<ValidationMessageStore>>(kv.Value, FIELD_VALIDATION_MESSAGE_STORES);
+                validationMessageStoresGetter ??=
+                    ExpressionCompiler.CreateFieldGetter<HashSet<ValidationMessageStore>>(kv.Value,
+                        FIELD_VALIDATION_MESSAGE_STORES);
 
                 var messageStores = validationMessageStoresGetter(kv.Value);
 
@@ -59,6 +73,4 @@ internal static class EditContextExtensions
         if (revalidate)
             editContext.Validate();
     }
-
-
 }

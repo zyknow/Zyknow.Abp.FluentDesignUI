@@ -63,7 +63,7 @@
                                   SelectedItems="@SelectEntities"
                                   SelectFromEntireRow="false"
                                   SelectMode="DataGridSelectMode.Multiple"
-                                  Property="@(dto => SelectEntities.Any(e => GetItemKey(e).Equals(GetItemKey(dto))))"
+                                  Property="@(dto => SelectEntities.Any(e => GetItemKey(e)!.Equals(GetItemKey(dto))))"
                                   SelectAllChanged="OnSelectAllChanged"
                                   SelectAll="@SelectedAll"
                                   OnSelect="OnSelect"/>
@@ -90,7 +90,7 @@
                             {
                                 <TemplateColumn Title="@column.Title" Sortable="@column.Sortable"
                                                 SortBy="@(new ColumnKeyGridSort<TItem>(column.PropertyName))">
-                                    @RenderCustomTableColumnComponent(column.Component, context)
+                                    @RenderCustomTableColumnComponent(column.Component, context!)
                                 </TemplateColumn>
                             }
                             else if (column.IsCheckIcon)
@@ -98,7 +98,7 @@
                                 <TemplateColumn Sortable="@column.Sortable"
                                                 SortBy="@(new ColumnKeyGridSort<TItem>(column.PropertyName))"
                                                 Title="@column.Title">
-                                    @if ((GetColumnValue(context, column.Data) as bool?) == true)
+                                    @if ((GetColumnValue(context!, column.Data) as bool?) == true)
                                     {
                                         <FluentIcon Value="@(new Size20.Checkmark())"
                                                     Color="Color.Success"></FluentIcon>
@@ -118,7 +118,7 @@
                                         <TemplateColumn Sortable="@column.Sortable"
                                                         SortBy="@(new ColumnKeyGridSort<TItem>(column.PropertyName))"
                                                         Title="@column.Title">
-                                            @GetColumnValue(context, column.Data)
+                                            @GetColumnValue(context!, column.Data)
                                         </TemplateColumn>
                                     }
                                     else
@@ -126,7 +126,7 @@
                                         <TemplateColumn Sortable="@column.Sortable"
                                                         SortBy="@(new ColumnKeyGridSort<TItem>(column.PropertyName))"
                                                         Title="@column.Title">
-                                            @(GetConvertedFieldValue(context, column))
+                                            @(GetConvertedFieldValue(context!, column))
                                         </TemplateColumn>
                                     }
                                 }
@@ -137,18 +137,18 @@
                                         @{
                                             var entity = context as IHasExtraProperties;
                                             var propertyName = ExtensionPropertiesRegex.Match(column.Data).Groups[1].Value;
-                                            var propertyValue = entity.GetProperty(propertyName);
+                                            var propertyValue = entity!.GetProperty(propertyName);
                                             if (propertyValue is bool value)
                                             {
                                                 if (value)
                                                 {
                                                     <FluentIcon
-                                                        Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size20.CheckmarkCircle())"/>
+                                                        Value="@(new Size20.CheckmarkCircle())"/>
                                                 }
                                                 else
                                                 {
                                                     <FluentIcon
-                                                        Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size20.Prohibited())"/>
+                                                        Value="@(new Size20.Prohibited())"/>
                                                 }
                                             }
                                             else
@@ -191,7 +191,7 @@
                 <Header></Header>
                 <Body>
                 <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Start">
-                    @foreach (var column in Columns)
+                    @foreach (var column in Columns!)
                     {
                         <FluentCheckbox
                             Disabled="!column.CanHidden"

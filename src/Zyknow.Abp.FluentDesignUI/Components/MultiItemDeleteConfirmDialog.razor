@@ -14,7 +14,7 @@
 
 <FluentDialogBody>
     <FluentStack Orientation="Orientation.Vertical">
-        <FluentLabel>@L["MultiItemWillBeDeletedMessageWithFormat", Content.Items?.Count()]</FluentLabel>
+        <FluentLabel>@L["MultiItemWillBeDeletedMessageWithFormat", Content.Items.Count()]</FluentLabel>
 
         @if (Content.DeleteSelectedDisplayPropertyConfirmExpression != null && Content.Items.Any() == true)
         {
@@ -68,12 +68,12 @@
 
     protected virtual async Task OnSubmitBtnClickAsync()
     {
-        await Dialog.CloseAsync(DialogResult.Ok<object>(null));
+        await Dialog!.CloseAsync(DialogResult.Ok<object>(null!));
     }
 
     protected virtual async Task OnCancelBtnClickAsync()
     {
-        await Dialog.CloseAsync(DialogResult.Cancel());
+        await Dialog!.CloseAsync(DialogResult.Cancel());
     }
 
 }

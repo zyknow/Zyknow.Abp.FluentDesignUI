@@ -36,10 +36,6 @@
 
     protected List<FluentTableColumn> BlogPostManagementTableColumns => TableColumns.Get<BlogPostManagement>();
 
-    protected IEntityTagAdminAppService EntityTagAdminAppService { get; set; }
-
-    [Inject] protected NavigationManager NavigationManager { get; set; }
-
     protected bool HasPublishPermission { get; set; }
 
     public BlogPostManagement()

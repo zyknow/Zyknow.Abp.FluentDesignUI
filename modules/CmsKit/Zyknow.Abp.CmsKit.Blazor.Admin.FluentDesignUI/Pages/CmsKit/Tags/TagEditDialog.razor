@@ -17,5 +17,5 @@
 @code {
     public string HeaderText => $@"{L["Edit"]} - {EditEntityName}";
 
-    [Parameter] public string EditEntityName { get; set; }
+    [Parameter] public string EditEntityName { get; set; } = string.Empty;
 }

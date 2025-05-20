@@ -26,7 +26,8 @@
 
 
     <FluentStack HorizontalAlignment="HorizontalAlignment.End">
-        <FluentButton Style="margin-right: 14px" Appearance="Appearance.Accent" OnClick="SaveChanges">@L["SaveChanges"]</FluentButton>
+        <FluentButton Style="margin-right: 14px" Appearance="Appearance.Accent"
+                      OnClick="SaveChanges">@L["SaveChanges"]</FluentButton>
     </FluentStack>
 
 </FluentAdaptiveCard>
@@ -36,8 +37,8 @@
     [Inject] public IGlobalResourceAdminAppService GlobalResourceAdminAppService { get; set; }
     protected List<AbpBreadcrumbItem> BreadcrumbItems = new();
     GlobalResourcesUpdateDto EditEntity { get; set; } = new GlobalResourcesUpdateDto();
-    StandaloneCodeEditor _styleEditor;
-    StandaloneCodeEditor _scriptEditor;
+    StandaloneCodeEditor _styleEditor = null!;
+    StandaloneCodeEditor _scriptEditor = null!;
 
     public GlobalResourceManagement()
     {
@@ -47,16 +48,18 @@
     protected override async Task OnInitializedAsync()
     {
         await SetBreadcrumbItemsAsync();
-        
+
         var res = await GlobalResourceAdminAppService.GetAsync();
         EditEntity.Script = res.ScriptContent;
         EditEntity.Style = res.StyleContent;
     }
-    
-    protected async ValueTask SetBreadcrumbItemsAsync()
+
+    protected ValueTask SetBreadcrumbItemsAsync()
     {
         BreadcrumbItems.Add(new AbpBreadcrumbItem(L["Menu:CMS"], icon: new Size16.News()));
         BreadcrumbItems.Add(new AbpBreadcrumbItem(L["GlobalResources"]));
+
+        return ValueTask.CompletedTask;
     }
 
     async Task SaveChanges()

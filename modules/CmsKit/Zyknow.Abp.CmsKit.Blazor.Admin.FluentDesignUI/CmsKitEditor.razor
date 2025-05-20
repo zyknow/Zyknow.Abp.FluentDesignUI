@@ -3,7 +3,7 @@
 @inherits FluentInputBase<string?>
 @inject ILanguageProvider LanguageProvider
 @inject IThemeStore ThemeStore
-@if (Conf != null)
+@if (!Conf.IsNullOrEmpty())
 {
     <TinyMCE.Blazor.Editor Id="@configKey.ToString()" @key="@configKey" Field="() => Value" Value="@Value"
                            ValueChanged="@ValueChanged" LicenseKey="gpl"
@@ -24,11 +24,11 @@
     Guid? configKey = Guid.NewGuid();
     TinyMCE.Blazor.Editor editor;
 
-    protected virtual Dictionary<string, object>? Conf { get; set; }
+    protected virtual Dictionary<string, object> Conf { get; set; } = new();
 
     protected override bool TryParseValueFromString(string? value, [MaybeNullWhen(false)] out string result, [NotNullWhen(false)] out string? validationErrorMessage)
     {
-        result = Value;
+        result = Value!;
         validationErrorMessage = null;
         return true;
     }

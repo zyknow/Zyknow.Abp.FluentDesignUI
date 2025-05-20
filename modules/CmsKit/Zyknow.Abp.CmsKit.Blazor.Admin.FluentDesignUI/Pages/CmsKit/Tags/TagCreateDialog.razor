@@ -11,7 +11,7 @@
     CancelClick="CancelClick"
     Localize="@LH.Localize">
 
-    <FluentSelect TOption="TagDefinitionDto" Items="@definitions" OptionValue="@(x => x.EntityType)"
+    <FluentSelect TOption="TagDefinitionDto" Items="@_definitions" OptionValue="@(x => x.EntityType)"
                   @bind-Value="Content.EntityType" Label="@L["EntityType"]" OptionText="@(x => x.DisplayName)"/>
 
     <FluentTextField @bind-Value="Content.Name" Label="@L["Name"]"/>
@@ -19,14 +19,14 @@
 </AbpFluentForm>
 
 @code {
-    private List<TagDefinitionDto> definitions;
+    private List<TagDefinitionDto> _definitions = new();
 
-    [Inject] protected ITagAdminAppService AppService { get; set; }
+    [Inject] protected ITagAdminAppService AppService { get; set; } = null!;
     public string HeaderText => L["CreateTag"];
 
     protected override async Task OnInitializedAsync()
     {
-        definitions = await AppService.GetTagDefinitionsAsync();
+        _definitions = await AppService.GetTagDefinitionsAsync();
         if (Content.EntityType.IsNullOrWhiteSpace())
             Content.EntityType = "BlogPost";
     }
