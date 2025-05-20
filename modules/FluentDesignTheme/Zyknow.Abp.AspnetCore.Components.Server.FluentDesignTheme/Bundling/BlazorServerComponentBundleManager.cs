@@ -1,17 +1,13 @@
-using Volo.Abp.AspNetCore.Mvc.UI.Bundling;
+using Volo.Abp.AspNetCore.Bundling;
 using Volo.Abp.DependencyInjection;
 using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Bundling;
 
 namespace Zyknow.Abp.AspnetCore.Components.Server.FluentDesignTheme.Bundling;
 
-public class BlazorServerComponentBundleManager : IComponentBundleManager, ITransientDependency
+public class BlazorServerComponentBundleManager(IBundleManager bundleManager)
+    : IComponentBundleManager, ITransientDependency
 {
-    protected IBundleManager BundleManager { get; }
-
-    public BlazorServerComponentBundleManager(IBundleManager bundleManager)
-    {
-        BundleManager = bundleManager;
-    }
+    protected IBundleManager BundleManager { get; } = bundleManager;
 
     public virtual async Task<IReadOnlyList<string>> GetStyleBundleFilesAsync(string bundleName)
     {
