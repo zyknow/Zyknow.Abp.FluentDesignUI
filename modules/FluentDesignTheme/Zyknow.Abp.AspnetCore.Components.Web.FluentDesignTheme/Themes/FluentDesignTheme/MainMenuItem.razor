@@ -7,7 +7,8 @@
 
     if (Menu.IsLeaf && Menu.Url != null)
     {
-        <FluentNavLink Icon="GetIcon()" Match="NavLinkMatch.All" Href="@url" Disabled="@Menu.IsDisabled">
+        <FluentNavLink Icon="GetIcon()" Match="NavLinkMatch.All" Href="@url" Disabled="@Menu.IsDisabled"
+                       Target="@Menu.Target">
             <FluentLabel>@Menu.DisplayName</FluentLabel>
         </FluentNavLink>
     }
@@ -70,8 +71,8 @@
             {
                 await ExpandParentNavLink(parent.GetParent());
             }
-            await OnExpandParent.InvokeAsync();
 
+            await OnExpandParent.InvokeAsync();
         }
     }
 
