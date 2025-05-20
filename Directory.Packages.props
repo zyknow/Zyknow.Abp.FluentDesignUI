@@ -2,7 +2,7 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <!-- Core Framework Versions -->
-    <ABPPackageVersion>9.0.0</ABPPackageVersion>
+    <ABPPackageVersion>9.1.3</ABPPackageVersion>
     <MicrosoftAspNetCorePackageVersion>9.0.0</MicrosoftAspNetCorePackageVersion>
     <MicrosoftAspNetCoreWebPackageVersion>9.0.4</MicrosoftAspNetCoreWebPackageVersion>
     <MicrosoftExtensionsPackageVersion>9.0.0</MicrosoftExtensionsPackageVersion>
@@ -22,7 +22,7 @@
     <PackageVersion Include="AspNetCore.HealthChecks.UI.Client" Version="$(HealthChecksPackageVersion)" />
     <PackageVersion Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="$(HealthChecksPackageVersion)" />
     <PackageVersion Include="BlazorMonaco" Version="3.3.0" />
-    <PackageVersion Include="BlazorPro.BlazorSize" Version="$(ABPPackageVersion)" />
+    <PackageVersion Include="BlazorPro.BlazorSize" Version="9.0.0" />
     <!-- Microsoft.AspNetCore Related Packages -->
     <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="$(MicrosoftAspNetCoreWebPackageVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="$(MicrosoftAspNetCoreWebPackageVersion)" />

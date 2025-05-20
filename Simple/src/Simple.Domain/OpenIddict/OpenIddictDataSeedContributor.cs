@@ -229,7 +229,7 @@ public class OpenIddictDataSeedContributor(
             if (grantType == OpenIddictConstants.GrantTypes.DeviceCode)
             {
                 application.Permissions.Add(OpenIddictConstants.Permissions.GrantTypes.DeviceCode);
-                application.Permissions.Add(OpenIddictConstants.Permissions.Endpoints.Device);
+                application.Permissions.Add(OpenIddictConstants.Permissions.Endpoints.DeviceAuthorization);
             }
 
             if (grantType == OpenIddictConstants.GrantTypes.Implicit)
