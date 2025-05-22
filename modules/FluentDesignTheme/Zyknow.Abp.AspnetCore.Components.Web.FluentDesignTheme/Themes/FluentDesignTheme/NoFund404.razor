@@ -1,0 +1,61 @@
+﻿@page "/404"
+@using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
+@inherits Zyknow.Abp.FluentDesignUI.FluentAbpComponentBase
+@layout EmptyLayout
+<div class="not-found-container">
+    <div class="not-found-content">
+        <FluentIcon Value="@(new Size24.ErrorCircle())" Color="Color.Error"/>
+        <h1>404</h1>
+        <h2>页面未找到</h2>
+        <p>抱歉，您访问的页面不存在或已被移除。</p>
+        <FluentButton Appearance="Appearance.Accent" OnClick="NavigateToHome">
+            返回首页
+        </FluentButton>
+    </div>
+</div>
+
+<style>
+    .not-found-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-color: var(--neutral-layer-1);
+    }
+
+    .not-found-content {
+        text-align: center;
+        padding: 2rem;
+        background-color: var(--neutral-layer-2);
+        border-radius: 8px;
+        box-shadow: var(--shadow-4);
+        max-width: 500px;
+        width: 90%;
+    }
+
+    h1 {
+        font-size: 6rem;
+        margin: 1rem 0;
+        color: var(--neutral-foreground-1);
+    }
+
+    h2 {
+        font-size: 2rem;
+        margin: 0.5rem 0;
+        color: var(--neutral-foreground-1);
+    }
+
+    p {
+        color: var(--neutral-foreground-2);
+        margin: 1rem 0 2rem;
+    }
+</style>
+
+@code {
+
+    private void NavigateToHome()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+
+}

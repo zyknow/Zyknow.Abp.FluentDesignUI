@@ -5,6 +5,7 @@ using Volo.Abp.Modularity;
 using Volo.Abp.Ui.LayoutHooks;
 using Volo.Abp.UI.Navigation;
 using Volo.Abp.VirtualFileSystem;
+using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Routing;
 using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Themes.FluentDesignTheme;
 using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Toolbars;
 using Zyknow.Abp.FluentDesignUI;
@@ -67,6 +68,11 @@ public class AbpAspNetCoreComponentsWebFluentDesignThemeModule : AbpModule
             options.Resources
                 .Get<AbpUiResource>()
                 .AddVirtualJson("/Localization/Resources/Ui");
+        });
+
+        Configure<AbpRouterOptions>(options =>
+        {
+            options.AdditionalAssemblies.Add(typeof(AbpAspNetCoreComponentsWebFluentDesignThemeModule).Assembly);
         });
 
         context.Services.AddScoped<IBlazorStore>(provider => provider.GetRequiredService<IThemeStore>());
