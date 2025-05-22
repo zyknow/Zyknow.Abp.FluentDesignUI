@@ -1,4 +1,4 @@
-﻿namespace Zyknow.Abp.CmsKit.Blazor.Admin.FluentDesignUI;
+﻿namespace Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme;
 
 public static class LayoutConstants
 {
@@ -6,9 +6,4 @@ public static class LayoutConstants
     public const string Public = nameof(Public);
     public const string Empty = nameof(Empty);
     public const string Application = nameof(Application);
-
-    public static List<string> GetLayoutsSelectList()
-    {
-        return [Account, Public, Empty, Application];
-    }
 }

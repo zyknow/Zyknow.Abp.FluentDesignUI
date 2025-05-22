@@ -14,8 +14,10 @@
     }
     else
     {
+        var groupUrl = url.IsNullOrWhiteSpace() || url == "#" ? null : url;
         // TODO: Set Icon
-        <FluentNavGroup Icon="@GetIcon()" Expanded="@(Menu.GetExpanded())"
+        <FluentNavGroup Icon="GetIcon()" Match="NavLinkMatch.All" Href="@groupUrl" Disabled="@Menu.IsDisabled"
+                        Target="@Menu.Target" Expanded="@(Menu.GetExpanded())"
                         ExpandedChanged="@(v => Menu.SetExpanded(v))">
             <TitleTemplate>
                 <FluentLabel>@Menu.DisplayName</FluentLabel>
