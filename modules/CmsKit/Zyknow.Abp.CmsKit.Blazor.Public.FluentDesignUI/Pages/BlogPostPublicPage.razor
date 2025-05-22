@@ -1,0 +1,32 @@
+﻿@page "/blogs/{BlogSlug}/{BlogPostSlug}"
+@using Microsoft.AspNetCore.Components.Web
+@using Volo.Abp.Application.Dtos
+@using Volo.Abp.GlobalFeatures
+@using Volo.CmsKit.Blogs
+@using Volo.CmsKit.Contents
+@using Volo.CmsKit.GlobalFeatures
+@using Volo.CmsKit.Localization
+@using Volo.CmsKit.Public.Blogs
+@using Volo.CmsKit.Public.GlobalResources
+@using Volo.CmsKit.Users
+
+<HeadContent>
+    <style>@((MarkupString)@$"{GlobalStyleResource?.Value}")</style>
+
+    @* ReSharper disable once OtherTagsInsideScript1 *@
+    <script>@((MarkupString)@$"{GlobalScriptResource?.Value}")</script>
+</HeadContent>
+123
+
+@code {
+
+    protected const string DummyImageSource =
+        "_content/Zyknow.Abp.CmsKit.Blazor.Public.FluentDesignUI/cms-kit/dummy-placeholder-1280x720.png";
+
+    [CascadingParameter] public CmsKitRouter CmsKitRouter { get; set; }
+    [Parameter] public string BlogSlug { get; set; }
+    [Parameter] public string BlogPostSlug { get; set; }
+
+    public GlobalResourceDto? GlobalStyleResource => CmsKitRouter?.GlobalStyleResource;
+    public GlobalResourceDto? GlobalScriptResource => CmsKitRouter?.GlobalScriptResource;
+}

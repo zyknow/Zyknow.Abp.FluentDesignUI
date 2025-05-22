@@ -1,0 +1,227 @@
+﻿@page "/blogs/{BlogSlug}"
+@using Volo.Abp.Application.Dtos
+@using Volo.Abp.GlobalFeatures
+@using Volo.CmsKit.Blogs
+@using Volo.CmsKit.Contents
+@using Volo.CmsKit.GlobalFeatures
+@using Volo.CmsKit.Localization
+@using Volo.CmsKit.Public.Blogs
+@using Volo.CmsKit.Users
+@inherits FluentAbpComponentBase<CmsKitResource>
+
+<FluentAdaptiveCard>
+
+
+    <FluentStack Orientation="Orientation.Vertical">
+
+        @if (AuthorId != null)
+        {
+            <FluentAutocomplete Name="SelectedAuthor"
+                                AutoComplete="off"
+                                Label="@L["SelectedAuthor"]"
+                                TOption="CmsUserDto"
+                                ImmediateDelay="200"
+                                Width="100%"
+                                OptionStyle="min-width: 300px"
+                                OnOptionsSearch="@OnUsersSearch"
+                                Multiple="false"
+                                OptionText="@(dto => $@"{dto.Name}")"
+                                SelectedOption="@SelectedAuthor"
+                                SelectedOptionChanged="@(v =>
+                                                       {
+                                                           SelectedAuthor = v;
+                                                           InvokeAsync(GetBlogsAsync);
+                                                       })"/>
+        }
+
+        @if (TagId != null)
+        {
+            <FluentLabel Typo="Typography.H4">@L["Tags"]</FluentLabel>
+            <FluentBadge Appearance="Appearance.Accent">
+                @FilteredTagName
+            </FluentBadge>
+        }
+
+        @if (TagId != null && SelectedAuthor != null)
+        {
+            <FluentDivider Style="width: 100%;margin-bottom: 10px;margin-top: 10px"
+                           Orientation="Orientation.Horizontal"></FluentDivider>
+        }
+
+        @if (IsMarkedItemFeatureEnabled)
+        {
+            Icon icon = FilterOnFavorites == true
+                ? new Microsoft.FluentUI.AspNetCore.Components.Icons.Filled.Size16.Heart()
+                : new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.Heart();
+            <FluentButton OnClick="@(() =>
+                                   {
+                                       if (FilterOnFavorites == null)
+                                           FilterOnFavorites = false;
+                                       else
+                                           FilterOnFavorites = !FilterOnFavorites;
+                                       InvokeAsync(GetBlogsAsync);
+                                   })">
+                <FluentIcon Value="@icon" Color="Color.Custom" CustomColor="red" Slot="start"/>
+                @L["FilterOnFavorites"]
+            </FluentButton>
+        }
+
+        <FluentGrid Style="width:100%" Class="blogs-container">
+            @foreach (var blog in BlogPaged.Items)
+            {
+                <FluentGridItem sm="12" md="6" lg="4">
+                    <FluentStack Class="blogs-post-card fluent-border-card" Orientation="Orientation.Vertical"
+                                 VerticalGap="24">
+
+                        @if (blog.CoverImageMediaId != null)
+                        {
+                            <img src="@(@$"/api/cms-kit/media/{blog.CoverImageMediaId}")" class="card-img-top"
+                                 style="width:100%"
+                                 onerror="this.src='@DummyImageSource'" alt=""/>
+                        }
+                        else
+                        {
+                            <img src="@(DummyImageSource)?text=@blog.Title" style="width:100%" class="card-img-top"
+                                 alt=""/>
+                        }
+
+                        <FluentStack Orientation="Orientation.Vertical"
+                                     HorizontalAlignment="HorizontalAlignment.Stretch" VerticalGap="16">
+                            <FluentStack HorizontalAlignment="HorizontalAlignment.SpaceBetween"
+                                         VerticalAlignment="VerticalAlignment.Center">
+                                <FluentLabel Typo="Typography.Body">@blog.CreationTime.ToLongDateString()</FluentLabel>
+
+                                @if (IsMarkedItemFeatureEnabled)
+                                {
+                                    <MarkedItemToggle EntityId="@blog.Id.ToString()"
+                                                      EntityType="@BlogPostConsts.EntityType"/>
+                                }
+                            </FluentStack>
+
+                            <FluentPersona Name="@blog.Author.UserName"
+                                           ImageSize="30px"
+                                           StatusSize="PresenceBadgeSize.Small">
+                                <FluentAnchor Href="@(@$"/blogs/{BlogSlug}?{nameof(AuthorId)}={blog.Author.Id}")"
+                                              Appearance="Appearance.Hypertext">@@@blog.Author.UserName</FluentAnchor>
+                            </FluentPersona>
+
+                            <FluentLabel Typo="Typography.Subject" Style="display: -webkit-box;
+                               -webkit-box-orient: vertical;
+                               overflow: hidden;
+                               -webkit-line-clamp: 3;
+                               text-overflow: ellipsis;">
+                                @blog.ShortDescription
+                            </FluentLabel>
+
+                            <FluentDivider Style="width:100%"></FluentDivider>
+
+                            <FluentAnchor Href="@(@$"/blogs/{BlogSlug}/{blog.Slug}")">
+                                @L["Read"]
+                            </FluentAnchor>
+                        </FluentStack>
+                    </FluentStack>
+
+                </FluentGridItem>
+            }
+        </FluentGrid>
+
+    </FluentStack>
+</FluentAdaptiveCard>
+
+@code {
+
+    public const int PageSize = 12;
+
+    [Inject] public IBlogPostPublicAppService BlogPostPublicAppService { get; set; }
+    [Inject] public IBlogFeatureAppService BlogFeatureAppService { get; set; }
+
+    [Parameter] public string BlogSlug { get; set; }
+
+    [SupplyParameterFromQuery] public int CurrentPage { get; set; } = 1;
+
+    [SupplyParameterFromQuery] public Guid? AuthorId { get; set; }
+
+    [SupplyParameterFromQuery] public bool? FilterOnFavorites { get; set; }
+
+    [SupplyParameterFromQuery] public Guid? TagId { get; set; }
+
+    protected PagedResultDto<BlogPostCommonDto> BlogPaged { get; set; }
+
+    protected CmsUserDto? SelectedAuthor { get; set; }
+
+    protected string FilteredTagName { get; set; }
+    protected BlogFeatureDto MarkedItemsFeature { get; private set; }
+
+    protected bool Loading { get; set; } = false;
+
+    protected bool IsMarkedItemFeatureEnabled { get; set; }
+
+    protected const string DummyImageSource =
+        "_content/Zyknow.Abp.CmsKit.Blazor.Public.FluentDesignUI/cms-kit/dummy-placeholder-320x180.png";
+
+    protected override async Task OnInitializedAsync()
+    {
+        IsMarkedItemFeatureEnabled = GlobalFeatureManager.Instance.IsEnabled<MarkedItemsFeature>();
+
+        if (AuthorId != null)
+        {
+            SelectedAuthor = await BlogPostPublicAppService.GetAuthorHasBlogPostAsync(AuthorId.Value);
+        }
+
+        await GetBlogsAsync();
+
+        if (TagId is not null)
+        {
+            FilteredTagName = await BlogPostPublicAppService.GetTagNameAsync(TagId.Value);
+        }
+
+        if (IsMarkedItemFeatureEnabled &&
+            BlogPaged.Items.Any())
+        {
+            var blogId = BlogPaged.Items.First().BlogId;
+            MarkedItemsFeature =
+                await BlogFeatureAppService.GetOrDefaultAsync(blogId, Volo.CmsKit.GlobalFeatures.MarkedItemsFeature.Name);
+        }
+    }
+
+    protected async Task GetBlogsAsync()
+    {
+        if (CurrentPage == 0)
+            CurrentPage = 1;
+        Loading = true;
+        try
+        {
+            BlogPaged = await BlogPostPublicAppService.GetListAsync(
+                BlogSlug,
+                new BlogPostGetListInput
+                {
+                    SkipCount = PageSize * (CurrentPage - 1),
+                    MaxResultCount = PageSize,
+                    AuthorId = SelectedAuthor?.Id,
+                    TagId = TagId,
+                    FilterOnFavorites = FilterOnFavorites
+                });
+        }
+        catch (Exception e)
+        {
+            await HandleErrorAsync(e);
+        }
+        finally
+        {
+            Loading = false;
+        }
+    }
+
+
+    protected virtual async Task OnUsersSearch(OptionsSearchEventArgs<CmsUserDto> arg)
+    {
+        arg.Text = arg.Text.Trim();
+        var result = await BlogPostPublicAppService.GetAuthorsHasBlogPostsAsync(new()
+        {
+            Filter = arg.Text,
+            MaxResultCount = 20
+        });
+        arg.Items = result.Items;
+    }
+
+}

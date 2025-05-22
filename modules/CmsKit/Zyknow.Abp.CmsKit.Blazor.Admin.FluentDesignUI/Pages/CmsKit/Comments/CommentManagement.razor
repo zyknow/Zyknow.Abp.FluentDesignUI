@@ -5,6 +5,7 @@
 @using Volo.CmsKit.Admin.Blogs
 @using Volo.CmsKit.Blogs
 @using Volo.CmsKit.Permissions
+@using Size20 = Microsoft.FluentUI.AspNetCore.Components.Icons.Filled.Size20
 @using TKey = Guid
 @using TGetListOutputDto = Volo.CmsKit.Admin.Comments.CommentWithAuthorDto
 @using TGetListInput = Volo.CmsKit.Admin.Comments.CommentGetListInput
@@ -146,7 +147,14 @@
                     Title = L["URL"],
                     Sortable = true,
                     Data = nameof(TGetListOutputDto.Url),
-                    PropertyName = nameof(TGetListOutputDto.Url)
+                    PropertyName = nameof(TGetListOutputDto.Url),
+                    CustomRender = (data) =>
+                    {
+                        var entity = data.As<TGetListOutputDto>();
+                        return @<div>
+                            <FluentIcon Value="@(new Size20.Cursor())" OnClick="@(() => GotoUrlPageAsync(entity.Url))"/>
+                        </div>;
+                    }
                 },
                 new FluentTableColumn
                 {
@@ -207,6 +215,13 @@
     }
 
     protected Task AppServiceDeleteAsync(Guid id) => AppService.DeleteAsync(id);
+
+
+    protected void GotoUrlPageAsync(string url)
+    {
+        NavigationManager.NavigateTo(url, forceLoad: true);
+    }
+
 
 }
 

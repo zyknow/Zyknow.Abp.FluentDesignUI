@@ -1,0 +1,39 @@
+﻿@using Volo.CmsKit.Localization
+
+@if (MarkedItem.IsMarkedByCurrentUser)
+{
+    <FluentIcon Id="@_iconId" Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Filled.Size24.Heart())"
+                Color="Color.Custom" CustomColor="red" OnClick="ToggleMarkedItemAsync"></FluentIcon>
+}
+else
+{
+    <FluentIcon Id="@_iconId" Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size24.Heart())"
+                Color="Color.Custom" CustomColor="red" OnClick="ToggleMarkedItemAsync"></FluentIcon>
+}
+
+<FluentTooltip Anchor="@_iconId">
+    @L["ToggleFavorite"]
+</FluentTooltip>
+
+@code {
+    [Parameter] public string EntityType { get; set; }
+    [Parameter] public string EntityId { get; set; }
+    [Inject] public IMarkedItemPublicAppService MarkedItemPublicAppService { get; set; }
+    [Inject] public IStringLocalizer<CmsKitResource> L { get; set; }
+
+    MarkedItemWithToggleDto MarkedItem { get; set; }
+
+    string _iconId = Guid.NewGuid().ToString();
+
+    protected override async Task OnInitializedAsync()
+    {
+        MarkedItem = await MarkedItemPublicAppService.GetForUserAsync(EntityType, EntityId);
+    }
+
+    protected async Task ToggleMarkedItemAsync()
+    {
+        MarkedItem.IsMarkedByCurrentUser = await MarkedItemPublicAppService.ToggleAsync(EntityType, EntityId);
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

@@ -1,0 +1,15 @@
+.card-img-top {
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 0.5rem;
+    border: calc(var(--stroke-width) * 1px) solid var(--neutral-layer-4);
+}
+
+.blogs-post-card {
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    transition: box-shadow 0.2s ease;
+}
+
+.blogs-post-card:hover {
+    box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.5);
+}

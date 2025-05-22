@@ -1,5 +1,4 @@
 ﻿@page "/Cms/BlogPosts/Edit/{Id:guid}"
-@inherits Volo.Abp.AspNetCore.Components.AbpComponentBase
 @using Localization.Resources.AbpUi
 @using Volo.Abp.Content
 @using Volo.CmsKit.Admin.Blogs
@@ -9,6 +8,7 @@
 @using Volo.CmsKit.Tags
 @using TInput = Volo.CmsKit.Admin.Blogs.UpdateBlogPostDto
 @using TResource = Volo.CmsKit.Localization.CmsKitResource
+@inherits FluentAbpComponentBase<TResource>
 
 <FluentAdaptiveCard>
     <div style="padding-bottom: 10px">
@@ -45,7 +45,8 @@
                     }
 
 
-                    <FluentTextField Required Style="width: 100%" Label="@L["Title"]" @bind-Value="@UpdateEntity.Title"/>
+                    <FluentTextField Required Style="width: 100%" Label="@L["Title"]"
+                                     @bind-Value="@UpdateEntity.Title"/>
                     <FluentValidationMessage For="@(() => UpdateEntity.Title)"/>
 
                     <FluentTextField Required Style="width: 100%" Label="@L["Slug"]" @bind-Value="@UpdateEntity.Slug"/>
@@ -75,13 +76,10 @@
 
     [Inject] protected IBlogPostAdminAppService AppService { get; set; }
     [Inject] protected IMediaDescriptorAdminAppService MediaDescriptorAdminAppService { get; set; }
-    [Inject] protected NavigationManager NavigationManager { get; set; }
     [Inject] protected IBlogAdminAppService BlogAdminAppService { get; set; }
     [Inject] protected IStringLocalizer<AbpUiResource> UL { get; set; }
     [Inject] protected IEntityTagAdminAppService EntityTagAdminAppService { get; set; }
     [Inject] protected ITagAppService TagAppService { get; set; }
-
-    [Inject] protected AbpBlazorMessageLocalizerHelper<TResource> LH { get; set; }
 
     public UpdateBlogPostDto UpdateEntity { get; set; } = null!;
 
@@ -97,7 +95,7 @@
     {
         var post = await AppService.GetAsync(Id);
         UpdateEntity = ObjectMapper.Map<BlogPostDto, UpdateBlogPostDto>(post);
-        var tags = await TagAppService.GetAllRelatedTagsAsync("BlogPost", Id.ToString());
+        var tags = await TagAppService.GetAllRelatedTagsAsync(BlogPostConsts.EntityType, Id.ToString());
         FormTitle = $"{L["Edit"]}{@L["BlogPosts"]} - {UpdateEntity.Title}";
 
         if (!tags.IsNullOrEmpty())
@@ -131,7 +129,7 @@
         BlogPostDto entity = default!;
         if (CoverImageStream != null && CoverImageStream.Length > 0)
         {
-            var mediaDto = await MediaDescriptorAdminAppService.CreateAsync("BlogPost", new CreateMediaInputWithStream()
+            var mediaDto = await MediaDescriptorAdminAppService.CreateAsync(BlogPostConsts.EntityType, new CreateMediaInputWithStream()
             {
                 File = new RemoteStreamContent(CoverImageStream),
                 Name = FileName,
@@ -150,7 +148,7 @@
             await EntityTagAdminAppService.SetEntityTagsAsync(new EntityTagSetDto()
             {
                 Tags = tagNames,
-                EntityType = "BlogPost",
+                EntityType = BlogPostConsts.EntityType,
                 EntityId = entity.Id.ToString()
             });
         }

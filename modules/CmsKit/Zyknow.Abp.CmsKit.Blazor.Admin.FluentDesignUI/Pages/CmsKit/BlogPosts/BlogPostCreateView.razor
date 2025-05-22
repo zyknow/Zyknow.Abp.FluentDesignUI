@@ -3,12 +3,13 @@
 @using Volo.Abp.Content
 @using TInput = Volo.CmsKit.Admin.Blogs.CreateBlogPostDto
 @using TResource = Volo.CmsKit.Localization.CmsKitResource
-@inherits AbpComponentBase
 @using Volo.CmsKit.Admin.Blogs
 @using Volo.CmsKit.Admin.MediaDescriptors
 @using Volo.CmsKit.Admin.Tags
 @using Volo.CmsKit.Permissions
 @using Volo.CmsKit.Blogs
+@inherits FluentAbpComponentBase<TResource>
+
 
 <FluentAdaptiveCard>
     <div style="padding-bottom: 10px">
@@ -21,12 +22,11 @@
 
             <ChildContent>
                 <FluentStack Orientation="Orientation.Vertical">
-                    <FluentInputFile
-                        DragDropZoneVisible="false"
-                        Mode="InputFileMode.Stream"
-                        AnchorId="UploadStream"
-                        Accept=".jpg, .jpeg, .png, .webp, .gif"
-                        OnFileUploaded="@OnCoverUploadedAsync"/>
+                    <FluentInputFile DragDropZoneVisible="false"
+                                     Mode="InputFileMode.Stream"
+                                     AnchorId="UploadStream"
+                                     Accept=".jpg, .jpeg, .png, .webp, .gif"
+                                     OnFileUploaded="@OnCoverUploadedAsync" />
 
                     <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center"
                                  Style="margin-bottom: 10px">
@@ -36,37 +36,36 @@
                         <FluentLabel>@FileName</FluentLabel>
                     </FluentStack>
 
-                    <FluentAutocomplete
-                        Required
-                        Name="blogs"
-                        AutoComplete="off"
-                        Field="@(new FieldIdentifier(CreateEntity, nameof(CreateEntity.BlogId)))"
-                        Autofocus="true"
-                        Label="@L["Blogs"]"
-                        TOption="BlogDto"
-                        ImmediateDelay="200"
-                        Width="300px"
-                        OnOptionsSearch="@OnOptionsSearch"
-                        Multiple="false"
-                        OptionText="@(dto => $@"{dto.Name}")"
-                        @bind-SelectedOption="SelectedBlog"/>
+                    <FluentAutocomplete Required
+                                        Name="blogs"
+                                        AutoComplete="off"
+                                        Field="@(new FieldIdentifier(CreateEntity, nameof(CreateEntity.BlogId)))"
+                                        Autofocus="true"
+                                        Label="@L["Blogs"]"
+                                        TOption="BlogDto"
+                                        ImmediateDelay="200"
+                                        Width="300px"
+                                        OnOptionsSearch="@OnOptionsSearch"
+                                        Multiple="false"
+                                        OptionText="@(dto => $@"{dto.Name}")"
+                                        @bind-SelectedOption="SelectedBlog" />
 
                     <FluentTextField Required Style="width: 100%" Label="@L["Title"]" Value="@CreateEntity.Title"
-                                     ValueChanged="@SetTitle"/>
-                    <FluentValidationMessage For="@(() => CreateEntity.Title)"/>
+                                     ValueChanged="@SetTitle" />
+                    <FluentValidationMessage For="@(() => CreateEntity.Title)" />
 
-                    <FluentTextField Required Style="width: 100%" Label="@L["Slug"]" @bind-Value="@CreateEntity.Slug"/>
-                    <FluentValidationMessage For="@(() => CreateEntity.Slug)"/>
+                    <FluentTextField Required Style="width: 100%" Label="@L["Slug"]" @bind-Value="@CreateEntity.Slug" />
+                    <FluentValidationMessage For="@(() => CreateEntity.Slug)" />
 
                     <FluentTextField Style="width: 100%" Label="@L["ShortDescription"]"
-                                     @bind-Value="@CreateEntity.ShortDescription"/>
-                    <FluentValidationMessage For="@(() => CreateEntity.ShortDescription)"/>
+                                     @bind-Value="@CreateEntity.ShortDescription" />
+                    <FluentValidationMessage For="@(() => CreateEntity.ShortDescription)" />
 
                     <FluentTextField Style="width: 100%" Label="@($@"{@L["CmsKit.Tags"]} - ({@L["TagsHelpText"]})")"
-                                     @bind-Value="@TagNameString"/>
+                                     @bind-Value="@TagNameString" />
 
                     <ExtensionProperties TEntityType="TInput" TResourceType="TResource"
-                                         Entity="@CreateEntity" LH="@LH"/>
+                                         Entity="@CreateEntity" LH="@LH" />
 
                     <CmsKitEditor @bind-Value="@CreateEntity.Content"></CmsKitEditor>
 
@@ -78,19 +77,19 @@
                 <FluentStack HorizontalAlignment="HorizontalAlignment.End" VerticalAlignment="VerticalAlignment.Bottom">
                     <FluentButton Loading="@FormRef.Loading" Appearance="Appearance.Outline"
                                   OnClick="@(() =>
-                                           {
-                                               Status = BlogPostStatus.Draft;
-                                               FormRef.OnSubmitBtnClickAsync();
-                                           })">@L["SaveAsDraft"]</FluentButton>
+                                                                             {
+                                                                                 Status = BlogPostStatus.Draft;
+                                                                                 FormRef.OnSubmitBtnClickAsync();
+                                                                             })">@L["SaveAsDraft"]</FluentButton>
                     @if (CanPublish)
                     {
                         <FluentButton Loading="@FormRef.Loading" Appearance="Appearance.Accent"
                                       OnClick="@(() =>
-                                               {
-                                                   Status = BlogPostStatus.Published;
-                                                   FormRef.OnSubmitBtnClickAsync();
-                                               })">@L["Publish"]</FluentButton>
-                    }
+                                                                                     {
+                                                                                         Status = BlogPostStatus.Published;
+                                                                                         FormRef.OnSubmitBtnClickAsync();
+                                                                                     })">@L["Publish"]</FluentButton>
+                                        }
                 </FluentStack>
             </Footer>
         </AbpFluentForm>
@@ -102,10 +101,8 @@
     [Inject] protected IEntityTagAdminAppService EntityTagAdminAppService { get; set; }
     [Inject] protected IBlogPostAdminAppService AppService { get; set; }
     [Inject] protected IMediaDescriptorAdminAppService MediaDescriptorAdminAppService { get; set; }
-    [Inject] protected NavigationManager NavigationManager { get; set; }
     [Inject] protected IBlogAdminAppService BlogAdminAppService { get; set; }
     [Inject] protected IStringLocalizer<AbpUiResource> UL { get; set; }
-    [Inject] protected AbpBlazorMessageLocalizerHelper<TResource> LH { get; set; }
 
     protected bool CanPublish = false;
 
@@ -164,7 +161,7 @@
         BlogPostDto createdDto = default!;
         if (CoverImageStream != null && CoverImageStream.Length > 0)
         {
-            var mediaDto = await MediaDescriptorAdminAppService.CreateAsync("BlogPost", new CreateMediaInputWithStream()
+            var mediaDto = await MediaDescriptorAdminAppService.CreateAsync(BlogPostConsts.EntityType, new CreateMediaInputWithStream()
             {
                 File = new RemoteStreamContent(CoverImageStream),
                 Name = FileName,
@@ -190,7 +187,7 @@
             await EntityTagAdminAppService.SetEntityTagsAsync(new EntityTagSetDto()
             {
                 Tags = tagNames,
-                EntityType = "BlogPost",
+                EntityType = BlogPostConsts.EntityType,
                 EntityId = createdDto.Id.ToString()
             });
         }

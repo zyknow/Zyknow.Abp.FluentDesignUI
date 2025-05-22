@@ -29,7 +29,7 @@
     {
         _definitions = await AppService.GetTagDefinitionsAsync();
         if (Content.EntityType.IsNullOrWhiteSpace())
-            Content.EntityType = "BlogPost";
+            Content.EntityType = BlogPostConsts.EntityType;
     }
 
 }

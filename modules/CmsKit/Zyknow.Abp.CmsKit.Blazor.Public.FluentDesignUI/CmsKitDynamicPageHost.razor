@@ -3,6 +3,7 @@
 @using Microsoft.AspNetCore.Components.Web
 @using Microsoft.Extensions.Logging
 @using Microsoft.Extensions.Options
+@using Volo.CmsKit.Public.GlobalResources
 @using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Themes.FluentDesignTheme
 @inherits FluentAbpComponentBase
 @page "/{**Url}"
@@ -16,15 +17,9 @@
             <title>@Page.Title</title>
         }
 
-        if (!string.IsNullOrWhiteSpace(Page?.Style))
-        {
-            <style>@((MarkupString)Page.Style)</style>
-        }
+        <style>@((MarkupString)@$"{Page?.Style} {GlobalStyleResource?.Value}")</style>
 
-        if (!string.IsNullOrWhiteSpace(Page?.Script))
-        {
-            <script>@((MarkupString)Page.Script)</script>
-        }
+        <script>@((MarkupString)@$"{Page?.Script} {GlobalScriptResource?.Value}")</script>
     }
 
 </HeadContent>
@@ -36,13 +31,13 @@
     </CmsKitDynamicPageCard>
 }
 
-
-
 @code {
 
     [Parameter] public string Url { get; set; }
     [CascadingParameter] public CmsKitRouter CmsKitRouter { get; set; }
     public PageDto? Page => CmsKitRouter?.Page;
+    public GlobalResourceDto? GlobalStyleResource => CmsKitRouter?.GlobalStyleResource;
+    public GlobalResourceDto? GlobalScriptResource => CmsKitRouter?.GlobalScriptResource;
 
     protected override void OnInitialized()
     {

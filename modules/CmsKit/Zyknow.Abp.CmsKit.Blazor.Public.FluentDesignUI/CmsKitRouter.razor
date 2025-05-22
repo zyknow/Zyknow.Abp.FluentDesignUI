@@ -4,6 +4,8 @@
 @using Volo.Abp.Features
 @using Volo.Abp.GlobalFeatures
 @using Volo.CmsKit.Contents
+@using Volo.CmsKit.GlobalFeatures
+@using Volo.CmsKit.Public.GlobalResources
 @using Volo.CmsKit.Public.Pages
 @using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Themes.FluentDesignTheme
 @inject IPagePublicAppService PageService
@@ -45,8 +47,13 @@
 
     [Inject] protected ILogger<CmsKitRouter> Logger { get; set; } = null!;
 
+    [Inject] protected IGlobalResourcePublicAppService GlobalResourceService { get; set; } = null!;
+
     public PageDto? Page { get; set; }
     public Type CurrentLayout => _layout ?? typeof(DefaultLayout);
+
+    public GlobalResourceDto? GlobalStyleResource { get; set; }
+    public GlobalResourceDto? GlobalScriptResource { get; set; }
 
     private string _currentSlug;
     bool _hasDynamicHomePage;
@@ -62,11 +69,10 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _isCmsPageEnabled = GlobalFeatureManager.Instance.IsEnabled(Volo.CmsKit.GlobalFeatures.PagesFeature.Name);
+        _isCmsPageEnabled = GlobalFeatureManager.Instance.IsEnabled<PagesFeature>();
 
         if (!_isCmsPageEnabled)
             return;
-
         try
         {
             _hasDynamicHomePage = (await PageService.FindDefaultHomePageAsync()) != null;
@@ -100,7 +106,13 @@
                 Page = await PageService.FindBySlugAsync(_currentSlug);
             }
 
-            _layout = ThemeOptions.Value.GetLayout(Page.LayoutName).Type;
+            if (Page != null && GlobalStyleResource == null && GlobalScriptResource == null)
+            {
+                await GetGlobalResourceAsync();
+            }
+
+
+            _layout = ThemeOptions.Value.GetLayout(Page?.LayoutName!).Type;
         }
         catch (Exception e)
         {
@@ -108,6 +120,19 @@
         }
         finally
         {
+        }
+    }
+
+    async Task GetGlobalResourceAsync()
+    {
+        try
+        {
+            GlobalScriptResource = await GlobalResourceService.GetGlobalScriptAsync();
+            GlobalStyleResource = await GlobalResourceService.GetGlobalStyleAsync();
+        }
+        catch (Exception e)
+        {
+            Logger.LogError(e, e.Message);
         }
     }
 
