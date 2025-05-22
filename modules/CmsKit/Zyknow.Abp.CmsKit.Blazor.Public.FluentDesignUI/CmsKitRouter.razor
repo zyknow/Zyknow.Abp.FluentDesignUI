@@ -1,0 +1,114 @@
+﻿@using System.Reflection
+@using Microsoft.Extensions.Logging
+@using Microsoft.Extensions.Options
+@using Volo.Abp.Features
+@using Volo.Abp.GlobalFeatures
+@using Volo.CmsKit.Contents
+@using Volo.CmsKit.Public.Pages
+@using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Themes.FluentDesignTheme
+@inject IPagePublicAppService PageService
+<CascadingValue Value="this" IsFixed="true">
+    <Router
+        AppAssembly="@AppAssembly"
+        AdditionalAssemblies="@AdditionalAssemblies"
+        OnNavigateAsync="OnNavigateAsync">
+        <Found Context="routeData">
+            @{
+                var currentRouteData = (_hasDynamicHomePage && _currentSlug.IsNullOrWhiteSpace() ? _homeRouteData : routeData)!;
+
+                if (PageFound != null)
+                {
+                    PageFound(new CmsKitRouterData(currentRouteData, CurrentLayout));
+                }
+                else
+                {
+                    <AuthorizeRouteView RouteData="currentRouteData"
+                                        DefaultLayout="CurrentLayout">
+                        <NotAuthorized>
+                            <RedirectToLogin/>
+                        </NotAuthorized>
+                    </AuthorizeRouteView>
+                }
+            }
+        </Found>
+    </Router>
+</CascadingValue>
+
+@code {
+    [Parameter, EditorRequired] public Assembly AppAssembly { get; set; }
+
+    [Parameter] public IEnumerable<Assembly> AdditionalAssemblies { get; set; }
+
+    [Parameter] public RenderFragment<CmsKitRouterData>? PageFound { get; set; }
+
+    [Inject] protected IOptions<AbpFluentDesignThemeOptions> ThemeOptions { get; set; } = null!;
+
+    [Inject] protected ILogger<CmsKitRouter> Logger { get; set; } = null!;
+
+    public PageDto? Page { get; set; }
+    public Type CurrentLayout => _layout ?? typeof(DefaultLayout);
+
+    private string _currentSlug;
+    bool _hasDynamicHomePage;
+    Type? _layout;
+
+    private readonly RouteData _homeRouteData = new(typeof(CmsKitDynamicPageHost),
+        new Dictionary<string, object>
+        {
+            ["Url"] = "/"
+        }!);
+
+    private bool _isCmsPageEnabled;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _isCmsPageEnabled = GlobalFeatureManager.Instance.IsEnabled(Volo.CmsKit.GlobalFeatures.PagesFeature.Name);
+
+        if (!_isCmsPageEnabled)
+            return;
+
+        try
+        {
+            _hasDynamicHomePage = (await PageService.FindDefaultHomePageAsync()) != null;
+        }
+        catch (Exception e)
+        {
+        }
+    }
+
+    private async Task OnNavigateAsync(NavigationContext args)
+    {
+        _currentSlug = args.Path;
+        await SetPageAsync();
+    }
+
+    async Task SetPageAsync()
+    {
+        _layout = null;
+        Page = null;
+        try
+        {
+            if (_currentSlug.IsNullOrWhiteSpace())
+            {
+                Page = await PageService.FindDefaultHomePageAsync();
+            }
+            else
+            {
+                if (!(await PageService.DoesSlugExistAsync(_currentSlug)))
+                    return;
+
+                Page = await PageService.FindBySlugAsync(_currentSlug);
+            }
+
+            _layout = ThemeOptions.Value.GetLayout(Page.LayoutName).Type;
+        }
+        catch (Exception e)
+        {
+            Logger.LogError(e, e.Message);
+        }
+        finally
+        {
+        }
+    }
+
+}

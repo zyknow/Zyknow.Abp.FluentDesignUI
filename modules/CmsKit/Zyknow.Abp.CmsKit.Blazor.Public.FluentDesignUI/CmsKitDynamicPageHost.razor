@@ -1,0 +1,55 @@
+﻿@using Volo.CmsKit.Contents
+@using Volo.CmsKit.Public.Pages
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.Extensions.Logging
+@using Microsoft.Extensions.Options
+@using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Themes.FluentDesignTheme
+@inherits FluentAbpComponentBase
+@page "/{**Url}"
+
+<HeadContent>
+    @* ReSharper disable once OtherTagsInsideScript1 *@
+    @if (Page != null)
+    {
+        if (!string.IsNullOrWhiteSpace(Page?.Title))
+        {
+            <title>@Page.Title</title>
+        }
+
+        if (!string.IsNullOrWhiteSpace(Page?.Style))
+        {
+            <style>@((MarkupString)Page.Style)</style>
+        }
+
+        if (!string.IsNullOrWhiteSpace(Page?.Script))
+        {
+            <script>@((MarkupString)Page.Script)</script>
+        }
+    }
+
+</HeadContent>
+
+@if (Page != null)
+{
+    <CmsKitDynamicPageCard>
+        @((MarkupString)Page.Content)
+    </CmsKitDynamicPageCard>
+}
+
+
+
+@code {
+
+    [Parameter] public string Url { get; set; }
+    [CascadingParameter] public CmsKitRouter CmsKitRouter { get; set; }
+    public PageDto? Page => CmsKitRouter?.Page;
+
+    protected override void OnInitialized()
+    {
+        if (Page == null)
+        {
+            NavigationManager.NavigateTo("404");
+        }
+    }
+
+}
