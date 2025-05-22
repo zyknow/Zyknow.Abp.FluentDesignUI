@@ -86,7 +86,14 @@
                         }
                         else
                         {
-                            if (column.Component != null)
+                            if (column.CustomRender != null)
+                            {
+                                <TemplateColumn Title="@column.Title" Sortable="@column.Sortable"
+                                                SortBy="@(new ColumnKeyGridSort<TItem>(column.PropertyName))">
+                                    @column.CustomRender.Invoke(context!)
+                                </TemplateColumn>
+                            }
+                            else if (column.Component != null)
                             {
                                 <TemplateColumn Title="@column.Title" Sortable="@column.Sortable"
                                                 SortBy="@(new ColumnKeyGridSort<TItem>(column.PropertyName))">

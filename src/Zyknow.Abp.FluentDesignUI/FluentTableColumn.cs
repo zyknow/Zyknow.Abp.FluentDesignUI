@@ -1,4 +1,5 @@
-﻿using Volo.Abp.AspNetCore.Components.Web.Extensibility.TableColumns;
+﻿using Microsoft.AspNetCore.Components;
+using Volo.Abp.AspNetCore.Components.Web.Extensibility.TableColumns;
 
 namespace Zyknow.Abp.FluentDesignUI;
 
@@ -11,4 +12,6 @@ public class FluentTableColumn : TableColumn
     public bool CanHidden { get; set; } = true;
 
     public bool IsCheckIcon { get; set; }
+
+    public Func<object, RenderFragment>? CustomRender { get; set; }
 }
