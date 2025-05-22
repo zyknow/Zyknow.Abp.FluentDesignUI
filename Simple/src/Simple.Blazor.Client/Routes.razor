@@ -2,15 +2,10 @@
 @using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Routing
 @using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Themes.FluentDesignTheme
 @using BlazorPro.BlazorSize
+@using Zyknow.Abp.CmsKit.Blazor.Public.FluentDesignUI
 @inject IOptions<AbpRouterOptions> RouterOptions
 <MediaQueryList>
-    <Router AppAssembly="typeof(Program).Assembly" AdditionalAssemblies="RouterOptions.Value.AdditionalAssemblies">
-        <Found Context="routeData">
-            <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(DefaultLayout)">
-                <NotAuthorized>
-                    <RedirectToLogin/>
-                </NotAuthorized>
-            </AuthorizeRouteView>
-        </Found>
-    </Router>
+    <CmsKitRouter AppAssembly="typeof(Program).Assembly"
+                  AdditionalAssemblies="RouterOptions.Value.AdditionalAssemblies">
+    </CmsKitRouter>
 </MediaQueryList>
