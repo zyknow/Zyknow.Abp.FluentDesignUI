@@ -1,4 +1,5 @@
-﻿@using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
+﻿@using Microsoft.Extensions.Options
+@using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
 @using Volo.CmsKit.Permissions
 @using TKey = Guid
 @using TInput = Volo.CmsKit.Admin.Pages.CreatePageInputDto
@@ -21,7 +22,7 @@
         <FluentTextField Required @bind-Value="CreateEntity.Slug" Label="@L["Slug"]"/>
         <FluentValidationMessage For="@(() => CreateEntity.Slug)"></FluentValidationMessage>
 
-        <FluentSelect Required TOption="string" Items="@LayoutConstants.GetLayoutsSelectList()"
+        <FluentSelect Required TOption="string" Items="@ThemeOptions.Value.GetLayoutsSelectList()"
                       @bind-Value="CreateEntity.LayoutName" Label="@L["SelectLayout"]"/>
         <FluentValidationMessage For="@(() => CreateEntity.LayoutName)"></FluentValidationMessage>
 
@@ -53,6 +54,7 @@
 @code {
 
     [Inject] protected TAppService AppService { get; set; }
+    [Inject] protected IOptions<AbpFluentDesignThemeOptions> ThemeOptions { get; set; }
 
     AbpFluentForm<TInput> FormRef { get; set; }
 
