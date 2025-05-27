@@ -1,0 +1,8 @@
+﻿<div class="dynamic-page-layout">
+    <FluentAdaptiveCard>
+        @ChildContent
+    </FluentAdaptiveCard>
+</div>
+@code {
+    [Parameter] public RenderFragment ChildContent { get; set; }
+}

@@ -1,0 +1,22 @@
+﻿@using Volo.CmsKit.Localization
+@using Volo.CmsKit.Public.Ratings
+@if (Ratings?.Any() == true)
+{
+    <FluentStack Style="max-width: 300px" HorizontalAlignment="HorizontalAlignment.End"
+                 VerticalAlignment="VerticalAlignment.Center">
+
+        <FluentLabel>@L["RatingTotal"]  @Ratings.Count</FluentLabel>
+
+        <FluentLabel>•</FluentLabel>
+        <FluentLabel>@L["Rating"] </FluentLabel>
+        <FluentBadge Appearance="Appearance.Neutral" Fill="highlight" BackgroundColor="#ffd800;"
+                     Color="#000">
+            <FluentLabel Typo="Typography.H5">@Ratings.Average(x => x.StarCount)</FluentLabel>
+        </FluentBadge>
+    </FluentStack>
+}
+
+@code {
+    [Parameter] public List<RatingWithStarCountDto> Ratings { get; set; }
+    [Inject] protected IStringLocalizer<CmsKitResource> L { get; set; }
+}

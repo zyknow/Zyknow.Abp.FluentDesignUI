@@ -1,0 +1,83 @@
+﻿@using Volo.Abp.Users
+@using Volo.CmsKit.Contents
+@using Volo.CmsKit.Localization
+<div style="width: 100%;height: 100%;">
+    <FluentStack Class="blogs-post-card fluent-border-card" Orientation="Orientation.Vertical"
+                 VerticalGap="24" VerticalAlignment="VerticalAlignment.SpaceBetween">
+
+        <div
+            style="background: var(--neutral-layer-1);border-radius: 0.5rem;padding: 1.5rem 1rem 1.5rem 1rem">
+            @if (Post.CoverImageMediaId != null)
+            {
+                <img src="@(@$"/api/cms-kit/media/{Post.CoverImageMediaId}")" class="card-img-top"
+                     style="width:100%"
+                     onerror="this.src='@DummyImageSource'" alt=""/>
+            }
+            else
+            {
+                <img src="@(DummyImageSource)?text=@Post.Title" style="width:100%"
+                     class="card-img-top"
+                     alt=""/>
+            }
+        </div>
+
+        <FluentStack Orientation="Orientation.Vertical"
+                     HorizontalAlignment="HorizontalAlignment.Stretch" VerticalGap="16">
+            <FluentStack HorizontalAlignment="HorizontalAlignment.SpaceBetween"
+                         VerticalAlignment="VerticalAlignment.Center">
+                <FluentLabel
+                    Typo="Typography.Body">@Post.CreationTime.ToLongDateString()</FluentLabel>
+
+                @if (IsMarkedItemFeatureEnabled && CurrentUser.IsAuthenticated)
+                {
+                    <EntityMarkedToggle EntityId="@Post.Id.ToString()"
+                                      EntityType="@BlogPostConsts.EntityType"/>
+                }
+            </FluentStack>
+
+            <FluentLabel Typo="Typography.H4" Style="display: -webkit-box;
+                               -webkit-box-orient: vertical;
+                               overflow: hidden;
+                               -webkit-line-clamp: 3;
+                               text-overflow: ellipsis;">
+                @Post.Title
+            </FluentLabel>
+
+            <CmsBlogAuthor Author="@Post.Author" BlogSlug="@BlogSlug"/>
+
+            <FluentLabel Typo="Typography.Subject" Style="display: -webkit-box;
+                               -webkit-box-orient: vertical;
+                               overflow: hidden;
+                               -webkit-line-clamp: 3;
+                               text-overflow: ellipsis;">
+                @Post.ShortDescription
+            </FluentLabel>
+        </FluentStack>
+
+        <FluentDivider Style="width:100%"></FluentDivider>
+        <FluentButton Style="width: 100%" OnClick="@(() => GotoBlogPostPageAsync(Post))">
+            @L["Read"]
+        </FluentButton>
+    </FluentStack>
+</div>
+
+@code {
+
+    [Parameter] public BlogPostCommonDto Post { get; set; }
+    [Parameter] public string BlogSlug { get; set; }
+    [Parameter] public bool IsMarkedItemFeatureEnabled { get; set; }
+    
+    [Inject] protected ICurrentUser CurrentUser { get; set; }
+    [Inject] protected NavigationManager NavigationManager { get; set; }
+    [Inject] protected IStringLocalizer<CmsKitResource> L { get; set; }
+
+    protected const string DummyImageSource =
+        "_content/Zyknow.Abp.CmsKit.Blazor.Public.FluentDesignUI/cms-kit/dummy-placeholder-320x180.png";
+
+    async Task GotoBlogPostPageAsync(BlogPostCommonDto post)
+    {
+        var url = $"/blogs/{BlogSlug}/{post.Slug}";
+        NavigationManager.NavigateTo(url);
+    }
+
+}

@@ -8,6 +8,7 @@
 @using Volo.CmsKit.Public.GlobalResources
 @using Volo.CmsKit.Public.Pages
 @using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Themes.FluentDesignTheme
+@using Zyknow.Abp.CmsKit.Blazor.Public.FluentDesignUI.Pages
 @inject IPagePublicAppService PageService
 <CascadingValue Value="this" IsFixed="true">
     <Router
@@ -16,7 +17,7 @@
         OnNavigateAsync="OnNavigateAsync">
         <Found Context="routeData">
             @{
-                var currentRouteData = (_hasDynamicHomePage && _currentSlug.IsNullOrWhiteSpace() ? _homeRouteData : routeData)!;
+                var currentRouteData = (HasDynamicHomePage && _currentSlug.IsNullOrWhiteSpace() ? _homeRouteData : routeData)!;
 
                 if (PageFound != null)
                 {
@@ -37,6 +38,7 @@
 </CascadingValue>
 
 @code {
+
     [Parameter, EditorRequired] public Assembly AppAssembly { get; set; }
 
     [Parameter] public IEnumerable<Assembly> AdditionalAssemblies { get; set; }
@@ -56,8 +58,10 @@
     public GlobalResourceDto? GlobalScriptResource { get; set; }
 
     private string _currentSlug;
-    bool _hasDynamicHomePage;
+    bool HasDynamicHomePage => PageDtoCaches.GetValueOrDefault("") != null;
     Type? _layout;
+
+    public Dictionary<string, PageDto?> PageDtoCaches { get; set; } = [];
 
     private readonly RouteData _homeRouteData = new(typeof(CmsKitDynamicPageHost),
         new Dictionary<string, object>
@@ -75,7 +79,7 @@
             return;
         try
         {
-            _hasDynamicHomePage = (await PageService.FindDefaultHomePageAsync()) != null;
+            PageDtoCaches[""] = (await PageService.FindDefaultHomePageAsync());
         }
         catch (Exception e)
         {
@@ -94,23 +98,10 @@
         Page = null;
         try
         {
-            if (_currentSlug.IsNullOrWhiteSpace())
-            {
-                Page = await PageService.FindDefaultHomePageAsync();
-            }
-            else
-            {
-                if (!(await PageService.DoesSlugExistAsync(_currentSlug)))
-                    return;
+            Page = await GetDynamicPageAsync(_currentSlug);
 
-                Page = await PageService.FindBySlugAsync(_currentSlug);
-            }
-
-            if (Page != null && GlobalStyleResource == null && GlobalScriptResource == null)
-            {
+            if (Page != null || _currentSlug.Contains("blogs/"))
                 await GetGlobalResourceAsync();
-            }
-
 
             _layout = ThemeOptions.Value.GetLayout(Page?.LayoutName!).Type;
         }
@@ -125,6 +116,9 @@
 
     async Task GetGlobalResourceAsync()
     {
+        if (GlobalStyleResource != null || GlobalScriptResource != null)
+            return;
+
         try
         {
             GlobalScriptResource = await GlobalResourceService.GetGlobalScriptAsync();
@@ -134,6 +128,30 @@
         {
             Logger.LogError(e, e.Message);
         }
+    }
+
+
+    async Task<PageDto?> GetDynamicPageAsync(string slug)
+    {
+        if (PageDtoCaches.TryGetValue(slug, out var page))
+        {
+            return page;
+        }
+
+        // if (slug.IsNullOrWhiteSpace())
+        // {
+        //     PageDtoCaches[slug] = await PageService.FindDefaultHomePageAsync();
+        // }
+
+
+        if (!(await PageService.DoesSlugExistAsync(slug)))
+        {
+            PageDtoCaches[slug] = null;
+        }
+
+        PageDtoCaches[slug] = await PageService.FindBySlugAsync(slug);
+
+        return PageDtoCaches[slug];
     }
 
 }

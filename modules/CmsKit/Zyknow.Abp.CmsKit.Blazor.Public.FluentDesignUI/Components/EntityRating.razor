@@ -1,0 +1,83 @@
+﻿@using System.Net.Security
+@using Microsoft.Extensions.Configuration
+@using Microsoft.Extensions.Options
+@using Volo.Abp.AspNetCore.Components.Messages
+@using Volo.Abp.Users
+@using Volo.CmsKit.Public.Ratings
+@inherits FluentAbpComponentBase<Volo.CmsKit.Localization.CmsKitResource>
+<FluentStack VerticalAlignment="VerticalAlignment.Center">
+    <FluentRating Max="5"
+                  ReadOnly="@ReadOnly"
+                  Value="@CurrentUserRating"
+                  AllowReset="true"
+                  IconCustomColor="#ffd800;"
+                  IconColor="Color.Custom"
+                  ValueChanged="@HandleRatingChanged"/>
+</FluentStack>
+
+@code {
+    [Parameter] public string EntityType { get; set; }
+    [Parameter] public string EntityId { get; set; }
+    [Parameter] public List<RatingWithStarCountDto> Ratings { get; set; }
+    [Parameter] public EventCallback OnRatingChanged { get; set; }
+    [Parameter] public bool ReadOnly { get; set; }
+
+
+    [Inject] public IRatingPublicAppService RatingPublicAppService { get; set; }
+    [Inject] IConfiguration Configuration { get; set; }
+
+    protected int CurrentUserRating { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Ratings == null)
+            Ratings = await RatingPublicAppService.GetGroupedStarCountsAsync(EntityType, EntityId);
+
+        if (CurrentUser.IsAuthenticated)
+        {
+            var userStarCount = Ratings.Find(x => x.IsSelectedByCurrentUser)?.StarCount;
+            CurrentUserRating = userStarCount ?? 0;
+        }
+
+        // TODO: should check Configuration["AuthServer:Authority"] for null or empty?
+        var authUrl = Configuration["AuthServer:Authority"]!.TrimEnd('/');
+        var path = NavigationManager.Uri
+            .Replace(NavigationManager.BaseUri, string.Empty)
+            .Replace("#", string.Empty);
+        var loginUrl =
+            $"{authUrl}?returnUrl={path}&returnUrlHash=#cms-rating_{EntityType}_{EntityId}";
+    }
+
+    protected async Task HandleRatingChanged(int newRating)
+    {
+        if (!CurrentUser.IsAuthenticated)
+        {
+            await Notify.Error(L["LoginToReact"]);
+            return;
+        }
+
+        try
+        {
+            if (newRating > 0)
+            {
+                await RatingPublicAppService.CreateAsync(EntityType, EntityId, new CreateUpdateRatingInput()
+                {
+                    StarCount = (short)newRating
+                });
+            }
+            else
+            {
+                await RatingPublicAppService.DeleteAsync(EntityType, EntityId);
+            }
+
+            CurrentUserRating = newRating;
+            await OnRatingChanged.InvokeAsync();
+        }
+        catch (Exception e)
+        {
+            // Handle error (e.g., show notification)
+            await HandleErrorAsync(e);
+        }
+    }
+
+}

@@ -26,9 +26,9 @@
 
 @if (Page != null)
 {
-    <CmsKitDynamicPageCard>
+    <CmsKitDynamicPageLayout>
         @((MarkupString)Page.Content)
-    </CmsKitDynamicPageCard>
+    </CmsKitDynamicPageLayout>
 }
 
 @code {
@@ -38,13 +38,4 @@
     public PageDto? Page => CmsKitRouter?.Page;
     public GlobalResourceDto? GlobalStyleResource => CmsKitRouter?.GlobalStyleResource;
     public GlobalResourceDto? GlobalScriptResource => CmsKitRouter?.GlobalScriptResource;
-
-    protected override void OnInitialized()
-    {
-        if (Page == null)
-        {
-            NavigationManager.NavigateTo("404");
-        }
-    }
-
 }

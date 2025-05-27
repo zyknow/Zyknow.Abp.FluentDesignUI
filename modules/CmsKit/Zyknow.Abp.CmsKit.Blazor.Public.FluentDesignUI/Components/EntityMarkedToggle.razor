@@ -1,15 +1,7 @@
 ﻿@using Volo.CmsKit.Localization
 
-@if (MarkedItem.IsMarkedByCurrentUser)
-{
-    <FluentIcon Id="@_iconId" Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Filled.Size24.Heart())"
-                Color="Color.Custom" CustomColor="red" OnClick="ToggleMarkedItemAsync"></FluentIcon>
-}
-else
-{
-    <FluentIcon Id="@_iconId" Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size24.Heart())"
-                Color="Color.Custom" CustomColor="red" OnClick="ToggleMarkedItemAsync"></FluentIcon>
-}
+<FluentIcon Slot="start" Id="@_iconId" Value="@Icon"
+            Color="Color.Custom" CustomColor="red" OnClick="@ToggleMarkedItemAsync"/>
 
 <FluentTooltip Anchor="@_iconId">
     @L["ToggleFavorite"]
@@ -24,6 +16,12 @@ else
     MarkedItemWithToggleDto MarkedItem { get; set; }
 
     string _iconId = Guid.NewGuid().ToString();
+
+    Icon Icon =>
+        MarkedItem.IsMarkedByCurrentUser
+            ? new Microsoft.FluentUI.AspNetCore.Components.Icons.Filled.Size24.Heart()
+            : new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size24.Heart();
+
 
     protected override async Task OnInitializedAsync()
     {

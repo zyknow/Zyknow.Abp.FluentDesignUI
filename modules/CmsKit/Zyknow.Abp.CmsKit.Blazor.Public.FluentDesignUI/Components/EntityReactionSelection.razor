@@ -1,0 +1,115 @@
+﻿@using Microsoft.Extensions.Options
+@using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
+@using Volo.Abp.Application.Dtos
+@using Volo.CmsKit.Public.Reactions
+@inherits FluentAbpComponentBase<Volo.CmsKit.Localization.CmsKitResource>
+
+<FluentStack HorizontalAlignment="HorizontalAlignment.Start" HorizontalGap="5"
+             VerticalAlignment="VerticalAlignment.Center">
+    @if (ReactionListResult?.Items != null)
+    {
+        foreach (var reactionWithSelection in ReactionListResult.Items.Where(x => x.Count > 0))
+        {
+            var emoji = CmsKitUiOptions.Value.ReactionIcons[reactionWithSelection.Reaction.Name];
+
+            <div>
+                <FluentStack HorizontalGap="1" VerticalAlignment="VerticalAlignment.Center"
+                             HorizontalAlignment="HorizontalAlignment.Center">
+                    <FluentEmoji Style="height: 24px;width: 24px" Value="@emoji"
+                                 OnClick="@(() => AddUserSelectReaction(reactionWithSelection.Reaction.Name))"></FluentEmoji>
+                    <FluentLabel>@reactionWithSelection.Count</FluentLabel>
+                </FluentStack>
+            </div>
+        }
+    }
+
+    <FluentIcon Style="margin-top: 2px;" id="AddReactionPopoverBtn" Value="@(new Size24.EmojiAdd())"
+                OnClick="@(() => ShowAddReactionPopover())"/>
+</FluentStack>
+
+<FluentPopover HorizontalThreshold="150" AnchorId="AddReactionPopoverBtn"
+               @bind-Open="AddReactionPopoverVisible">
+    <Header>@L["PickYourReaction"]</Header>
+    <Body>
+    <FluentStack Orientation="Orientation.Horizontal" Wrap="true">
+        @foreach (var valueReactionIcon in CmsKitUiOptions.Value.ReactionIcons)
+        {
+            <div
+                style="@(ReactionListResult?.Items?.FirstOrDefault(x => x.Reaction.Name == valueReactionIcon.Key)?.IsSelectedByCurrentUser == true ? "background: var(--neutral-layer-4)" : "")">
+                <FluentStack HorizontalAlignment="HorizontalAlignment.Center"
+                             VerticalAlignment="VerticalAlignment.Center">
+                    <FluentEmoji Value="@valueReactionIcon.Value"
+                                 OnClick="@(() => AddUserSelectReaction(valueReactionIcon.Key))"></FluentEmoji>
+                </FluentStack>
+            </div>
+        }
+    </FluentStack>
+    </Body>
+</FluentPopover>
+
+@code {
+    [Parameter] public string EntityType { get; set; }
+    [Parameter] public string EntityId { get; set; }
+
+    [Inject] protected IReactionPublicAppService ReactionPublicAppService { get; set; }
+
+    [Inject] protected IOptions<CmsKitUiOptions> CmsKitUiOptions { get; set; }
+
+    protected ListResultDto<ReactionWithSelectionDto>? ReactionListResult { get; set; }
+
+    protected bool AddReactionPopoverVisible { get; set; } = false;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadReactionsAsync();
+    }
+
+    protected async Task LoadReactionsAsync()
+    {
+        ReactionListResult = await ReactionPublicAppService.GetForSelectionAsync(EntityType, EntityId);
+    }
+
+    protected async Task AddUserSelectReaction(string name)
+    {
+        if (!CurrentUser.IsAuthenticated)
+        {
+            await Notify.Error(L["LoginToReact"]);
+            return;
+        }
+
+        var reactionWithSelection = ReactionListResult?.Items?.FirstOrDefault(x => x.Reaction.Name == name);
+
+
+        try
+        {
+            if (reactionWithSelection?.IsSelectedByCurrentUser == true)
+                await ReactionPublicAppService.DeleteAsync(EntityType, EntityId, name);
+            else
+                await ReactionPublicAppService.CreateAsync(EntityType, EntityId, name);
+
+            await LoadReactionsAsync();
+        }
+        catch (Exception e)
+        {
+            await HandleErrorAsync(e);
+        }
+        finally
+        {
+            AddReactionPopoverVisible = false;
+        }
+    }
+
+
+    private async Task ShowAddReactionPopover()
+    {
+        if (!CurrentUser.IsAuthenticated)
+        {
+            await Notify.Error(L["LoginToReact"]);
+        }
+
+        AddReactionPopoverVisible = true;
+    }
+
+}
+

@@ -1,0 +1,30 @@
+﻿@using Volo.CmsKit.Tags
+
+<FluentStack>
+    @foreach (var tag in Tags)
+    {
+        <FluentBadge Appearance="Appearance.Accent"
+                     OnClick="@(() => NavigationManager.NavigateTo(
+                                  UrlFormat.Replace("{TagId}", tag.Id.ToString())
+                              ))">
+            <FluentLabel Color="Color.Lightweight">@tag.Name</FluentLabel>
+        </FluentBadge>
+    }
+</FluentStack>
+
+@code {
+    [Parameter] public string EntityType { get; set; }
+    [Parameter] public string EntityId { get; set; }
+    [Parameter] public string UrlFormat { get; set; }
+
+    [Inject] public ITagAppService TagAppService { get; set; }
+    [Inject] protected NavigationManager NavigationManager { get; set; }
+
+    protected List<TagDto> Tags { get; set; } = new List<TagDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Tags = await TagAppService.GetAllRelatedTagsAsync(EntityType, EntityId);
+    }
+
+}

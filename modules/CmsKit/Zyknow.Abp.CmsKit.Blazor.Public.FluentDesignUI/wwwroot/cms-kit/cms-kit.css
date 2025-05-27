@@ -6,10 +6,23 @@
 }
 
 .blogs-post-card {
-    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-    transition: box-shadow 0.2s ease;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    height: 100%;
 }
 
 .blogs-post-card:hover {
-    box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.5);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    /*transform: translateY(-5px);*/
+}
+
+.card-img-ratio {
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    width: 100%;
+}
+
+.blog-post-text-content{
+    margin-bottom: 20px;
+    margin-top: 20px;
 }

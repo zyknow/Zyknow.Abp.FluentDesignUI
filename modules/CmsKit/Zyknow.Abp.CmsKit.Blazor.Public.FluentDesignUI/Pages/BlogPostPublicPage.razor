@@ -1,14 +1,15 @@
 ﻿@page "/blogs/{BlogSlug}/{BlogPostSlug}"
 @using Microsoft.AspNetCore.Components.Web
-@using Volo.Abp.Application.Dtos
 @using Volo.Abp.GlobalFeatures
-@using Volo.CmsKit.Blogs
 @using Volo.CmsKit.Contents
 @using Volo.CmsKit.GlobalFeatures
 @using Volo.CmsKit.Localization
 @using Volo.CmsKit.Public.Blogs
 @using Volo.CmsKit.Public.GlobalResources
-@using Volo.CmsKit.Users
+@using Volo.CmsKit.Public.Ratings
+@using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Themes.FluentDesignTheme
+@layout EmptyLayout
+@inherits FluentAbpComponentBase<CmsKitResource>
 
 <HeadContent>
     <style>@((MarkupString)@$"{GlobalStyleResource?.Value}")</style>
@@ -16,17 +17,165 @@
     @* ReSharper disable once OtherTagsInsideScript1 *@
     <script>@((MarkupString)@$"{GlobalScriptResource?.Value}")</script>
 </HeadContent>
-123
+
+
+<FluentStack class="blog-post-content" VerticalGap="40" Orientation="Orientation.Vertical">
+
+    @if (Post.CoverImageMediaId != null)
+    {
+        <img src="/api/cms-kit/media/@Post.CoverImageMediaId" class="card-img-ratio" alt=""/>
+        <input hidden id="BlogId" value="@Post.Id"/>
+    }
+    <FluentStack VerticalAlignment="VerticalAlignment.Center" HorizontalAlignment="HorizontalAlignment.SpaceBetween">
+
+        <FluentLabel Typo="Typography.Body">@Post.CreationTime.ToLongDateString()</FluentLabel>
+        @if (GlobalFeatureManager.Instance.IsEnabled<RatingsFeature>())
+        {
+            if (RatingsFeature?.IsEnabled == true)
+            {
+                <EntityAverageRating Ratings="@Ratings"/>
+            }
+        }
+    </FluentStack>
+
+
+    <FluentLabel Typo="Typography.HeroTitle" Weight="FontWeight.Bold">@Post.Title</FluentLabel>
+    <CmsBlogAuthor Author="@Post.Author" BlogSlug="@BlogSlug"/>
+
+    <div class="blog-post-text-content">
+        @((MarkupString)Post.Content)
+    </div>
+
+    @if (Post.LastModificationTime != null)
+    {
+        <FluentLabel>
+            @L["LastModification"].Value : @Post.LastModificationTime
+        </FluentLabel>
+    }
+    @if (GlobalFeatureManager.Instance.IsEnabled<TagsFeature>())
+    {
+        if (TagsFeature?.IsEnabled == true)
+        {
+            <FluentStack Orientation="Orientation.Vertical">
+                <FluentLabel Typo="Typography.H4" Weight="FontWeight.Bold">@L["Tags"]</FluentLabel>
+                <EntityTags EntityType="@BlogPostConsts.EntityType" EntityId="@Post.Id.ToString()"
+                            UrlFormat="@(@$"/blogs/{BlogSlug}?tagId={{TagId}}")"></EntityTags>
+            </FluentStack>
+        }
+    }
+
+    @if (GlobalFeatureManager.Instance.IsEnabled<ReactionsFeature>())
+    {
+        if (ReactionsFeature?.IsEnabled == true)
+        {
+            <FluentStack Orientation="Orientation.Vertical">
+                <FluentLabel Typo="Typography.H4" Weight="FontWeight.Bold">@L["Reactions"]</FluentLabel>
+                <EntityReactionSelection EntityType="@BlogPostConsts.EntityType"
+                                         EntityId="@Post.Id.ToString()"></EntityReactionSelection>
+            </FluentStack>
+        }
+    }
+
+    @if (GlobalFeatureManager.Instance.IsEnabled<RatingsFeature>())
+    {
+        if (RatingsFeature?.IsEnabled == true)
+        {
+            <FluentStack Orientation="Orientation.Vertical">
+                @if (Ratings != null)
+                {
+                    <FluentLabel Typo="Typography.H4" Weight="FontWeight.Bold">@L["Rating"]</FluentLabel>
+                    <EntityRating EntityType="@BlogPostConsts.EntityType"
+                                  EntityId="@Post.Id.ToString()" Ratings="@Ratings"
+                                  OnRatingChanged="@LoadRatingAsync"></EntityRating>
+                }
+            </FluentStack>
+        }
+    }
+
+    <FluentDivider Style="width: 100%"></FluentDivider>
+
+    <FluentStack Orientation="Orientation.Vertical">
+        <FluentLabel Typo="Typography.H4" Weight="FontWeight.Bold">@L["Author"]</FluentLabel>
+        <CmsBlogAuthor Author="@Post.Author" BlogSlug="@BlogSlug"/>
+    </FluentStack>
+
+</FluentStack>
+
+
 
 @code {
 
-    protected const string DummyImageSource =
-        "_content/Zyknow.Abp.CmsKit.Blazor.Public.FluentDesignUI/cms-kit/dummy-placeholder-1280x720.png";
+    // protected const string DummyImageSource =
+    //     "_content/Zyknow.Abp.CmsKit.Blazor.Public.FluentDesignUI/cms-kit/dummy-placeholder-1280x720.png";
 
     [CascadingParameter] public CmsKitRouter CmsKitRouter { get; set; }
     [Parameter] public string BlogSlug { get; set; }
     [Parameter] public string BlogPostSlug { get; set; }
 
-    public GlobalResourceDto? GlobalStyleResource => CmsKitRouter?.GlobalStyleResource;
-    public GlobalResourceDto? GlobalScriptResource => CmsKitRouter?.GlobalScriptResource;
+    protected GlobalResourceDto? GlobalStyleResource => CmsKitRouter?.GlobalStyleResource;
+    protected GlobalResourceDto? GlobalScriptResource => CmsKitRouter?.GlobalScriptResource;
+
+    [Inject] protected IBlogPostPublicAppService BlogPostPublicAppService { get; set; }
+
+    [Inject] protected IBlogFeatureAppService BlogFeatureAppService { get; set; }
+
+    [Inject] public IRatingPublicAppService RatingPublicAppService { get; set; }
+
+    protected BlogFeatureDto CommentsFeature { get; set; }
+
+    protected BlogFeatureDto ReactionsFeature { get; set; }
+
+    protected BlogFeatureDto RatingsFeature { get; set; }
+
+    protected BlogFeatureDto TagsFeature { get; set; }
+
+    protected BlogFeatureDto BlogPostScrollIndexFeature { get; set; }
+
+    protected BlogFeatureDto PreventXssFeature { get; set; }
+
+    protected BlogPostCommonDto Post { get; set; }
+
+    protected List<RatingWithStarCountDto> Ratings { get; set; } = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        Post = await BlogPostPublicAppService.GetAsync(BlogSlug, BlogPostSlug);
+
+        if (GlobalFeatureManager.Instance.IsEnabled<CommentsFeature>())
+        {
+            CommentsFeature = await BlogFeatureAppService.GetOrDefaultAsync(Post.BlogId, Volo.CmsKit.GlobalFeatures.CommentsFeature.Name);
+        }
+
+        if (GlobalFeatureManager.Instance.IsEnabled<ReactionsFeature>())
+        {
+            ReactionsFeature = await BlogFeatureAppService.GetOrDefaultAsync(Post.BlogId, Volo.CmsKit.GlobalFeatures.ReactionsFeature.Name);
+        }
+
+        if (GlobalFeatureManager.Instance.IsEnabled<RatingsFeature>())
+        {
+            RatingsFeature = await BlogFeatureAppService.GetOrDefaultAsync(Post.BlogId, Volo.CmsKit.GlobalFeatures.RatingsFeature.Name);
+            await LoadRatingAsync();
+        }
+
+        if (GlobalFeatureManager.Instance.IsEnabled<TagsFeature>())
+        {
+            TagsFeature = await BlogFeatureAppService.GetOrDefaultAsync(Post.BlogId, Volo.CmsKit.GlobalFeatures.TagsFeature.Name);
+        }
+
+        if (GlobalFeatureManager.Instance.IsEnabled<BlogPostScrollIndexFeature>())
+        {
+            BlogPostScrollIndexFeature = await BlogFeatureAppService.GetOrDefaultAsync(Post.BlogId, Volo.CmsKit.GlobalFeatures.BlogPostScrollIndexFeature.Name);
+        }
+
+        PreventXssFeature = await BlogFeatureAppService.GetOrDefaultAsync(Post.BlogId, BlogConsts.PreventXssFeatureName);
+    }
+
+    protected virtual async Task LoadRatingAsync()
+    {
+        if (!GlobalFeatureManager.Instance.IsEnabled<RatingsFeature>())
+            return;
+
+        Ratings = await RatingPublicAppService.GetGroupedStarCountsAsync(BlogPostConsts.EntityType, Post.Id.ToString());
+    }
+
 }
