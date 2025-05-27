@@ -6,6 +6,7 @@
 @using TInput = Volo.CmsKit.Admin.Pages.UpdatePageInputDto
 @using TResource = Volo.CmsKit.Localization.CmsKitResource
 @using TAppService = Volo.CmsKit.Admin.Pages.IPageAdminAppService
+@using Zyknow.Abp.CmsKit.Blazor.Common.FluentDesignUI.Components
 @attribute [Authorize(CmsKitAdminPermissions.Pages.Update)]
 @inherits FluentAbpComponentBase<TResource>
 @page "/Cms/Pages/Update/{Id:guid}"

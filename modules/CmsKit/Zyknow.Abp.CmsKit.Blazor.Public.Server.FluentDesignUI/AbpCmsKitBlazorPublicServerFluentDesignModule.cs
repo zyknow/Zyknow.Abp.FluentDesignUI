@@ -6,13 +6,14 @@ using Volo.CmsKit.Public;
 using Zyknow.Abp.AspnetCore.Components.Server.FluentDesignTheme;
 using Zyknow.Abp.AspnetCore.Components.Server.FluentDesignTheme.Bundling;
 using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme;
+using Zyknow.Abp.CmsKit.Blazor.Common.Server.FluentDesignUI;
 using Zyknow.Abp.CmsKit.Blazor.Public.FluentDesignUI;
 
 namespace Zyknow.Abp.CmsKit.Blazor.Public.Server.FluentDesignUI;
 
 [DependsOn(
     typeof(AbpCmsKitBlazorPublicFluentDesignModule),
-    typeof(AbpAspNetCoreComponentsServerFluentDesignThemeModule)
+    typeof(AbpCmsKitBlazorCommonServerFluentDesignModule)
 )]
 public class AbpCmsKitBlazorPublicServerFluentDesignModule : AbpModule
 {
@@ -22,7 +23,7 @@ public class AbpCmsKitBlazorPublicServerFluentDesignModule : AbpModule
         {
             options
                 .StyleBundles.Get(BlazorStandardBundles.Styles.Global)
-                .AddFiles("/_content/Zyknow.Abp.CmsKit.Blazor.Public.FluentDesignUI/cms-kit/cms-kit.css");
+                .AddFiles("/_content/Zyknow.Abp.CmsKit.Blazor.Public.FluentDesignUI/cms-kit/cms-public-kit.css");
         });
     }
 }

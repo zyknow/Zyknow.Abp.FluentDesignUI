@@ -18,7 +18,6 @@
     <script>@((MarkupString)@$"{GlobalScriptResource?.Value}")</script>
 </HeadContent>
 
-
 <FluentStack class="blog-post-content" VerticalGap="40" Orientation="Orientation.Vertical">
 
     @if (Post.CoverImageMediaId != null)
@@ -26,6 +25,7 @@
         <img src="/api/cms-kit/media/@Post.CoverImageMediaId" class="card-img-ratio" alt=""/>
         <input hidden id="BlogId" value="@Post.Id"/>
     }
+
     <FluentStack VerticalAlignment="VerticalAlignment.Center" HorizontalAlignment="HorizontalAlignment.SpaceBetween">
 
         <FluentLabel Typo="Typography.Body">@Post.CreationTime.ToLongDateString()</FluentLabel>
@@ -99,6 +99,14 @@
         <CmsBlogAuthor Author="@Post.Author" BlogSlug="@BlogSlug"/>
     </FluentStack>
 
+    @if (GlobalFeatureManager.Instance.IsEnabled<CommentsFeature>())
+    {
+        if (CommentsFeature?.IsEnabled == true)
+        {
+            <EntityCommenting EntityType="@BlogPostConsts.EntityType"
+                              EntityId="@Post.Id.ToString()"/>
+        }
+    }
 </FluentStack>
 
 

@@ -13,13 +13,15 @@ using Volo.CmsKit.Public.Comments;
 using Volo.CmsKit.Reactions;
 using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme;
 using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Routing;
+using Zyknow.Abp.CmsKit.Blazor.Common.FluentDesignUI;
 
 namespace Zyknow.Abp.CmsKit.Blazor.Public.FluentDesignUI;
 
 [DependsOn(
     typeof(CmsKitPublicApplicationContractsModule),
     typeof(AbpAutoMapperModule),
-    typeof(AbpAspNetCoreComponentsWebFluentDesignThemeModule)
+    typeof(AbpAspNetCoreComponentsWebFluentDesignThemeModule),
+    typeof(AbpCmsKitBlazorCommonFluentDesignModule)
 )]
 public class AbpCmsKitBlazorPublicFluentDesignModule : AbpModule
 {

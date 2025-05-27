@@ -138,6 +138,8 @@
     <PackageVersion Include="Volo.CmsKit.Admin.HttpApi.Client" Version="$(ABPPackageVersion)" />
     <PackageVersion Include="Volo.CmsKit.Application" Version="$(ABPPackageVersion)" />
     <PackageVersion Include="Volo.CmsKit.Application.Contracts" Version="$(ABPPackageVersion)" />
+    <PackageVersion Include="Volo.CmsKit.Common.Application.Contracts" Version="$(ABPPackageVersion)" />
+    <PackageVersion Include="Volo.CmsKit.Common.HttpApi.Client" Version="$(ABPPackageVersion)" />
     <PackageVersion Include="Volo.CmsKit.Domain" Version="$(ABPPackageVersion)" />
     <PackageVersion Include="Volo.CmsKit.Domain.Shared" Version="$(ABPPackageVersion)" />
     <PackageVersion Include="Volo.CmsKit.EntityFrameworkCore" Version="$(ABPPackageVersion)" />

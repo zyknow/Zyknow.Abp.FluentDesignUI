@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.Server.FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.Server.FluentDesignTheme.csproj" />
+      <ProjectReference Include="..\Zyknow.Abp.CmsKit.Blazor.Common.FluentDesignUI\Zyknow.Abp.CmsKit.Blazor.Common.FluentDesignUI.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -10,5 +10,11 @@ public class AbpCmsKitBlazorPublicAutoMapperProfile : Profile
     {
         CreateMap<CreateCommentWithParametersInput, CreateCommentInput>()
             .Ignore(x => x.ExtraProperties);
+
+
+        CreateMap<CommentDto, UpdateCommentInput>();
+        CreateMap<CommentWithDetailsDto, UpdateCommentInput>();
+        
+        
     }
 }

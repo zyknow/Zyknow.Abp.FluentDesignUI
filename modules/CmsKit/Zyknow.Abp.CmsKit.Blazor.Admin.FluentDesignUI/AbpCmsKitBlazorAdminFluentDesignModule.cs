@@ -6,6 +6,7 @@ using Volo.CmsKit.Admin;
 using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme;
 using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Routing;
 using Zyknow.Abp.CmsKit.Blazor.Admin.FluentDesignUI.Settings;
+using Zyknow.Abp.CmsKit.Blazor.Common.FluentDesignUI;
 using Zyknow.Abp.GroupComponent.FluentDesignUI;
 
 namespace Zyknow.Abp.CmsKit.Blazor.Admin.FluentDesignUI;
@@ -14,6 +15,7 @@ namespace Zyknow.Abp.CmsKit.Blazor.Admin.FluentDesignUI;
     typeof(CmsKitAdminApplicationContractsModule),
     typeof(AbpAutoMapperModule),
     typeof(AbpAspNetCoreComponentsWebFluentDesignThemeModule),
+    typeof(AbpCmsKitBlazorCommonFluentDesignModule),
     typeof(AbpGroupComponentAbstractFluentDesignModule)
 )]
 public class AbpCmsKitBlazorAdminFluentDesignModule : AbpModule

@@ -74,8 +74,8 @@
             @foreach (var post in Blogs)
             {
                 <FluentGridItem sm="12" md="6" lg="4">
-                    <BlogPostCardItem BlogSlug="@BlogSlug" IsMarkedItemFeatureEnabled="@IsMarkedItemFeatureEnabled"
-                                      Post="@post"></BlogPostCardItem>
+                    <CmsBlogPostCardItem BlogSlug="@BlogSlug" IsMarkedItemFeatureEnabled="@IsMarkedItemFeatureEnabled"
+                                      Post="@post"></CmsBlogPostCardItem>
                 </FluentGridItem>
             }
         </FluentGrid>

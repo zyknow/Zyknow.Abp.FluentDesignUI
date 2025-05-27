@@ -6,6 +6,7 @@ using Volo.CmsKit.GlobalFeatures;
 using Volo.CmsKit.Public;
 using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme;
 using Zyknow.Abp.AspnetCore.Components.WebAssembly.FluentDesignTheme;
+using Zyknow.Abp.CmsKit.Blazor.Common.WebAssembly.FluentDesignUI;
 using Zyknow.Abp.CmsKit.Blazor.Public.FluentDesignUI;
 
 namespace Zyknow.Abp.CmsKit.Blazor.Public.WebAssembly.FluentDesignUI;
@@ -13,7 +14,7 @@ namespace Zyknow.Abp.CmsKit.Blazor.Public.WebAssembly.FluentDesignUI;
 [DependsOn(
     typeof(AbpCmsKitBlazorPublicFluentDesignModule),
     typeof(CmsKitPublicHttpApiClientModule),
-    typeof(AbpAspNetCoreComponentsWebAssemblyFluentDesignThemeModule)
+    typeof(AbpCmsKitBlazorCommonWebAssemblyFluentDesignModule)
 )]
 public class AbpCmsKitBlazorPublicWebAssemblyFluentDesignModule : AbpModule
 {

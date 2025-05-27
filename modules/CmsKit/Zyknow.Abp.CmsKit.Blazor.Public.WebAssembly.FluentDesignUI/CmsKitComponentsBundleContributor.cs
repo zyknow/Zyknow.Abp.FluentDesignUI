@@ -11,6 +11,6 @@ public class CmsKitComponentsBundleContributor : IBundleContributor
     public void AddStyles(BundleContext context)
     {
         context.Add(
-            "/_content/Zyknow.Abp.CmsKit.Blazor.Public.FluentDesignUI/cms-kit/cms-kit.css");
+            "/_content/Zyknow.Abp.CmsKit.Blazor.Public.FluentDesignUI/cms-kit/cms-public-kit.css");
     }
 }

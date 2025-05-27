@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.Server.FluentDesignTheme\Zyknow.Abp.AspnetCore.Components.Server.FluentDesignTheme.csproj" />
     <ProjectReference Include="..\Zyknow.Abp.CmsKit.Blazor.Admin.FluentDesignUI\Zyknow.Abp.CmsKit.Blazor.Admin.FluentDesignUI.csproj" />
+    <ProjectReference Include="..\Zyknow.Abp.CmsKit.Blazor.Common.Server.FluentDesignUI\Zyknow.Abp.CmsKit.Blazor.Common.Server.FluentDesignUI.csproj" />
   </ItemGroup>
 
 </Project> 

@@ -1,6 +1,6 @@
 ﻿using Volo.Abp.Bundling;
 
-namespace Zyknow.Abp.CmsKit.Blazor.Admin.WebAssembly.FluentDesignUI;
+namespace Zyknow.Abp.CmsKit.Blazor.Common.WebAssembly.FluentDesignUI;
 
 public class CmsKitComponentsWebAssemblyBundleContributor : IBundleContributor
 {
