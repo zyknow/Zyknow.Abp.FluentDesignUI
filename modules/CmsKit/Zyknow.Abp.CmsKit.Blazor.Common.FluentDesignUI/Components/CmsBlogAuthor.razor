@@ -1,21 +1,23 @@
 ﻿@using Volo.CmsKit.Users
-<FluentPersona Name="@Author.UserName"
+<FluentPersona Name="@(Author.UserName)"
                ImageSize="30px"
+               Image="@ImageUrl"
                StatusSize="PresenceBadgeSize.Small">
-    @if (BlogSlug.IsNullOrWhiteSpace())
-    {
-        <FluentAnchor>@@@Author.UserName</FluentAnchor>
-    }
-    else
-    {
-        <FluentAnchor Href="@(@$"/blogs/{BlogSlug}?AuthorId={Author.Id}")"
-                      Appearance="Appearance.Hypertext">@@@Author.UserName</FluentAnchor>
-    }
-
+        @if (BlogSlug.IsNullOrWhiteSpace())
+        {
+            <FluentAnchor>@@@Author.UserName</FluentAnchor>
+        }
+        else
+        {
+            <FluentAnchor Href="@(@$"/blogs/{BlogSlug}?AuthorId={Author.Id}")"
+                          Appearance="Appearance.Hypertext">@@@Author.UserName</FluentAnchor>
+        }
 </FluentPersona>
-
 @code {
     [Parameter] public string? BlogSlug { get; set; }
 
     [Parameter] [EditorRequired] public CmsUserDto Author { get; set; }
+
+    [Parameter] public string? ImageUrl { get; set; }
+
 }
