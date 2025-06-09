@@ -1,5 +1,6 @@
 ﻿@page "/blogs/{BlogSlug}/{BlogPostSlug}"
 @using Microsoft.AspNetCore.Components.Web
+@using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
 @using Volo.Abp.GlobalFeatures
 @using Volo.CmsKit.Contents
 @using Volo.CmsKit.GlobalFeatures
@@ -7,8 +8,10 @@
 @using Volo.CmsKit.Public.Blogs
 @using Volo.CmsKit.Public.GlobalResources
 @using Volo.CmsKit.Public.Ratings
-@using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Themes.FluentDesignTheme
-@layout EmptyLayout
+@using Zyknow.Abp.CmsKit.Blazor.Public.FluentDesignUI.Layouts
+@using Microsoft.Extensions.Options
+@using BlazorPro.BlazorSize
+@layout BlogPublicLayout
 @inherits FluentAbpComponentBase<CmsKitResource>
 
 <HeadContent>
@@ -18,97 +21,155 @@
     <script>@((MarkupString)@$"{GlobalScriptResource?.Value}")</script>
 </HeadContent>
 
-<FluentStack class="blog-post-content" VerticalGap="40" Orientation="Orientation.Vertical">
+@if (Post != null)
+{
+    <MediaQuery Media="@ThemeOptions.Value.MobileBreakpoint" @bind-Matches="IsMobileStyle"/>
 
-    @if (Post.CoverImageMediaId != null)
-    {
-        <img src="/api/cms-kit/media/@Post.CoverImageMediaId" class="card-img-ratio" alt=""/>
-        <input hidden id="BlogId" value="@Post.Id"/>
-    }
+    <FluentStack Orientation="Orientation.Vertical" class="blog-post-content" VerticalGap="40"
+                 HorizontalAlignment="HorizontalAlignment.Center"
+                 Style="@(@$"{(IsMobileStyle ? "padding:0.5rem" : "padding:2rem")}")">
+        <FluentGrid Style="width: 100%" AdaptiveRendering="true" Spacing="@(IsMobileStyle ? 1 : 3)">
+            <FluentGridItem md="10" sm="12" Style="@(@$"width:100%;{(IsMobileStyle ? "" : ";")}")">
+                <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Center"
+                             VerticalGap="40">
 
-    <FluentStack VerticalAlignment="VerticalAlignment.Center" HorizontalAlignment="HorizontalAlignment.SpaceBetween">
+                    <FluentStack VerticalGap="40" Orientation="Orientation.Vertical" Class="fluent-card">
+                        @if (Post.CoverImageMediaId != null)
+                        {
+                            <img src="/api/cms-kit/media/@Post.CoverImageMediaId" class="card-img-ratio" alt=""/>
+                            <input hidden id="BlogId" value="@Post.Id"/>
+                        }
 
-        <FluentLabel Typo="Typography.Body">@Post.CreationTime.ToLongDateString()</FluentLabel>
-        @if (GlobalFeatureManager.Instance.IsEnabled<RatingsFeature>())
-        {
-            if (RatingsFeature?.IsEnabled == true)
-            {
-                <EntityAverageRating Ratings="@Ratings"/>
-            }
-        }
-    </FluentStack>
+                        <FluentStack VerticalAlignment="VerticalAlignment.Center"
+                                     HorizontalAlignment="HorizontalAlignment.SpaceBetween">
+
+                            <FluentLabel Typo="Typography.Body">@Post.CreationTime.ToLongDateString()</FluentLabel>
+                            @if (GlobalFeatureManager.Instance.IsEnabled<RatingsFeature>())
+                            {
+                                if (RatingsFeature?.IsEnabled == true)
+                                {
+                                    <EntityAverageRating Ratings="@Ratings"/>
+                                }
+                            }
+                        </FluentStack>
 
 
-    <FluentLabel Typo="Typography.HeroTitle" Weight="FontWeight.Bold">@Post.Title</FluentLabel>
-    <CmsBlogAuthor Author="@Post.Author" BlogSlug="@BlogSlug"/>
+                        <FluentLabel Typo="Typography.HeroTitle" Weight="FontWeight.Bold">@Post.Title</FluentLabel>
+                        @* <CmsBlogAuthor Author="@Post.Author" BlogSlug="@BlogSlug"/> *@
 
-    <div class="blog-post-text-content">
-        @((MarkupString)Post.Content)
-    </div>
+                        <div class="blog-post-text-content">
+                            @((MarkupString)Post.Content)
+                        </div>
 
-    @if (Post.LastModificationTime != null)
-    {
-        <FluentLabel>
-            @L["LastModification"].Value : @Post.LastModificationTime
-        </FluentLabel>
-    }
-    @if (GlobalFeatureManager.Instance.IsEnabled<TagsFeature>())
-    {
-        if (TagsFeature?.IsEnabled == true)
-        {
-            <FluentStack Orientation="Orientation.Vertical">
-                <FluentLabel Typo="Typography.H4" Weight="FontWeight.Bold">@L["Tags"]</FluentLabel>
-                <EntityTags EntityType="@BlogPostConsts.EntityType" EntityId="@Post.Id.ToString()"
-                            UrlFormat="@(@$"/blogs/{BlogSlug}?tagId={{TagId}}")"></EntityTags>
-            </FluentStack>
-        }
-    }
+                        @if (Post.LastModificationTime != null)
+                        {
+                            <FluentLabel>
+                                @L["LastModification"].Value : @Post.LastModificationTime
+                            </FluentLabel>
+                        }
+                        @if (GlobalFeatureManager.Instance.IsEnabled<TagsFeature>())
+                        {
+                            if (TagsFeature?.IsEnabled == true)
+                            {
+                                <FluentStack Orientation="Orientation.Vertical">
+                                    <FluentLabel Typo="Typography.H4" Weight="FontWeight.Bold">@L["Tags"]</FluentLabel>
+                                    <EntityTags EntityType="@BlogPostConsts.EntityType" EntityId="@Post.Id.ToString()"
+                                                UrlFormat="@(@$"/blogs/{BlogSlug}?tagId={{TagId}}")"></EntityTags>
+                                </FluentStack>
+                            }
+                        }
 
-    @if (GlobalFeatureManager.Instance.IsEnabled<ReactionsFeature>())
-    {
-        if (ReactionsFeature?.IsEnabled == true)
-        {
-            <FluentStack Orientation="Orientation.Vertical">
-                <FluentLabel Typo="Typography.H4" Weight="FontWeight.Bold">@L["Reactions"]</FluentLabel>
-                <EntityReactionSelection EntityType="@BlogPostConsts.EntityType"
-                                         EntityId="@Post.Id.ToString()"></EntityReactionSelection>
-            </FluentStack>
-        }
-    }
+                        @if (GlobalFeatureManager.Instance.IsEnabled<ReactionsFeature>())
+                        {
+                            if (ReactionsFeature?.IsEnabled == true)
+                            {
+                                <FluentStack Orientation="Orientation.Vertical">
+                                    <FluentLabel Typo="Typography.H4"
+                                                 Weight="FontWeight.Bold">@L["Reactions"]</FluentLabel>
+                                    <EntityReactionSelection EntityType="@BlogPostConsts.EntityType"
+                                                             EntityId="@Post.Id.ToString()"></EntityReactionSelection>
+                                </FluentStack>
+                            }
+                        }
 
-    @if (GlobalFeatureManager.Instance.IsEnabled<RatingsFeature>())
-    {
-        if (RatingsFeature?.IsEnabled == true)
-        {
-            <FluentStack Orientation="Orientation.Vertical">
-                @if (Ratings != null)
+                        @if (GlobalFeatureManager.Instance.IsEnabled<RatingsFeature>())
+                        {
+                            if (RatingsFeature?.IsEnabled == true)
+                            {
+                                <FluentStack Orientation="Orientation.Vertical">
+                                    @if (Ratings != null)
+                                    {
+                                        <FluentLabel Typo="Typography.H4"
+                                                     Weight="FontWeight.Bold">@L["Rating"]</FluentLabel>
+                                        <EntityRating EntityType="@BlogPostConsts.EntityType"
+                                                      EntityId="@Post.Id.ToString()" Ratings="@Ratings"
+                                                      OnRatingChanged="@LoadRatingAsync"></EntityRating>
+                                    }
+                                </FluentStack>
+                            }
+                        }
+
+                        @* <FluentDivider Style="width: 100%"></FluentDivider> *@
+
+                        @* <FluentStack Orientation="Orientation.Vertical"> *@
+                        @*     <FluentLabel Typo="Typography.H4" Weight="FontWeight.Bold">@L["Author"]</FluentLabel> *@
+                        @*     <CmsBlogAuthor Author="@Post.Author" BlogSlug="@BlogSlug"/> *@
+                        @* </FluentStack> *@
+                    </FluentStack>
+                </FluentStack>
+
+            </FluentGridItem>
+
+            <FluentGridItem md="2" sm="0" Style="@(@$"{(IsMobileStyle ? "display: none" : "")}")">
+                <FluentStack Orientation="Orientation.Vertical" Style="position: sticky;top:0"
+                             Class="fluent-card" VerticalGap="20">
+                    <FluentStack Orientation="Orientation.Vertical">
+                        <FluentLabel Typo="Typography.H4" Weight="FontWeight.Bold">@L["Author"]</FluentLabel>
+                        <CmsBlogAuthor Author="@Post.Author" BlogSlug="@BlogSlug"/>
+                    </FluentStack>
+                    <FluentDivider Style="width: 100%"></FluentDivider>
+                    @if (Post.Author.Id == CurrentUser.Id)
+                    {
+                        <FluentStack Orientation="Orientation.Vertical">
+                            <FluentLabel Typo="Typography.H4" Weight="FontWeight.Bold">@L["Actions"]</FluentLabel>
+                            <FluentButton Appearance="Appearance.Lightweight"
+                                          IconStart="@(new Size20.Delete())"
+                                          OnClick="@DeletePostAsync" Style="width: 100%">
+                                @L["Delete"]
+                            </FluentButton>
+                        </FluentStack>
+                    }
+
+                    @if (IsScrollIndexEnabled)
+                    {
+                    }
+                </FluentStack>
+
+            </FluentGridItem>
+
+        </FluentGrid>
+
+        <FluentGrid Style="width: 100%">
+            <FluentGridItem md="10" sm="12" Style="@(@$"width:100%;{(IsMobileStyle ? "" : "")}")">
+                @if (GlobalFeatureManager.Instance.IsEnabled<CommentsFeature>())
                 {
-                    <FluentLabel Typo="Typography.H4" Weight="FontWeight.Bold">@L["Rating"]</FluentLabel>
-                    <EntityRating EntityType="@BlogPostConsts.EntityType"
-                                  EntityId="@Post.Id.ToString()" Ratings="@Ratings"
-                                  OnRatingChanged="@LoadRatingAsync"></EntityRating>
+                    @if (CommentsFeature?.IsEnabled == true)
+                    {
+                        <EntityCommenting EntityType="@BlogPostConsts.EntityType"
+                                          EntityId="@Post.Id.ToString()">
+                        </EntityCommenting>
+                    }
                 }
-            </FluentStack>
-        }
-    }
+            </FluentGridItem>
+            <FluentGridItem md="2" Style="@(@$"{(IsMobileStyle ? "display: none" : "")}")">
 
-    <FluentDivider Style="width: 100%"></FluentDivider>
+            </FluentGridItem>
 
-    <FluentStack Orientation="Orientation.Vertical">
-        <FluentLabel Typo="Typography.H4" Weight="FontWeight.Bold">@L["Author"]</FluentLabel>
-        <CmsBlogAuthor Author="@Post.Author" BlogSlug="@BlogSlug"/>
+        </FluentGrid>
+
+
     </FluentStack>
-
-    @if (GlobalFeatureManager.Instance.IsEnabled<CommentsFeature>())
-    {
-        if (CommentsFeature?.IsEnabled == true)
-        {
-            <EntityCommenting EntityType="@BlogPostConsts.EntityType"
-                              EntityId="@Post.Id.ToString()"/>
-        }
-    }
-</FluentStack>
-
+}
 
 
 @code {
@@ -129,6 +190,8 @@
 
     [Inject] public IRatingPublicAppService RatingPublicAppService { get; set; }
 
+    [Inject] IOptions<AbpFluentDesignThemeOptions> ThemeOptions { get; set; }
+
     protected BlogFeatureDto CommentsFeature { get; set; }
 
     protected BlogFeatureDto ReactionsFeature { get; set; }
@@ -144,6 +207,10 @@
     protected BlogPostCommonDto Post { get; set; }
 
     protected List<RatingWithStarCountDto> Ratings { get; set; } = [];
+
+    protected bool IsScrollIndexEnabled;
+
+    protected bool IsMobileStyle { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -173,6 +240,7 @@
         if (GlobalFeatureManager.Instance.IsEnabled<BlogPostScrollIndexFeature>())
         {
             BlogPostScrollIndexFeature = await BlogFeatureAppService.GetOrDefaultAsync(Post.BlogId, Volo.CmsKit.GlobalFeatures.BlogPostScrollIndexFeature.Name);
+            IsScrollIndexEnabled = BlogPostScrollIndexFeature.IsEnabled;
         }
 
         PreventXssFeature = await BlogFeatureAppService.GetOrDefaultAsync(Post.BlogId, BlogConsts.PreventXssFeatureName);
@@ -184,6 +252,30 @@
             return;
 
         Ratings = await RatingPublicAppService.GetGroupedStarCountsAsync(BlogPostConsts.EntityType, Post.Id.ToString());
+    }
+
+    protected virtual async Task DeletePostAsync()
+    {
+        if (Post.Author.Id != CurrentUser.Id)
+        {
+            await Notify.Error(L["OnlyAuthorCanDelete"]);
+            return;
+        }
+
+        if (!await Message.Confirm(@L["DeleteBlogPostMessage"]))
+        {
+            return;
+        }
+
+        try
+        {
+            await BlogPostPublicAppService.DeleteAsync(Post.Id);
+            NavigationManager.NavigateTo($"/blogs/{BlogSlug}");
+        }
+        catch (Exception e)
+        {
+            await HandleErrorAsync(e);
+        }
     }
 
 }
