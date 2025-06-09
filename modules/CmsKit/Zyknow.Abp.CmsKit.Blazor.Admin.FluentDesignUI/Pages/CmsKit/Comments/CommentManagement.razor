@@ -2,8 +2,9 @@
 @attribute [Authorize(CmsKitAdminPermissions.Comments.Default)]
 @using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
 @using Volo.Abp.Application.Dtos
-@using Volo.CmsKit.Admin.Blogs
-@using Volo.CmsKit.Blogs
+@using Volo.Abp.Localization
+@using Volo.CmsKit.Admin.Comments
+@using Volo.CmsKit.Comments
 @using Volo.CmsKit.Permissions
 @using Size20 = Microsoft.FluentUI.AspNetCore.Components.Icons.Filled.Size20
 @using TKey = Guid
@@ -38,6 +39,18 @@
                                  Label="@L["Username"]"/>
             </div>
 
+            <div>
+                @{
+                    var commentApproveStateValues = Enum.GetValues<CommentApproveState>();
+                    <FluentSelect TOption="CommentApproveState"
+                                  Items="@commentApproveStateValues"
+                                  OptionText="@(state => L[@$"CmsKit.Comment.ApproveStates.{(int)state}"])"
+                                  @bind-SelectedOption="@GetListInput.CommentApproveState"
+                                  Label="@L["CommentFilter:ApproveState"]"></FluentSelect>
+                }
+
+            </div>
+
             @if (!IsInCommentInfoView)
             {
                 <div>
@@ -56,12 +69,20 @@
                            EnableSelected="true"
                            PrimarySelectedDeletesBtnVisible="@HasDeletePermission"
                            OnDeleteSelected="DeleteEntitiesAsync"
-                           GetItemKey="x=> x.Id"
+                           GetItemKey="x => x.Id"
                            DeleteSelectedDisplayPropertyConfirmExpression="@(r => r.Text)"
                            Entities="Entities"
                            OnChange="@OnDataGridReadAsync"
                            Pagination="@Pagination"
+                           @bind-SelectEntities="@SelectedEntities"
                            Columns="@CommentManagementTableColumns">
+        <SelectToolbarEnd>
+            <FluentButton Disabled="@(SelectedEntities.IsNullOrEmpty())" Appearance="Appearance.Stealth"
+                          OnClick="OnApproveSelectedClick">@L["Approve"]@L["Selected"]</FluentButton>
+
+            <FluentButton Disabled="@(SelectedEntities.IsNullOrEmpty())" Appearance="Appearance.Stealth"
+                          OnClick="OnDisapprovedSelectedClick">@L["Disapproved"]@L["Selected"]</FluentButton>
+        </SelectToolbarEnd>
     </AbpExtensibleDataGrid>
 </FluentAdaptiveCard>
 
@@ -76,11 +97,18 @@
 
     [Inject] protected TAppService AppService { get; set; }
 
+    protected List<TGetListOutputDto> SelectedEntities { get; set; } = [];
+
     protected List<FluentTableColumn> CommentManagementTableColumns => TableColumns.Get<CommentManagement>();
 
     public CommentManagement()
     {
         LocalizationResource = typeof(TResource);
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await GetEntitiesAsync();
     }
 
     protected override async Task OnInitializedAsync()
@@ -113,6 +141,37 @@
                 },
                 new FluentEntityAction
                 {
+                    Text = L["Approve"],
+                    Visible = data => data.As<TGetListOutputDto>().IsApproved != true,
+                    Clicked = async (data) =>
+                    {
+                        var entity = data.As<TGetListOutputDto>();
+                        await AppService.UpdateApprovalStatusAsync(entity.Id, new CommentApprovalDto()
+                        {
+                            IsApproved = true
+                        });
+
+                        entity.IsApproved = true;
+                        await InvokeAsync(StateHasChanged);
+                    }
+                },
+                new FluentEntityAction
+                {
+                    Text = L["Disapproved"],
+                    Visible = data => data.As<TGetListOutputDto>().IsApproved != false,
+                    Clicked = async (data) =>
+                    {
+                        var entity = data.As<TGetListOutputDto>();
+                        await AppService.UpdateApprovalStatusAsync(entity.Id, new CommentApprovalDto()
+                        {
+                            IsApproved = false
+                        });
+                        entity.IsApproved = false;
+                        await InvokeAsync(StateHasChanged);
+                    }
+                },
+                new FluentEntityAction
+                {
                     Text = L["Delete"],
                     Color = "red",
                     Visible = (data) => HasDeletePermission,
@@ -121,6 +180,18 @@
             ]);
 
         return base.SetEntityActionsAsync();
+    }
+
+    protected Icon GetIsApprovedIcon(bool? isApproved)
+    {
+        if (isApproved == null)
+        {
+            return new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size20.HourglassThreeQuarter();
+        }
+
+        return isApproved == true
+            ? new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size20.CheckmarkCircle()
+            : new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size20.DismissCircle();
     }
 
     protected override ValueTask SetTableColumnsAsync()
@@ -140,7 +211,7 @@
                     Title = L["EntityType"],
                     Sortable = true,
                     Data = nameof(TGetListOutputDto.EntityType),
-                    PropertyName = nameof(TGetListOutputDto.EntityType)
+                    PropertyName = nameof(TGetListOutputDto.EntityType),
                 },
                 new FluentTableColumn
                 {
@@ -163,6 +234,31 @@
                     Data = nameof(TGetListOutputDto.Text),
                     PropertyName = nameof(TGetListOutputDto.Text)
                 },
+                new FluentTableColumn()
+                {
+                    Title = L["IsApproved"],
+                    Sortable = true,
+                    Data = nameof(TGetListOutputDto.IsApproved),
+                    PropertyName = nameof(TGetListOutputDto.IsApproved),
+                    CustomRender = (data) =>
+                    {
+                        var entity = data.As<TGetListOutputDto>();
+                        Color color = Color.Accent;
+                        if (entity.IsApproved == true)
+                            color = Color.Success;
+                        else if (entity.IsApproved == false)
+                            color = Color.Error;
+                        else
+                        {
+                            color = Color.Info;
+                        }
+
+
+                        return @<div>
+                            <FluentIcon Color="@(color)" Value="@GetIsApprovedIcon(entity.IsApproved)"/>
+                        </div>;
+                    }
+                },
                 new FluentTableColumn
                 {
                     Title = L["CreationTime"],
@@ -179,6 +275,60 @@
         });
 
         return base.SetTableColumnsAsync();
+    }
+
+    protected virtual async Task OnDisapprovedSelectedClick()
+    {
+        Loading = true;
+        var input = new CommentApprovalDto()
+        {
+            IsApproved = false
+        };
+        try
+        {
+            foreach (var commentWithAuthorDto in SelectedEntities.Where(x => x.IsApproved != false))
+            {
+                await AppService.UpdateApprovalStatusAsync(commentWithAuthorDto.Id, input);
+            }
+
+            SelectedEntities.Clear();
+        }
+        catch (Exception e)
+        {
+            await HandleErrorAsync(e);
+        }
+        finally
+        {
+            Loading = false;
+            await GetEntitiesAsync();
+        }
+    }
+
+    protected virtual async Task OnApproveSelectedClick()
+    {
+        Loading = true;
+        var input = new CommentApprovalDto()
+        {
+            IsApproved = true
+        };
+        try
+        {
+            foreach (var commentWithAuthorDto in SelectedEntities.Where(x => x.IsApproved != true))
+            {
+                await AppService.UpdateApprovalStatusAsync(commentWithAuthorDto.Id, input);
+            }
+
+            SelectedEntities.Clear();
+        }
+        catch (Exception e)
+        {
+            await HandleErrorAsync(e);
+        }
+        finally
+        {
+            Loading = false;
+            await GetEntitiesAsync();
+        }
     }
 }
 
