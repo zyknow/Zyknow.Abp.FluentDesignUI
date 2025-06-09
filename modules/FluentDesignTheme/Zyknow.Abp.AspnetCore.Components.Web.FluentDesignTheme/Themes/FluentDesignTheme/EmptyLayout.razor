@@ -1,5 +1,10 @@
 ﻿@using Zyknow.Abp.FluentDesignUI.Components
 @inherits LayoutComponentBase
+@inject IThemeStore ThemeStore
+<FluentDesignTheme @bind-Mode="@ThemeStore.ThemeMode"
+                   OfficeColor="@ThemeStore.Color"
+                   StorageName="theme"/>
+
 <PageAlert/>
 @Body
 <FluentDialogProvider/>
