@@ -1,4 +1,6 @@
-﻿@using Microsoft.Extensions.Configuration
+﻿@using System.Linq.Expressions
+@using Humanizer
+@using Microsoft.Extensions.Configuration
 @using Microsoft.Extensions.Options
 @using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
 @using Volo.Abp.GlobalFeatures
@@ -9,54 +11,176 @@
 @inherits FluentAbpComponentBase<CmsKitResource>
 
 @{
-    RenderFragment GetCommentTitle(CmsUserDto author, DateTime creationTime) =>
+    RenderFragment GetCommentTitle(Guid reactionEntityId, CmsUserDto author, DateTime creationTime) =>
         @<FluentStack VerticalAlignment="VerticalAlignment.Center"
                       HorizontalAlignment="HorizontalAlignment.SpaceBetween">
             <FluentStack VerticalAlignment="VerticalAlignment.Center">
-                <FluentIcon Value="@(new Size20.Comment())"></FluentIcon>
                 <CmsCommentAuthor Author="@author"/>
             </FluentStack>
-            <FluentLabel Weight="FontWeight.Bold"
-                         Color="Color.Disabled">@creationTime.ToUniversalTime().ToString("o")</FluentLabel>
+            <div>
+                <FluentStack VerticalAlignment="VerticalAlignment.Center" HorizontalAlignment="HorizontalAlignment.End">
+                    <FluentLabel Style="text-wrap: nowrap" Weight="FontWeight.Bold"
+                                 Color="Color.Disabled">@creationTime.Humanize()</FluentLabel>
+
+                    @if (CmsKitUiOptions.Value.CommentsOptions.IsReactionsEnabled && GlobalFeatureManager.Instance.IsEnabled<ReactionsFeature>())
+                    {
+                        <EntityReactionSelection WithoutPopover EntityType="comment"
+                                                 EntityId="@reactionEntityId.ToString()"/>
+                    }
+                </FluentStack>
+            </div>
+
         </FluentStack>;
 
-    RenderFragment GetCommentArea(Guid? repliedCommentId, bool cancelButton = false)
+    RenderFragment GetCommentArea(Guid? repliedCommentId, bool cancelButton = false, bool defaultVisible = false)
     {
-        CreateCommentInput input = new CreateCommentInput()
+        var key = repliedCommentId ?? Guid.Empty;
+        if (!CreateInputs.TryGetValue(key, out var status))
         {
-            IdempotencyToken = Guid.NewGuid().ToString("N"),
-            RepliedCommentId = repliedCommentId,
-        };
-        return @<div class="cms-comment-form-area" data-reply-id="@(repliedCommentId?.ToString() ?? "")">
-            <AbpFluentForm
-                Content="@input"
-                TInput="CreateCommentInput"
-                SubmitValidClick="@(async () => await CreateCommentAsync(input))">
-                <CmsKitEditor @bind-Value="@input.Text"></CmsKitEditor>
-
-                @if (CmsKitCommentOptions.Value.IsRecaptchaEnabled)
+            status = new CommentEditorStatus<CreateCommentInput>()
+            {
+                Visible = defaultVisible,
+                Input = new CreateCommentInput
                 {
-                    // TODO: Implement Recaptcha component
+                    IdempotencyToken = Guid.NewGuid().ToString("N"),
+                    RepliedCommentId = repliedCommentId
                 }
-            </AbpFluentForm>
+            };
+            CreateInputs[key] = status;
+        }
+
+        var input = status.Input;
+
+        return @<div class="cms-comment-form-area" data-reply-id="@(repliedCommentId?.ToString() ?? "")">
+            @if (status.Visible)
+            {
+                <AbpFluentForm
+                    WithoutDialogVerticalGap="10"
+                    Content="@input"
+                    TInput="CreateCommentInput"
+                    CancelBtnVisible="@cancelButton"
+                    CancelClick="@(() => status.Visible = false)"
+                    SubmitValidClick="@(async () => await CreateCommentAsync(input, repliedCommentId))">
+                    <ChildContent>
+                        <CmsKitEditor @bind-Value="@input.Text"></CmsKitEditor>
+                        @if (CmsKitCommentOptions.Value.IsRecaptchaEnabled)
+                        {
+                            // TODO: Implement Recaptcha component
+                        }
+                    </ChildContent>
+                    <Footer>
+                        <FluentStack HorizontalAlignment="HorizontalAlignment.End">
+                            <FluentButton
+                                OnClick="context.OnSubmitBtnClickAsync"
+                                Appearance="Appearance.Accent"
+                                IconStart="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Filled.Size20.Comment())">@L["Send"]</FluentButton>
+                            @if (cancelButton)
+                            {
+                                <FluentButton Appearance="Appearance.Stealth" OnClick="@(() => status.Visible = false)">
+                                    @L["Cancel"]
+                                </FluentButton>
+                            }
+                        </FluentStack>
+                    </Footer>
+                </AbpFluentForm>
+            }
         </div>;
     }
 
-    RenderFragment GetCommentContentArea(Guid id, string text) =>
-        @<div class="cms-comment-content-area" data-id="@id.ToString()">
-            @((MarkupString)text)
+    RenderFragment GetEditArea(Guid id, UpdateCommentInput input, bool defaultVisible = false)
+    {
+        if (!UpdateInputs.TryGetValue(id, out var status))
+        {
+            status = new CommentEditorStatus<UpdateCommentInput>()
+            {
+                Visible = defaultVisible,
+                Input = input
+            };
+            UpdateInputs[id] = status;
+        }
+
+
+        return @<div class="cms-comment-edit-area" style="width: 100%" id="@($"cms-comment_{EntityType}_{EntityId}_{id}")"
+                     data-id="@id.ToString()">
+            @if (status.Visible)
+            {
+                var updateInput = UpdateInputs[id].Input;
+
+                <AbpFluentForm
+                    WithoutDialogVerticalGap="10"
+                    Content="@updateInput"
+                    CancelBtnVisible
+                    TInput="UpdateCommentInput"
+                    CancelClick="@(() => status.Visible = false)"
+                    SubmitValidClick="@(async () => await UpdateCommentAsync(id, updateInput))">
+                    <ChildContent>
+                        <CmsKitEditor @bind-Value="@updateInput.Text"></CmsKitEditor>
+
+                        @if (CmsKitCommentOptions.Value.IsRecaptchaEnabled)
+                        {
+                            // TODO: Implement Recaptcha component
+                        }
+                    </ChildContent>
+                    <Footer>
+                        <FluentStack HorizontalAlignment="HorizontalAlignment.End">
+                            <FluentButton
+                                OnClick="context.OnSubmitBtnClickAsync"
+                                Appearance="Appearance.Accent">@L["Update"]</FluentButton>
+                            <FluentButton Appearance="Appearance.Stealth" OnClick="@(() => status.Visible = false)">
+                                @L["Cancel"]
+                            </FluentButton>
+                        </FluentStack>
+                    </Footer>
+                </AbpFluentForm>
+            }
         </div>;
+    }
+
+    RenderFragment GetCommentContentArea(Guid id, string text)
+    {
+        UpdateInputs.TryGetValue(id, out var updateStatus);
+
+        if (updateStatus?.Visible != true)
+        {
+            return @<div class="cms-comment-content-area" data-id="@id.ToString()">
+                @((MarkupString)text)
+            </div>;
+        }
+
+        return @<div></div>;
+    }
 
     RenderFragment GetCommentActionArea(Guid id, Guid authorId, bool isReply) =>
-        @<div class="inner-comment-buttons">
+        @<FluentStack class="inner-comment-buttons" HorizontalGap="20">
+
+            @{
+                var actionButtonVisible = (!UpdateInputs.TryGetValue(id, out var commentUpdateStatus) || !commentUpdateStatus.Visible) &&
+                                              (!CreateInputs.TryGetValue(id, out var commentCreateStatus) || !commentCreateStatus.Visible);
+
+                var setCommentIdVisible = (Guid commentId, bool isUpdate) =>
+                {
+                    CreateInputs.TryGetValue(commentId, out var createStatus);
+                    UpdateInputs.TryGetValue(commentId, out var updateStatus);
+                    if (createStatus != null)
+                        createStatus.Visible = !isUpdate;
+                    if (updateStatus != null)
+                        updateStatus.Visible = isUpdate;
+                };
+            }
+
             @if (!isReply)
             {
                 @if (CurrentUser.IsAuthenticated)
                 {
-                    <FluentButton IconStart="@(new Size20.ArrowReply())"
-                                  id="@($"cms-comment_{EntityType}_{EntityId}_{id}_link")">
-                        @L["Reply"]
-                    </FluentButton>
+                    @if (actionButtonVisible)
+                    {
+                        <FluentAnchor Href="#" Appearance="Appearance.Hypertext"
+                                      IconStart="@(new Size20.ArrowReply())"
+                                      id="@($"cms-comment_{EntityType}_{EntityId}_{id}_link")"
+                                      OnClick="@(() => { setCommentIdVisible(id, false); })">
+                            @L["Reply"]
+                        </FluentAnchor>
+                    }
                 }
                 else
                 {
@@ -67,110 +191,120 @@
 
             @if (authorId == CurrentUser.Id)
             {
-                <FluentButton IconStart="@(new Size20.Edit())"
-                              data-id="@id.ToString()">
-                    @L["Edit"]
-                </FluentButton>
-
-                <FluentButton IconStart="@(new Size20.Delete())"
-                              data-author-id="@authorId.ToString()" data-id="@id.ToString()">
-                    @L["Delete"]
-                </FluentButton>
-            }
-        </div>;
-
-    RenderFragment GetEditArea(Guid id, UpdateCommentInput updateInput)
-    {
-        return @<div class="cms-comment-edit-area" id="@($"cms-comment_{EntityType}_{EntityId}_{id}")"
-                     data-id="@id.ToString()">
-            <AbpFluentForm Content="@updateInput"
-                           TInput="UpdateCommentInput"
-                           SubmitValidClick="@(async () => await UpdateCommentAsync(id, updateInput))">
-                <CmsKitEditor @bind-Value="@updateInput.Text"></CmsKitEditor>
-
-                @if (CmsKitCommentOptions.Value.IsRecaptchaEnabled)
+                @if (actionButtonVisible)
                 {
-                    // TODO: Implement Recaptcha component
+                    <FluentAnchor Href="#" Appearance="Appearance.Hypertext"
+                                  IconStart="@(new Size20.Edit())"
+                                  data-id="@id.ToString()" OnClick="@(() => { setCommentIdVisible(id, true); })">
+                        @L["Edit"]
+                    </FluentAnchor>
+
+                    <FluentAnchor Href="#" Appearance="Appearance.Hypertext"
+                                  IconStart="@(new Size20.Delete())"
+                                  data-author-id="@authorId.ToString()"
+                                  data-id="@id.ToString()"
+                                  OnClick="@(() => DeleteCommentAsync(id))">
+                        @L["Delete"]
+                    </FluentAnchor>
                 }
-            </AbpFluentForm>
-        </div>;
-    }
+            }
+        </FluentStack>;
 }
 
-<div class="cms-comment-area" data-entity-type="@EntityType" data-entity-id="@EntityId">
-    @if (CurrentUser.IsAuthenticated)
-    {
-        <div id="@($"cms-comment_{EntityType}_{EntityId}")">
-            @GetCommentArea(null)
-        </div>
-    }
-    else if (!string.IsNullOrWhiteSpace(LoginUrl))
-    {
-        <FluentAnchor Appearance="Appearance.Hypertext" href="@LoginUrl"> @L["LoginToAddComment"] </FluentAnchor>
-    }
+<FluentStack  Orientation="Orientation.Vertical" class="cms-comment-area" data-entity-type="@EntityType" data-entity-id="@EntityId">
+    <FluentStack  Orientation="Orientation.Vertical" Class="fluent-card">
+        <FluentLabel Typo="Typography.H4">@Comments.Count @L["Comments"]</FluentLabel>
+        <FluentLabel>@L["JoinDiscussion"]</FluentLabel>
 
-    @foreach (var comment in Comments)
-    {
-        <FluentStack class="comment" Id="@($@"comment-{@comment.Id.ToString()}")" Orientation="Orientation.Vertical">
-            @GetCommentTitle(comment.Author, comment.CreationTime)
-            @GetCommentContentArea(comment.Id, comment.Text)
-            @if (!IsReadOnly)
+        @if (CurrentUser.IsAuthenticated)
+        {
+            @if (!MainCommentEditorVisible)
             {
-                @GetCommentActionArea(comment.Id, comment.Author.Id, false)
-                @if (CmsKitUiOptions.Value.CommentsOptions.IsReactionsEnabled && GlobalFeatureManager.Instance.IsEnabled<ReactionsFeature>())
+                <FluentButton Appearance="Appearance.Accent"
+                              OnClick="@(() => MainCommentEditorVisible = true)">@L["LeaveComment"]</FluentButton>
+            }
+            else
+            {
+                <div id="@($"cms-comment_{EntityType}_{EntityId}")" style="margin-bottom: 2rem;width: 100%">
+                    @GetCommentArea(null, cancelButton: true)
+                </div>
+            }
+        }
+        else if (!string.IsNullOrWhiteSpace(LoginUrl))
+        {
+            <FluentAnchor Appearance="Appearance.Accent" href="@LoginUrl"> @L["LoginToAddComment"] </FluentAnchor>
+        }
+        <FluentStack VerticalAlignment="VerticalAlignment.Center"
+                     style="display: flex;flex-direction: row;width: 100%;margin-bottom: 20px">
+            <FluentDivider Style="flex: 1 1 0%;"/>
+            <FluentLabel>@L["SortBy"] :</FluentLabel>
+            <FluentSelect Width="100px" Appearance="Appearance.Outline" TOption="CommentSoftBy" Items="@SortByList"
+                          SelectedOption="@SelectedSoftBy"
+                          SelectedOptionChanged="@(async (v) =>
+                                                 {
+                                                     SelectedSoftBy = v;
+                                                     await LoadCommentsAsync();
+                                                 })"
+                          OptionText="@(v => v.DisplayName)"
+            ></FluentSelect>
+        </FluentStack>
+
+    </FluentStack>
+    <FluentStack Orientation="Orientation.Vertical" VerticalGap="20">
+        @foreach (var comment in Comments)
+        {
+            <FluentStack class="comment comment-top-level fluent-card"
+                         Id="@($@"comment-{@comment.Id.ToString()}")" Orientation="Orientation.Vertical">
+                @GetCommentTitle(comment.Id, comment.Author, comment.CreationTime)
+                @GetCommentContentArea(comment.Id, comment.Text)
+                @if (!IsReadOnly)
                 {
-                    <EntityReactionSelection EntityType="comment"
-                                             EntityId="@comment.Id.ToString()"/>
+                    @GetCommentActionArea(comment.Id, comment.Author.Id, false)
+                    @GetEditArea(comment.Id, ObjectMapper.Map<CommentWithDetailsDto, UpdateCommentInput>(comment))
                 }
 
-                @GetEditArea(comment.Id, ObjectMapper.Map<CommentWithDetailsDto, UpdateCommentInput>(comment))
-            }
-
-            @if (comment.Replies.Any())
-            {
-                @foreach (var reply in comment.Replies)
+                @if (comment.Replies.Any())
                 {
-                    <div class="comment">
-                        @GetCommentTitle(reply.Author, reply.CreationTime)
-                        @GetCommentContentArea(reply.Id, reply.Text)
+                    @foreach (var reply in comment.Replies)
+                    {
+                        <FluentStack Style="padding-left: 1rem" Orientation="Orientation.Vertical"
+                                     class="comment">
+                            @GetCommentTitle(reply.Id, reply.Author, reply.CreationTime)
+                            @GetCommentContentArea(reply.Id, reply.Text)
 
-                        @if (IsReadOnly)
-                        {
-                            @GetCommentActionArea(reply.Id, reply.Author.Id, true)
-                            @if (CmsKitUiOptions.Value.CommentsOptions.IsReactionsEnabled && GlobalFeatureManager.Instance.IsEnabled<ReactionsFeature>())
+                            @if (!IsReadOnly)
                             {
-                                <EntityReactionSelection EntityType="comment"
-                                                         EntityId="@reply.Id.ToString()"/>
+                                @GetCommentActionArea(reply.Id, reply.Author.Id, true)
+                                @GetEditArea(reply.Id, ObjectMapper.Map<CommentDto, UpdateCommentInput>(reply))
                             }
+                        </FluentStack>
+                    }
 
-                            @GetEditArea(reply.Id, ObjectMapper.Map<CommentDto, UpdateCommentInput>(reply))
+                    if (comment.Replies.Count >= 3)
+                    {
+                        if (CurrentUser.IsAuthenticated)
+                        {
+                            <FluentButton IconStart="@(new Size20.ArrowReply())"
+                                          data-reply-id="@comment.Id.ToString()">
+                                @L["Reply"]
+                            </FluentButton>
                         }
-                    </div>
+                        else
+                        {
+                            <FluentAnchor Href="@(LoginUrl + "_" + comment.Id)"
+                                          Appearance="Appearance.Hypertext">@L["LoginToReply"]</FluentAnchor>
+                        }
+                    }
                 }
-            }
-
-            @if (comment.Replies.Count >= 3)
-            {
                 @if (CurrentUser.IsAuthenticated)
                 {
-                    <FluentButton IconStart="@(new Size20.ArrowReply())"
-                                  data-reply-id="@comment.Id.ToString()">
-                        @L["Reply"]
-                    </FluentButton>
+                    @GetCommentArea(comment.Id, true)
                 }
-                else
-                {
-                    <FluentAnchor Href="@(LoginUrl + "_" + comment.Id)"
-                                  Appearance="Appearance.Hypertext">@L["LoginToReply"]</FluentAnchor>
-                }
-            }
-            @if (CurrentUser.IsAuthenticated)
-            {
-                @GetCommentArea(comment.Id, true)
-            }
-        </FluentStack>
-    }
-</div>
+            </FluentStack>
+        }
+    </FluentStack>
+
+</FluentStack>
 
 @code {
 
@@ -191,18 +325,51 @@
 
     [Parameter] public string EntityType { get; set; }
     [Parameter] public string EntityId { get; set; }
+    [Parameter] public List<CommentSoftBy> SortByList { get; set; } = [];
 
-    protected List<CommentWithDetailsDto> Comments = [];
+    protected CommentSoftBy? SelectedSoftBy;
 
-    protected CreateCommentInput CreateEntity { get; set; } = new CreateCommentInput();
+    public List<CommentWithDetailsDto> Comments = [];
+
+    public readonly Dictionary<Guid, CommentEditorStatus<CreateCommentInput>> CreateInputs = new();
+    public readonly Dictionary<Guid, CommentEditorStatus<UpdateCommentInput>> UpdateInputs = new();
 
     protected string LoginUrl;
+
+    protected bool MainCommentEditorVisible
+    {
+        get => CreateInputs.TryGetValue(Guid.Empty, out var status) && status.Visible;
+        set
+        {
+            if (CreateInputs.TryGetValue(Guid.Empty, out var status))
+            {
+                status.Visible = value;
+            }
+            else
+            {
+                CreateInputs[Guid.Empty] = new CommentEditorStatus<CreateCommentInput>
+                {
+                    Visible = value,
+                    Input = new CreateCommentInput { IdempotencyToken = Guid.NewGuid().ToString("N") }
+                };
+            }
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
         LoginUrl = $"{AuthenticationOptions.Value.LoginUrl}?returnUrl={new Uri(NavigationManager.Uri).AbsolutePath}&returnUrlHash=#cms-comment_{EntityType}_{EntityId}";
-        Comments = (await CommentPublicAppService
-            .GetListAsync(EntityType, EntityId)).Items.OrderByDescending(x => x.CreationTime).ToList();
+
+        if (SortByList.IsNullOrEmpty())
+        {
+            SortByList =
+            [
+                new CommentSoftBy(@L["SortBy:News"], src => src.OrderByDescending(x => x.CreationTime)),
+                new CommentSoftBy(@L["SortBy:Oldest"], src => src.OrderBy(x => x.CreationTime))
+            ];
+        }
+
+        await LoadCommentsAsync();
 
         if (CmsKitCommentOptions.Value.IsRecaptchaEnabled)
         {
@@ -210,14 +377,67 @@
         }
     }
 
-    protected async Task CreateCommentAsync(CreateCommentInput input)
+    protected async Task LoadCommentsAsync()
+    {
+        if (SelectedSoftBy == null)
+            SelectedSoftBy = SortByList.FirstOrDefault();
+
+        Comments = (await CommentPublicAppService
+            .GetListAsync(EntityType, EntityId)).Items.OrderByDescending(x => x.CreationTime).ToList();
+
+        Comments = SelectedSoftBy!.Apply(Comments).ToList();
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    protected async Task CreateCommentAsync(CreateCommentInput input, Guid? repliedCommentId)
     {
         await CommentPublicAppService.CreateAsync(EntityType, EntityId, input);
+        CreateInputs[repliedCommentId ?? Guid.Empty].Visible = false;
+        await LoadCommentsAsync();
     }
 
     protected async Task UpdateCommentAsync(Guid id, UpdateCommentInput input)
     {
         await CommentPublicAppService.UpdateAsync(id, input);
+        await InvokeAsync(() => { UpdateInputs.Remove(id); });
+        await LoadCommentsAsync();
     }
 
+    protected async Task DeleteCommentAsync(Guid id)
+    {
+        if (!await Message.Confirm(L["MessageDeletionConfirmationMessage"]))
+            return;
+
+        await CommentPublicAppService.DeleteAsync(id);
+        await InvokeAsync(() => { UpdateInputs.Remove(id); });
+        await LoadCommentsAsync();
+    }
+
+}
+
+@code
+{
+    public class CommentEditorStatus<TInput>
+    {
+        public bool Visible { get; set; }
+        public TInput Input { get; set; }
+    }
+
+    public class CommentSoftBy
+    {
+        public CommentSoftBy(string displayName, Func<IEnumerable<CommentWithDetailsDto>, IOrderedEnumerable<CommentWithDetailsDto>> sortFunc)
+        {
+            DisplayName = displayName;
+            SortFunc = sortFunc;
+        }
+
+        public string DisplayName { get; }
+        protected Func<IEnumerable<CommentWithDetailsDto>, IOrderedEnumerable<CommentWithDetailsDto>> SortFunc { get; }
+
+        public IEnumerable<CommentWithDetailsDto> Apply(IEnumerable<CommentWithDetailsDto> source)
+        {
+            return SortFunc(source);
+        }
+    }
 }

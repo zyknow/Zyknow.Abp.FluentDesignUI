@@ -10,6 +10,7 @@
 @code {
     [Parameter] public string EntityType { get; set; }
     [Parameter] public string EntityId { get; set; }
+    [Parameter] public bool ReadOnly { get; set; }
     [Inject] public IMarkedItemPublicAppService MarkedItemPublicAppService { get; set; }
     [Inject] public IStringLocalizer<CmsKitResource> L { get; set; }
 
@@ -30,6 +31,9 @@
 
     protected async Task ToggleMarkedItemAsync()
     {
+        if (ReadOnly)
+            return;
+        
         MarkedItem.IsMarkedByCurrentUser = await MarkedItemPublicAppService.ToggleAsync(EntityType, EntityId);
         await InvokeAsync(StateHasChanged);
     }

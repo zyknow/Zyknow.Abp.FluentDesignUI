@@ -2,7 +2,7 @@
 @using Volo.CmsKit.Contents
 @using Volo.CmsKit.Localization
 @using Zyknow.Abp.CmsKit.Blazor.Common.FluentDesignUI.Components
-<div style="width: 100%;height: 100%;">
+<div style="width: 100%;height: 100%;cursor: pointer" onclick="@(()=> GotoBlogPostPageAsync(Post))">
     <FluentStack Class="blogs-post-card fluent-border-card" Orientation="Orientation.Vertical"
                  VerticalGap="24" VerticalAlignment="VerticalAlignment.SpaceBetween">
 
@@ -31,7 +31,7 @@
 
                 @if (IsMarkedItemFeatureEnabled && CurrentUser.IsAuthenticated)
                 {
-                    <EntityMarkedToggle EntityId="@Post.Id.ToString()"
+                    <EntityMarkedToggle ReadOnly EntityId="@Post.Id.ToString()"
                                         EntityType="@BlogPostConsts.EntityType"/>
                 }
             </FluentStack>
@@ -55,10 +55,10 @@
             </FluentLabel>
         </FluentStack>
 
-        <FluentDivider Style="width:100%"></FluentDivider>
-        <FluentButton Style="width: 100%" OnClick="@(() => GotoBlogPostPageAsync(Post))">
-            @L["Read"]
-        </FluentButton>
+        @* <FluentDivider Style="width:100%"></FluentDivider> *@
+        @* <FluentButton Style="width: 100%" OnClick="@(() => GotoBlogPostPageAsync(Post))"> *@
+        @*     @L["Read"] *@
+        @* </FluentButton> *@
     </FluentStack>
 </div>
 

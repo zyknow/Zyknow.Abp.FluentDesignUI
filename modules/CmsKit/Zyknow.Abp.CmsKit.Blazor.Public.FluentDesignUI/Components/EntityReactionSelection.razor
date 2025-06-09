@@ -4,52 +4,66 @@
 @using Volo.CmsKit.Public.Reactions
 @inherits FluentAbpComponentBase<Volo.CmsKit.Localization.CmsKitResource>
 
-<FluentStack HorizontalAlignment="HorizontalAlignment.Start" HorizontalGap="5"
-             VerticalAlignment="VerticalAlignment.Center">
-    @if (ReactionListResult?.Items != null)
-    {
-        foreach (var reactionWithSelection in ReactionListResult.Items.Where(x => x.Count > 0))
+@if (!ReactionIcons.IsNullOrEmpty())
+{
+    <FluentStack HorizontalAlignment="HorizontalAlignment.Start" HorizontalGap="5"
+                 VerticalAlignment="VerticalAlignment.Center">
+        @if (ReactionListResult?.Items != null)
         {
-            var emoji = CmsKitUiOptions.Value.ReactionIcons[reactionWithSelection.Reaction.Name];
+            var selectionList = WithoutPopover ? ReactionListResult.Items : ReactionListResult.Items.Where(x => x.Count > 0);
 
-            <div>
-                <FluentStack HorizontalGap="1" VerticalAlignment="VerticalAlignment.Center"
-                             HorizontalAlignment="HorizontalAlignment.Center">
-                    <FluentEmoji Style="height: 24px;width: 24px" Value="@emoji"
-                                 OnClick="@(() => AddUserSelectReaction(reactionWithSelection.Reaction.Name))"></FluentEmoji>
-                    <FluentLabel>@reactionWithSelection.Count</FluentLabel>
-                </FluentStack>
-            </div>
+            foreach (var reactionWithSelection in selectionList)
+            {
+                ReactionIcons.TryGetValue(reactionWithSelection.Reaction.Name, out var emoji);
+
+                if (emoji == null)
+                    continue;
+                
+                <div style="cursor: pointer;" onclick="@(() => UpdateUserSelectReaction(reactionWithSelection.Reaction.Name))">
+                    <FluentStack HorizontalGap="1"
+                                 HorizontalAlignment="HorizontalAlignment.Center">
+                        <FluentEmoji Style="height: 24px;width: 24px" Value="@emoji"/>
+                        <FluentLabel Typo="Typography.Body" Style="user-select: none;">@reactionWithSelection.Count</FluentLabel>
+                    </FluentStack>
+                </div>
+            }
         }
-    }
 
-    <FluentIcon Style="margin-top: 2px;" id="AddReactionPopoverBtn" Value="@(new Size24.EmojiAdd())"
-                OnClick="@(() => ShowAddReactionPopover())"/>
-</FluentStack>
-
-<FluentPopover HorizontalThreshold="150" AnchorId="AddReactionPopoverBtn"
-               @bind-Open="AddReactionPopoverVisible">
-    <Header>@L["PickYourReaction"]</Header>
-    <Body>
-    <FluentStack Orientation="Orientation.Horizontal" Wrap="true">
-        @foreach (var valueReactionIcon in CmsKitUiOptions.Value.ReactionIcons)
+        @if (!WithoutPopover)
         {
-            <div
-                style="@(ReactionListResult?.Items?.FirstOrDefault(x => x.Reaction.Name == valueReactionIcon.Key)?.IsSelectedByCurrentUser == true ? "background: var(--neutral-layer-4)" : "")">
-                <FluentStack HorizontalAlignment="HorizontalAlignment.Center"
-                             VerticalAlignment="VerticalAlignment.Center">
-                    <FluentEmoji Value="@valueReactionIcon.Value"
-                                 OnClick="@(() => AddUserSelectReaction(valueReactionIcon.Key))"></FluentEmoji>
-                </FluentStack>
-            </div>
+            <FluentIcon Style="margin-top: 2px;" id="@PopoverBtnId" Value="@(new Size24.EmojiAdd())"
+                        OnClick="@(() => ShowAddReactionPopover())"/>
         }
     </FluentStack>
-    </Body>
-</FluentPopover>
+
+    if (!WithoutPopover)
+    {
+        <FluentPopover HorizontalThreshold="150" AnchorId="@PopoverBtnId"
+                       @bind-Open="AddReactionPopoverVisible">
+            <Header>@L["PickYourReaction"]</Header>
+            <Body>
+            <FluentStack Orientation="Orientation.Horizontal" Wrap="true">
+                @foreach (var valueReactionIcon in ReactionIcons)
+                {
+                    <div
+                        style="@(ReactionListResult?.Items?.FirstOrDefault(x => x.Reaction.Name == valueReactionIcon.Key)?.IsSelectedByCurrentUser == true ? "background: var(--neutral-layer-4)" : "")">
+                        <FluentStack HorizontalAlignment="HorizontalAlignment.Center"
+                                     VerticalAlignment="VerticalAlignment.Center">
+                            <FluentEmoji Value="@valueReactionIcon.Value"
+                                         OnClick="@(() => UpdateUserSelectReaction(valueReactionIcon.Key))"></FluentEmoji>
+                        </FluentStack>
+                    </div>
+                }
+            </FluentStack>
+            </Body>
+        </FluentPopover>
+    }
+}
 
 @code {
     [Parameter] public string EntityType { get; set; }
     [Parameter] public string EntityId { get; set; }
+    [Parameter] public bool WithoutPopover { get; set; }
 
     [Inject] protected IReactionPublicAppService ReactionPublicAppService { get; set; }
 
@@ -58,6 +72,10 @@
     protected ListResultDto<ReactionWithSelectionDto>? ReactionListResult { get; set; }
 
     protected bool AddReactionPopoverVisible { get; set; } = false;
+
+    protected Dictionary<string, Emoji> ReactionIcons { get; set; }
+
+    public string PopoverBtnId { get; set; } = $@"AddReactionPopoverBtn_{Guid.NewGuid():N}";
 
 
     protected override async Task OnInitializedAsync()
@@ -68,9 +86,16 @@
     protected async Task LoadReactionsAsync()
     {
         ReactionListResult = await ReactionPublicAppService.GetForSelectionAsync(EntityType, EntityId);
+        if (ReactionIcons.IsNullOrEmpty())
+        {
+            var keys = ReactionListResult.Items.Select(x => x.Reaction.Name).ToList();
+            ReactionIcons = CmsKitUiOptions.Value.ReactionIcons.Where(x => keys.Contains(x.Key)).ToDictionary();
+        }
+        
+        await InvokeAsync(StateHasChanged);
     }
 
-    protected async Task AddUserSelectReaction(string name)
+    protected async Task UpdateUserSelectReaction(string name)
     {
         if (!CurrentUser.IsAuthenticated)
         {
