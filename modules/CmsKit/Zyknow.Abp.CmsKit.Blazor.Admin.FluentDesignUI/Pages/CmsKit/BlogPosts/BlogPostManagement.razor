@@ -173,8 +173,7 @@
                     ValueConverter = v =>
                     {
                         var entity = v.As<BlogPostListDto>();
-                        // return L[@$"CmsKit.BlogPost.Status.{(int)entity.Status}"];
-                        return AbpEnumLocalizer.GetString(typeof(BlogPostStatus), entity.Status!);
+                        return L[@$"CmsKit.BlogPost.Status.{(int)entity.Status!}"];
                     }
                 }
             ]);
