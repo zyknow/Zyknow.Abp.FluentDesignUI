@@ -1,0 +1,19 @@
+{
+  "culture": "zh-Hans",
+  "texts": {
+    "SortBy": "排序",
+    "SortBy:News": "最新",
+    "SortBy:Oldest": "最早",
+    "LeaveComment": "发表评论",
+    "RatingTotalCount": "评分总数",
+    "JoinDiscussion": "加入讨论。",
+    "CmsKit.Comment.ApproveStates.0": "全部",
+    "CmsKit.Comment.ApproveStates.1": "已通过",
+    "CmsKit.Comment.ApproveStates.2": "已拒绝",
+    "CmsKit.Comment.ApproveStates.4": "待审核",
+    "IsApproved": "通过",
+    "CommentFilter:ApproveState": "评论状态",
+    "Approve": "通过",
+    "Disapproved": "拒绝"
+  }
+}

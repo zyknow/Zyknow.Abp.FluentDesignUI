@@ -1,0 +1,16 @@
+{
+  "culture": "en",
+  "texts": {
+    "SortBy": "Sort By",
+    "SortBy:News": "Newest",
+    "SortBy:Oldest": "Oldest",
+    "LeaveComment": "Leave a Comment",
+    "RatingTotalCount": "Rating Total Count",
+    "JoinDiscussion": "Join the discussion.",
+    "CmsKit.Comment.ApproveStates.0": "All",
+    "CmsKit.Comment.ApproveStates.1": "Approved",
+    "CmsKit.Comment.ApproveStates.2": "Disapproved",
+    "CmsKit.Comment.ApproveStates.4": "Waiting",
+    "IsApproved" : "Is Approved"
+  }
+}
