@@ -17,14 +17,19 @@
         OnNavigateAsync="OnNavigateAsync">
         <Found Context="routeData">
             @{
-                var currentRouteData = (HasDynamicHomePage && _currentSlug.IsNullOrWhiteSpace() ? _homeRouteData : routeData)!;
-
+                var currentRouteData = IsDynamicPage ? _dynamicRouterData : routeData;
+                
                 if (PageFound != null)
                 {
                     PageFound(new CmsKitRouterData(currentRouteData, CurrentLayout));
                 }
                 else
                 {
+                    if (!IsDynamicPage)
+                    {
+                        currentRouteData.Template = null;
+                    }
+                    
                     <AuthorizeRouteView RouteData="currentRouteData"
                                         DefaultLayout="CurrentLayout">
                         <NotAuthorized>
@@ -57,26 +62,23 @@
     public GlobalResourceDto? GlobalStyleResource { get; set; }
     public GlobalResourceDto? GlobalScriptResource { get; set; }
 
-    private string _currentSlug;
-    bool HasDynamicHomePage => PageDtoCaches.GetValueOrDefault("") != null;
+    private string _currentSlug = "";
+    bool IsDynamicPage => PageDtoCaches.GetValueOrDefault(_currentSlug)?.Id != null;
     Type? _layout;
 
     public Dictionary<string, PageDto?> PageDtoCaches { get; set; } = [];
 
-    private readonly RouteData _homeRouteData = new(typeof(CmsKitDynamicPageHost),
-        new Dictionary<string, object>
-        {
-            ["Url"] = "/"
-        }!);
+    private readonly RouteData _dynamicRouterData = new(typeof(CmsKitDynamicPageHost), new Dictionary<string, object?>());
 
-    private bool _isCmsPageEnabled;
+    protected bool CmsPageEnabled { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        _isCmsPageEnabled = GlobalFeatureManager.Instance.IsEnabled<PagesFeature>();
+        CmsPageEnabled = GlobalFeatureManager.Instance.IsEnabled<PagesFeature>();
 
-        if (!_isCmsPageEnabled)
+        if (!CmsPageEnabled)
             return;
+
         try
         {
             PageDtoCaches[""] = (await PageService.FindDefaultHomePageAsync());

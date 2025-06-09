@@ -12,9 +12,13 @@ public class AbpCmsKitBlazorPublicAutoMapperProfile : Profile
             .Ignore(x => x.ExtraProperties);
 
 
-        CreateMap<CommentDto, UpdateCommentInput>();
-        CreateMap<CommentWithDetailsDto, UpdateCommentInput>();
-        
-        
+        CreateMap<CommentDto, UpdateCommentInput>()
+            .ForMember(dest => dest.CaptchaToken, opt => opt.Ignore())
+            .ForMember(dest => dest.CaptchaAnswer, opt => opt.Ignore());
+        ;
+        CreateMap<CommentWithDetailsDto, UpdateCommentInput>()
+            .ForMember(dest => dest.CaptchaToken, opt => opt.Ignore())
+            .ForMember(dest => dest.CaptchaAnswer, opt => opt.Ignore());
+        ;
     }
 }

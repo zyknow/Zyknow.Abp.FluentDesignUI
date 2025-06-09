@@ -28,6 +28,10 @@ public class AbpCmsKitBlazorPublicFluentDesignModule : AbpModule
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         context.Services.AddAutoMapperObjectMapper<AbpCmsKitBlazorPublicFluentDesignModule>();
+        Configure<AbpAutoMapperOptions>(options =>
+        {
+            options.AddProfile<AbpCmsKitBlazorPublicAutoMapperProfile>(validate: true);
+        });
 
         Configure<CmsKitUiOptions>(options =>
         {
