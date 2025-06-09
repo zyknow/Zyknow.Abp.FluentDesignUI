@@ -6,8 +6,7 @@
 @using Volo.CmsKit.Public.GlobalResources
 @using Zyknow.Abp.AspnetCore.Components.Web.FluentDesignTheme.Themes.FluentDesignTheme
 @inherits FluentAbpComponentBase
-@page "/{**Url}"
-
+@page "/{*Url:nonfile}"
 <HeadContent>
     @* ReSharper disable once OtherTagsInsideScript1 *@
     @if (Page != null)
@@ -38,4 +37,9 @@
     public PageDto? Page => CmsKitRouter?.Page;
     public GlobalResourceDto? GlobalStyleResource => CmsKitRouter?.GlobalStyleResource;
     public GlobalResourceDto? GlobalScriptResource => CmsKitRouter?.GlobalScriptResource;
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+
 }
