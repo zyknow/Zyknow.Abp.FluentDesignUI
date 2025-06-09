@@ -22,7 +22,50 @@
     width: 100%;
 }
 
-.blog-post-text-content{
+.blog-post-text-content {
     margin-bottom: 20px;
     margin-top: 20px;
+    width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+}
+
+.blog-post-items-container {
+    overflow-x: hidden !important;
+}
+
+.cms-comment-area {
+    width: 100%;
+}
+
+.cms-comment-form-area {
+    width: 100%;
+}
+
+.cms-comment-edit-area {
+    width: 100%;
+}
+
+.comment-top-level {
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.blog-post-content {
+    overflow-x: hidden;
+    height: 100%;
+    width: 100%;
+}
+
+.cms-comment-content-area {
+    margin: 0.5rem 0 0 2.9rem;
+    padding-right: 2rem;
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+}
+
+.inner-comment-buttons {
+    margin: 0 0 0 2.9rem;
 }
