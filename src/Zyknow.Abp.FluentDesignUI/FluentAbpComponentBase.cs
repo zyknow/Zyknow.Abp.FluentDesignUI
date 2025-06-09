@@ -8,9 +8,6 @@ namespace Zyknow.Abp.FluentDesignUI;
 
 public abstract class FluentAbpComponentBase : AbpComponentBase
 {
-    protected IAbpEnumLocalizer AbpEnumLocalizer => LazyGetNonScopedRequiredService(ref _abpEnumLocalizer)!;
-    private IAbpEnumLocalizer? _abpEnumLocalizer;
-
     protected IDialogService DialogService => LazyGetNonScopedRequiredService(ref _dialogService)!;
     private IDialogService? _dialogService;
 

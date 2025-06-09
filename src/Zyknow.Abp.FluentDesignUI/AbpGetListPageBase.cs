@@ -23,6 +23,8 @@ public abstract class AbpGetListPageBase<TGetListOutputDto, TKey, TGetListInput,
     where TGetListInput : new()
 {
     [Inject] protected IStringLocalizer<AbpUiResource> UiLocalizer { get; set; } = null!;
+    
+    [Inject] protected IAbpEnumLocalizer AbpEnumLocalizer { get; set; } = null!;
 
     protected bool Loading = false;
     protected TGetListInput GetListInput = new();
