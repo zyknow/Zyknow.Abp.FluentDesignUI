@@ -21,7 +21,7 @@
 else
 {
     <FluentStack Orientation="Orientation.Vertical"
-                 HorizontalAlignment="HorizontalAlignment.Stretch" Style="height: 100%" VerticalGap="40">
+                 HorizontalAlignment="HorizontalAlignment.Stretch" Style="height: 100%" VerticalGap="@WithoutDialogVerticalGap">
         <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch">
             @HeaderContentRender
         </FluentStack>
@@ -46,7 +46,7 @@ else
 
     [Parameter] public virtual RenderFragment ChildContent { get; set; }
 
-    [Parameter] public virtual RenderFragment? Footer { get; set; }
+    [Parameter] public virtual RenderFragment<AbpFluentForm<TInput>>? Footer { get; set; }
 
 
     [Parameter] public bool Loading { get; set; }
@@ -56,8 +56,11 @@ else
 
     [Parameter] public EventCallback<TInput> ContentChanged { get; set; }
 
-
     [CascadingParameter] public FluentDialog? Dialog { get; set; }
+
+    [Parameter] public bool CancelBtnVisible { get; set; }
+
+    [Parameter] public int? WithoutDialogVerticalGap { get; set; } = 40;
 
     /// <summary>
     /// The method that will be called when the submit button is clicked and the form is valid.
@@ -105,7 +108,7 @@ else
     {
         if (Footer != null)
         {
-            @Footer
+            @Footer(this)
         }
         else
         {
@@ -113,7 +116,7 @@ else
                 <FluentButton Loading="@Loading" Appearance="Appearance.Accent"
                               OnClick="@OnSubmitBtnClickAsync">@UL["Submit"]</FluentButton>
 
-                @if (Dialog != null)
+                @if (Dialog != null || CancelBtnVisible)
                 {
                     <FluentButton Appearance="Appearance.Neutral"
                                   OnClick="@OnCancelBtnClickAsync">@UL["Cancel"]</FluentButton>

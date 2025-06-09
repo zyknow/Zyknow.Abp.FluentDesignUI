@@ -1,8 +1,9 @@
 ﻿@inherits FluentComponentBase
 
 <FluentStack Orientation="Orientation.Vertical" VerticalGap="20" HorizontalAlignment="HorizontalAlignment.Stretch"
-             VerticalAlignment="VerticalAlignment.Stretch" Style="@(@$"height: 100%;overflow: auto;{Style}")"
-             Class="@(@$"fluent-card {Class}")" AdditionalAttributes="@AdditionalAttributes" Id="@Id">
+             VerticalAlignment="VerticalAlignment.Stretch" Style="@Style"
+             Class="@(@$"fluent-adaptive-card fluent-card {Class}")" AdditionalAttributes="@AdditionalAttributes"
+             Id="@Id">
     @if (ChildContent != null)
     {
         @ChildContent
