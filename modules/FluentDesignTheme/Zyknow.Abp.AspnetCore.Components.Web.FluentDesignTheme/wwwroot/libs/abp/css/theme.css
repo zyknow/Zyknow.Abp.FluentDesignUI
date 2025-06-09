@@ -97,6 +97,11 @@ body {
     border: calc(var(--stroke-width) * 1px) solid var(--neutral-layer-4);
 }
 
+.fluent-adaptive-card {
+    height: 100%;
+    overflow: auto;
+}
+
 
 /* For Webkit browsers (Chrome, Safari, Opera) */
 ::-webkit-scrollbar {
@@ -117,4 +122,15 @@ body {
     /* The first value is the thumb color, the second is the track color */
     scrollbar-color: var(--neutral-base-color) transparent;
     scrollbar-width: 0.5rem; /* Options: auto or thin */
+}
+
+
+/* fluent component custom */
+
+fluent-anchored-region {
+    border-radius: 0.5rem;
+
+    div {
+        border-radius: 0.5rem;
+    }
 }
