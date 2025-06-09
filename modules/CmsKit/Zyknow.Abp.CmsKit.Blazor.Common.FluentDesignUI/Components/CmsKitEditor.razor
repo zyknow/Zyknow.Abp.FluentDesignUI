@@ -27,6 +27,7 @@
     // TODO: support upload media file
 
     [Inject] protected IJSRuntime JsRuntime { get; set; } = default!;
+    [Inject] protected ILocalStorageService LocalStorage { get; set; } = default!;
 
     Guid? _configKey = Guid.NewGuid();
 
@@ -43,6 +44,8 @@
     {
         if (firstRender)
         {
+            var isDark = await IsDarkThemeAsync();
+
             Conf = new Dictionary<string, object>()
             {
                 // { "selector", "textarea" },
@@ -75,41 +78,40 @@
                 // { "noneditable_class", "mceNonEditable" },
                 // { "toolbar_mode", "sliding" },
                 // { "contextmenu", "link image table" },
-                // { "skin", useDarkMode ? "oxide-dark" : "oxide" },
-                // { "content_css", useDarkMode ? "dark" : "default" },
+                { "skin", isDark ? "oxide-dark" : "oxide" },
+                { "content_css", isDark ? "dark" : "default" },
                 // { "content_style", "body { font-family:Helvetica,Arial,sans-serif; font-size:16px }" },
                 // TODO: how to config images_upload_handler ?
                 // { "images_upload_handler", "images_upload_handler" }
             };
             await SetLanguageAsync();
-
-            // TODO: too fast will got error, can fix this? : [Error: System.ArgumentException: There is no tracked object with id '2'. Perhaps the DotNetObjectReference instance was already disposed. (Parameter 'dotNetObjectId')]
-            await Task.Delay(100);
-            await SetThemeAsync();
             await InvokeAsync(StateHasChanged);
-            ThemeStore.ThemeModeChanged += ThemeStoreOnThemeModeChanged;
+            // ThemeStore.ThemeModeChanged += ThemeStoreOnThemeModeChanged;
         }
     }
 
     private async void ThemeStoreOnThemeModeChanged(object? sender, EventArgs e)
     {
-        await Task.Delay(100);
-        await SetThemeAsync();
+        // await Task.Delay(100);
+        await IsDarkThemeAsync();
         _configKey = Guid.NewGuid();
         await InvokeAsync(StateHasChanged);
+        ThemeStore.ThemeModeChanged += ThemeStoreOnThemeModeChanged;
     }
 
 
-    protected virtual async Task SetThemeAsync()
+    protected virtual async Task<bool> IsDarkThemeAsync()
     {
-        bool isDark = ThemeStore.ThemeMode == DesignThemeModes.Dark;
-        if (ThemeStore.ThemeMode == DesignThemeModes.System)
+        string? themeStr = await LocalStorage.GetItemAsync("theme");
+
+        bool isSystem = themeStr.IsNullOrWhiteSpace() || themeStr.Contains("\"mode\":\"system\"", StringComparison.OrdinalIgnoreCase) || themeStr.Contains("\"mode\":\"null\"", StringComparison.OrdinalIgnoreCase);
+        bool isDark = themeStr?.Contains("\"mode\":\"dark\"", StringComparison.OrdinalIgnoreCase) ?? false;
+        if (isSystem)
         {
             isDark = await JsRuntime.InvokeAsync<bool>("eval", "window.matchMedia('(prefers-color-scheme: dark)').matches");
         }
 
-        Conf["content_css"] = isDark ? "dark" : "default";
-        Conf["skin"] = isDark ? "oxide-dark" : "oxide";
+        return isDark;
     }
 
     protected virtual async Task SetLanguageAsync()
