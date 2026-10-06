@@ -3,16 +3,40 @@
 @using Volo.Abp.AspNetCore.Components.Messages
 @using Volo.Abp.AspNetCore.Components.Notifications
 @using Volo.Abp.AspNetCore.Components.Progression
+@using Zyknow.Abp.FluentDesignUI.FluentExtensions
+@using Zyknow.Abp.CmsKit.Blazor.Admin.FluentDesignUI
+@using Zyknow.Abp.CmsKit.Blazor.Common.FluentDesignUI.Components
+
 @inject IUiMessageService UiMessageService
 @inject IUiNotificationService UiNotificationService
 @inject IUiPageProgressService UiPageProgressService
 @inherits SimpleComponentBase
 
-<FluentButton OnClick="Callback">alert</FluentButton>
-<div>@RendererInfo.Name</div>
-<div>@RendererInfo.IsInteractive</div>
+<FluentAdaptiveCard>
+
+    <FluentButton OnClick="Callback">alert</FluentButton>
+    <FLuentPagination TotalCount="50" PageSize="10"></FLuentPagination>
+    <div>@RendererInfo.Name</div>
+    <div>@RendererInfo.IsInteractive</div>
+    <FluentDateTimePicker @bind-Value="@_dateTime"></FluentDateTimePicker>
+
+    <FluentLabel>@_dateTime?.ToString("hh:mm:ss")</FluentLabel>
+
+    <CmsKitEditor @bind-Value="@Text"></CmsKitEditor>
+
+    <div>@Text</div>
+
+
+</FluentAdaptiveCard>
+
+
+
 
 @code {
+
+    DateTime? _dateTime = DateTime.Now;
+
+    string Text { get; set; }
 
     private void Callback()
     {

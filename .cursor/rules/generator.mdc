@@ -1,0 +1,43 @@
+# 生成器规则
+
+## 本地化文件生成规则
+
+### 字段排除规则
+在生成 DTO 的本地化文件时，以下字段不需要生成本地化文本：
+1. Id - 系统自动生成的唯一标识符
+2. ExtraProperties - 额外属性字段
+3. ConcurrencyStamp - 并发标记字段
+4. 所有以 "Id" 结尾的字段（如 TenantId, UserId 等）
+5. 所有包含 "Stamp" 的字段
+6. 所有包含 "Properties" 的字段
+
+这些字段通常不需要显示给用户，或者由系统内部使用，因此不需要进行本地化。
+
+### 命名规则
+1. 本地化键格式：
+   - 主键：`{DTO名称}`，例如：`IdentitySecurityLog`
+   - 字段键：`{DTO名称}:{字段名}`，例如：`IdentitySecurityLog:UserName`
+2. 文件位置：
+   - 中文：`{模块路径}/Localization/zh-Hans/{DTO名称}.json`
+   - 英文：`{模块路径}/Localization/en/{DTO名称}.json`
+3. 文件命名：
+   - 必须与 DTO 名称完全一致
+   - 区分大小写
+   - 使用 PascalCase 命名法
+
+### 字段命名规则
+1. 字段名必须与 DTO 中的属性名完全一致
+2. 区分大小写
+3. 使用 PascalCase 命名法
+
+### 示例
+```json
+{
+  "culture": "zh-Hans",
+  "texts": {
+    "IdentitySecurityLog": "安全日志",
+    "IdentitySecurityLog:UserName": "用户名",
+    "IdentitySecurityLog:ApplicationName": "应用名称"
+  }
+}
+``` 

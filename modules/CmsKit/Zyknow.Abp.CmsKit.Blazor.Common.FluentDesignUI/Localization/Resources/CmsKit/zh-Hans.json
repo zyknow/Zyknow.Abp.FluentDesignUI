@@ -14,6 +14,7 @@
     "IsApproved": "通过",
     "CommentFilter:ApproveState": "评论状态",
     "Approve": "通过",
-    "Disapproved": "拒绝"
+    "Disapproved": "拒绝",
+    "FilterOnFavorites": "筛选收藏"
   }
 }
